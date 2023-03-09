@@ -1,0 +1,120 @@
+:root {
+  /* ##### Colors ####### */
+  /* Main Colors */
+  --color-primary: #942D51;
+  --color-secondary:  #B66A1D;
+  --color-blend: linear-gradient(180deg, #942D51 0%, #B66A1D 100%);
+
+  /* Neutral colors */
+  --color-black: #000;
+  --color-neutral-black: #100f0f;
+  --color-blackish-dark: #151515;
+  --color-blackish: #424242;
+  --color-blackish-light: #56504c;
+
+  --color-grayish-dark: #89837f;
+  --color-grayish: #9f9c9c;
+  --color-grayish-light: #cbcbcb;
+  --color-grayish-secondary-light: #eaeaea;
+
+  --color-gray-light: #afafaf;
+  --color-gray-dark: #595959;
+
+  --color-neutral-dark: #f1f1f1;
+  --color-neutral: #fafafa;
+  --color-neutral-light: #ffffff;
+
+  --color-white: #fff;
+  --color-white-light: #eeeeee;
+  --color-white-dark: #e5e5e5;
+
+  --color-success-dark: #5c9a52;
+  --color-success: #2fa968;
+  --color-success-light: #6ae5a4;
+
+  --color-blue: #0341b6;
+  --color-green: #05c9bf;
+
+  --color-warning: #f5d738;
+  --color-info: #4a9fc3;
+
+  --color-alert-red: #d50000;
+  --color-danger-dark: #c22929;
+  --color-danger: #ff3636;
+  --color-danger-light: #ff6868;
+
+  /* ##### Borders ####### */
+  --border-radius-small: 1px;
+  --border-radius-default: 2px;
+  --border-radius-input: 4px;
+
+  /* Border Colors */
+  --border-primary: 1px solid var(--color-primary);
+  --border-secondary: 1px solid var(--color-secondary);
+  --border-blend: 1px solid var(--color-blend);
+
+  /* Border Neutral */
+  --border-blackish-dark: 1px solid var(--color-blackish-dark);
+  --border-blackish: 1px solid var(--color-blackish);
+  --border-blackish-light: 1px solid var(--color-blackish-light);
+
+  --border-grayish-dark: 1px solid var(--color-grayish-dark);
+  --border-grayish: 1px solid var(--color-grayish);
+  --border-grayish-light: 1px solid var(--color-grayish-light);
+
+  --border-neutral-dark: 1px solid var(--color-neutral-dark);
+  --border-neutral: 1px solid var(--color-neutral);
+  --border-neutral-light: 1px solid var(--color-neutral-light);
+
+  /* Border Alert */
+  --border-danger-secondary-dark: 1px solid var(--color-danger-dark);
+  --border-danger-secondary: 1px solid var(--color-danger);
+  --border-danger-secondary-light: 1px solid var(--color-danger-light);
+
+  /**  ##### Typography ####### */
+  --font-family: 'Lato', sans-serif, 'Poppins';
+  --font-style: normal;
+
+  --font-size-12xl: 4rem; /** 64px **/
+  --font-size-10xl: 2.75rem; /** 44px **/
+  --font-size-9xl: 2.5rem; /** 40px **/
+  --font-size-7xl: 2rem; /** 32px */
+  --font-size-4xl: 1.5rem; /**  24px */
+  --font-size-3xl: 1.375rem; /**  22px */
+  --font-size-2xl: 1.25rem; /**  20px */
+  --font-size-xl: 1.215rem; /**  18px */
+  --font-size-lg: 1rem; /**  16px */
+  --font-size-normal: 0.875rem; /** 14px */
+  --font-size-xsm: 0.75rem; /**  12px */
+
+  --font-weight-100: 100;
+  --font-weight-200: 200;
+  --font-weight-300: 300;
+  --font-weight-400: 400;
+  --font-weight-500: 500;
+  --font-weight-600: 600;
+  --font-weight-700: 700;
+  --font-weight-800: 800;
+  --font-weight-900: 900;
+
+  --line-height-default: 1.215rem; /**  18px */
+
+  --line-height-xs: 0.75rem; /**  12px */
+  --line-height-sm: 1rem; /**  16px */
+  --line-height-lg: 1.25rem; /**  20px */
+  --line-height-xl: 1.375rem; /**  22px */
+  --line-height-2xl: 1.5rem; /**  24px */
+  --line-height-5xl: 1.875rem; /**  30px */
+  --line-height-7xl: 2.25rem; /**  36px */
+  --line-height-10xl: 2.625rem; /**  42px */
+  --line-height-12xl: 3rem; /**  48px */
+  --line-height-14xl: 3.375rem; /**  54px */
+
+  --letter-space-default: 0.777778px; /**  18px */
+
+  --letter-space-xs: 0.3px; /**  12px */
+  --letter-space-sm: 0.75px; /**  14px */
+  --letter-space-lg: 1px; /**  20px */
+
+  --default-font-color: var(--color-grayish-dark);
+}
