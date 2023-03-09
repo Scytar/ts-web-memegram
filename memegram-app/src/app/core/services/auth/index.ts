@@ -1,0 +1,3 @@
+export const isAuthentication = (): boolean => true
+
+//to do getToken, setToken....
