@@ -9,11 +9,14 @@ export interface IPostProps {
   author: string
   timestamp: Date
   media: string
-  likes: [userId: number]
+  likes: number[]
   comments: ICommentProps[]
 }
 
-const Post = (props: IPostProps): JSX.Element => {
+const Post = (props: {props:IPostProps}): JSX.Element => {
+
+  const postElement: IPostProps = props.props;
+
   const [expanded, setExpanded] = useState(false)
 
   const handleExpandClick = (): void => {
@@ -23,15 +26,15 @@ const Post = (props: IPostProps): JSX.Element => {
 
   return (
     <Card sx={{ maxWidth: '470px' }}>
-      <PostHeader title={props.author} subheader={props.timestamp} />
-      <PostMedia image={props.media} />
+      <PostHeader title={postElement.author} subheader={postElement.timestamp} />
+      <PostMedia image={postElement.media} />
       <PostActions
         expanded={expanded}
         handleExpandClick={handleExpandClick}
-        likeCounts={props.likes.length}
-        commentCounts={props.comments.length}
+        likeCounts={postElement.likes.length}
+        commentCounts={postElement.comments.length}
       />
-      <PostComments commentsFromServer={props.comments} expanded={expanded} />
+      <PostComments commentsFromServer={postElement.comments} expanded={expanded} />
     </Card>
   )
 }

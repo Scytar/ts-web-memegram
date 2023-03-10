@@ -19,7 +19,7 @@ const CommentInput = (): JSX.Element => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={styles.commentContainer}>
       <textarea
         ref={textareaRef}
         onChange={handleChange}

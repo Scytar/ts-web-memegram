@@ -1,6 +1,6 @@
 import { http } from '.'
 
-http.interceptors.request.use(config => {
+http.interceptors.request.use((config: any) => {
   // Get the token from some here
   const token = null
   if (token) {

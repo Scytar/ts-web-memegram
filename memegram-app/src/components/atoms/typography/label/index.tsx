@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 
-import { FontSize } from 'components/enums/font-size'
-import { Status } from 'components/enums/status'
+import { FontSize } from '../../../enums'
+import { Status } from '../../../enums'
 
 import { TypographyDefaultProps } from '..'
 import styles from './styles.module.scss'
