@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 // import { Post } from '../../organisms/post';
 // import { IPostProps } from '../../organisms/post';
-// import { useRequestFeedItemsFromApi } from '../../../customHooks/useRequestFeedFromApi';
+import { useRequestFeedItemsFromApi } from '../../../customHooks/useRequestFeedFromApi';
 import { PostSkeleton } from '../../skeletons/post';
-import { useQuery } from 'react-query';
+// import { useQuery } from 'react-query';
 
 const MemegramFeed = (
   //TODO: receive IPostProps[]
@@ -15,18 +15,16 @@ const MemegramFeed = (
 
   // below is the code that will be used to fetch the feed items from the database
 
-  // eslint-disable-next-line
-  // const { data, isLoading, isError } = useRequestFeedItemsFromApi();
+  const { data, isLoading, isError } = useRequestFeedItemsFromApi();
 
   // below is the code that will log the items in the console once loaded
 
   useEffect(() => {
-    // if (data) {
-    //   //console.log(data);
-    // }
+    if (data) {
+      // eslint-disable-next-line
+      console.log(data);
+    }
   }, []);
-
-  // const [arrayOfPanels] = useState<IPostProps[]>(mockPostData);
 
   //This is how we should render the elements
   //   <div>
@@ -41,15 +39,11 @@ const MemegramFeed = (
   //     }
   //  </div>
 
-  interface queryResponse {
-    data: unknown,
-    isLoading: boolean,
-    isError: boolean,
-}
-  //TODO: fix data fetch (maybe react-query version compatibility issue)
-  const { data, isLoading, isError }: queryResponse = useQuery('feedItems', () =>
-    fetch('/api/feedItems').then((res) => res.json())
-  );
+//   interface queryResponse {
+//     data: unknown,
+//     isLoading: boolean,
+//     isError: boolean,
+// }
 
   return (
     <>

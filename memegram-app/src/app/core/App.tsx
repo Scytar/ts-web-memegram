@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { MemegramFeed } from '../../components/templates'
-import { PostSkeleton } from '../../components/skeletons/post'
+import { MemegramFeed } from '../../components/templates';
 import { makeServer } from '../../utils/mirage/mirage';
+import { QueryClient , QueryClientProvider } from 'react-query';
 
 const App = (): JSX.Element => {
 
@@ -18,12 +18,13 @@ const App = (): JSX.Element => {
         }
     }, []);
         
+    const queryClient = new QueryClient();
     
     return (
         <div id='App-div'>
-            <MemegramFeed />
-            <PostSkeleton />
-            <PostSkeleton />
+            <QueryClientProvider client={queryClient}>
+                <MemegramFeed />
+            </QueryClientProvider>
         </div> //to do call a route
     )
 }
