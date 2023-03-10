@@ -10,7 +10,7 @@ const PostHeader = ({
   title,
   subheader
 }: IPostHeaderProps ): JSX.Element => {
-  return <CardHeader title={title} subheader={subheader.toISOString()} />
+  return <CardHeader title={title} subheader={subheader.toString()} />
 }
 
 export { PostHeader }

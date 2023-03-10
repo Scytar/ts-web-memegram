@@ -1,4 +1,4 @@
-export enum FontSize {
+export enum FontSizeEnum {
   extrasmall = 'fs-xsm',
   normal = 'fs-normal',
   large = 'fs-lg',

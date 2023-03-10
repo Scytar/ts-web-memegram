@@ -1,4 +1,4 @@
-export enum Status {
+export enum StatusEnum {
   default = 'default',
   error = 'error',
   success = 'success',

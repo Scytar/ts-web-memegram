@@ -2,10 +2,15 @@ import { CardContent, Collapse } from '@mui/material'
 
 import { Comment, CommentInput, ICommentProps } from '../../atoms'
 
-const PostComments = (
-  commentsFromServer: ICommentProps[],
+export interface IPostCommentsProps {
+  commentsFromServer: ICommentProps[]
   expanded: boolean
-): JSX.Element => {
+}
+
+const PostComments = ({
+  commentsFromServer,
+  expanded,
+}: IPostCommentsProps): JSX.Element => {
   return (
     <Collapse in={expanded} timeout="auto" unmountOnExit>
       <CardContent>
