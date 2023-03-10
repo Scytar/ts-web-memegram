@@ -11,6 +11,8 @@ const PostHeader = ({
   subheader
 }: IPostHeaderProps ): JSX.Element => {
 
+  const dateFromServer: Date = new Date(subheader)
+
   const dateOptions: Intl.DateTimeFormatOptions = {
     day: 'numeric',
     month: 'short',
@@ -22,8 +24,8 @@ const PostHeader = ({
     minute: '2-digit',
   }
 
-  const datePart = subheader.toLocaleString('en-GB', dateOptions);
-  const timePart = subheader.toLocaleTimeString('en-GB', timeOptions);
+  const datePart = dateFromServer.toLocaleString('en-GB', dateOptions);
+  const timePart = dateFromServer.toLocaleTimeString('en-GB', timeOptions);
 
   const dateToDisplay = `${timePart} - ${datePart}`;
 

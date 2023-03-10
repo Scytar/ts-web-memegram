@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { MemegramFeed } from '../../components/templates';
 import { makeServer } from '../../utils/mirage/mirage';
 import { QueryClient , QueryClientProvider } from 'react-query';
+import { Navbar } from '../../components/templates/navbar';
 
 const App = (): JSX.Element => {
 
@@ -23,6 +24,7 @@ const App = (): JSX.Element => {
     return (
         <div id='App-div'>
             <QueryClientProvider client={queryClient}>
+                <Navbar/>
                 <MemegramFeed />
             </QueryClientProvider>
         </div> //to do call a route

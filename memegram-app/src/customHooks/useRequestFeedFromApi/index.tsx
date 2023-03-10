@@ -1,7 +1,9 @@
 import { useQuery } from 'react-query';
+import { IPostProps } from '../../components/organisms';
+
 
 interface queryResponse {
-    data: unknown,
+    data: {feedItems: IPostProps[]},
     isLoading: boolean,
     isError: boolean,
 }
