@@ -1,0 +1,12 @@
+.commentContainer {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    margin-bottom: 0.2rem;
+    border-radius: 0.5rem;
+    cursor: default;
+
+    &:hover {
+        background-color: #EEE;
+    }
+}
