@@ -98,16 +98,34 @@ const updateLike = (_postId: string, _userId: string): void => {
   }
 }
 
+const userInfo = {
+  token: 'asd',
+  userId: '12',
+}
+
+const failedUser = {
+}
+
 const makeServer = (): Server => {
   const server = createServer({
     routes() {
+
       this.get('/api/feedItems', () => {
         return new Response(200, {}, {feedItems}); 
       });
+
       this.put('/api/like-post', (schema, req) => {
         const body = JSON.parse(req.requestBody)
         updateLike(body.postId, body.userId);
         return new Response(200, {}, {feedItems});
+      });
+
+      this.get('api/userInfo', () => {
+        if (Math.random() > 0.5) {
+          return new Response(200, {}, {userInfo});
+        } else {
+          return new Response(200, {}, {failedUser}) 
+        }       
       })
     },
   });

@@ -8,8 +8,15 @@ const app = express();
 const server = require('http').createServer(app);
 const ws = new webSocket.Server({ server });
 
+//Logs client IP upon its request
+const logIp = (req, res, next): void => {
+  console.log('Request received from', req.ip, 'to', req.url);
+  next();
+}
+
 app.use(express.static(path.join(__dirname, "memegram-app", "build")));
 app.use(express.static(path.join(__dirname, "memegram-app", "public")));
+app.use(logIp);
 
 ws.on('connection', (socket) => {
   socket.send('Welcome to memegram websocket!');
@@ -25,7 +32,6 @@ ws.on('connection', (socket) => {
 });
 
 app.get("/*", (req, res, next) => {
-    console.log('Connection received');
     res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"))
 })
 
