@@ -3,6 +3,9 @@ import { MemegramFeed } from '../../components/templates';
 import { makeServer } from '../../utils/mirage/mirage';
 import { QueryClient , QueryClientProvider } from 'react-query';
 import { Navbar } from '../../components/templates/navbar';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import style from './app.module.scss'
+import { PostSkeleton } from '../../components/skeletons/post';
 
 const App = (): JSX.Element => {
 
@@ -22,10 +25,17 @@ const App = (): JSX.Element => {
     const queryClient = new QueryClient();
     
     return (
-        <div id='App-div'>
+        <div id={style.appDiv}>
             <QueryClientProvider client={queryClient}>
-                <Navbar/>
-                <MemegramFeed />
+                <BrowserRouter>
+                    <Navbar/>
+                    <Routes>
+                        <Route path='/' element={<MemegramFeed/>}/>
+                        <Route path='/chats' element={<h2>Chats Page</h2>} />
+                        <Route path='/logout' element={<h2>Logout</h2>}/>
+                    </Routes>
+                    <PostSkeleton/>
+                </BrowserRouter>
             </QueryClientProvider>
         </div> //to do call a route
     )
