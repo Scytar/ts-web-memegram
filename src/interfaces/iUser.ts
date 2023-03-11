@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export interface User{
+export default interface User{
     _id: mongoose.Types.ObjectId,
     user: {
         name: String,

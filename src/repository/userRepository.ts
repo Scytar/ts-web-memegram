@@ -1,11 +1,16 @@
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
+import {v4 as uuid} from "uuid";
+import iResp from "../interfaces/iResp";
 
 dotenv.config();
 const MONGODB_DSN = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PSW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 
 const userSchem = new mongoose.Schema({
-    _id: mongoose.Types.ObjectId,
+    key: {
+        type: String,
+        unique: true
+    },
     user: {
         name: {
             type: String,
@@ -31,100 +36,95 @@ const userModel = mongoose.model('user', userSchem);
 export default class UserRepository{
     async insert(userData: any){
         //Receive an Object with the data to insert
-        let data: any;
-        let error: any;
+        let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
             const newUser = new userModel({
-                _id: new mongoose.Types.ObjectId(),
+                key: uuid(),
                 user:{
                     name: userData.name,
                     email: userData.email,
                     password: userData.password
                 },
-                created_at: new Date().toLocaleDateString(),
+                created_at: Date.now(),
                 updated_at: null,
                 deleted_at: null
             });
             const result: any = await newUser.save()
             if(result){
-                data = `Usuario ${result.user.name} cadastrado com sucesso!`;
+                resp.data = `Usuario ${result.user.name} cadastrado com sucesso!`;
             }
             await mongoose.connection.close();
         } catch (err: any) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
     
     async listAll() {
-        let data: any;
-        let error: any;
+        let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
             const result: any = await userModel.find();
             if (result) {
-                data = result;
+                resp.data = result;
             }
             await mongoose.connection.close();
         } catch (err: any) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
     
     async listBy(query: any) { 
         //Receive an Object with the filter of search
-        let data: any;
-        let error: any;
+        let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
             const result: any = await userModel.find(query);
             if (result) {
-                data = result;
+                resp.data = result;
             }
             await mongoose.connection.close();
         } catch (err: any) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
     
     async update(updateData: any){ 
         //Receive an Object with the filter of search(query) and the data to update(content)
-        let data: any = null;
-        let error: any = null;
+        let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
-            updateData.content.updated_at = new Date().toLocaleDateString();
+            updateData.content.updated_at = Date.now();
             const result: any = await userModel.findOneAndUpdate(
                 updateData.query, 
                 updateData.content,
                 {new: true});
             if (result) {
-                data = result;
+                resp.data = result;
             }
             await mongoose.connection.close();
         } catch (err: any) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
     
     async deleteBy(deleteData: any){ 
         //Receive an Object with the filter of search(query) and try delete
-        let data: any;
-        let error: any;
+        let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
             const result: any = await userModel.findOneAndDelete(deleteData.query, {new: true});
             if (result) {
-                data = `Usuario ${result.user.name} / ${result.user.email} foi deletado!`;
+                resp.data = `Usuario ${result.user.name} / ${result.user.email} foi deletado!`;
             }
             await mongoose.connection.close();
         } catch (err: any) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
 }
