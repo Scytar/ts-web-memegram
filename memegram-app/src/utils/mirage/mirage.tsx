@@ -121,12 +121,17 @@ const makeServer = (): Server => {
       });
 
       this.get('api/userInfo', () => {
-        if (Math.random() > 0.5) {
+        if (Math.random() > 0.1) {
           return new Response(200, {}, {userInfo});
         } else {
           return new Response(200, {}, {failedUser}) 
         }       
-      })
+      });
+
+      this.post('api/upload', () => {
+        return new Response(201), {}, {}
+      });
+
     },
   });
 

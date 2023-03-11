@@ -1,0 +1,36 @@
+// .modalBackground {
+//     position:absolute ;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     background-color: #0004;
+//     width: 100vw;
+//     height: 100vw;
+//     z-index: 200;
+// }
+
+.modalContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    border: 1px solid black;
+    border-radius: 1rem;
+    gap: 1rem;
+
+    .modalDescription {
+        width: 280px;
+        text-align: center;
+        font-weight: 600;
+    }
+}
+
+.closeButton {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    cursor: pointer;
+}

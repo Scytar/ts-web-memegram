@@ -58,7 +58,7 @@ const LoginPage = (): JSX.Element => {
                 <div className={styles.inputDiv}>
                     <h1 className={styles.title}>Memegram</h1>
                     <p>Entrar com uma conta</p>
-                    <input onChange={handleEmailInputChange} type='text' placeholder='E-mail'/>
+                    <input onChange={handleEmailInputChange} type='email' placeholder='E-mail'/>
                     <input onChange={handlePasswordInputChange} type='password' placeholder='Senha'/>
                     <button onClick={handleLoginClick}>Entrar</button>
                 </div>
@@ -70,7 +70,7 @@ const LoginPage = (): JSX.Element => {
                     <h1 className={styles.title}>Memegram</h1>
                     <p>Cadastre-se para ver memes e conversar com seus amigos!</p>
                     <input onChange={handleNameInputChange} type='text' placeholder='Nome' />
-                    <input onChange={handleEmailInputChange} type='text' placeholder='E-mail'/>
+                    <input onChange={handleEmailInputChange} type='email' placeholder='E-mail'/>
                     <input onChange={handlePasswordInputChange} type='password' placeholder='Senha'/>
                     <input onChange={handlePasswordConfirmInputChange} type='password' placeholder='Repita a senha'/>
                     <span>Ao se cadastrar, você concorda com nossos <a>Termos</a></span>

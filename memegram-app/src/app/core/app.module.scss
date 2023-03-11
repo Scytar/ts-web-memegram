@@ -3,7 +3,7 @@
     margin: 0;
 
     &::-webkit-scrollbar {
-        background-color: #0000;
+        width: 0;
     }
 }
 
@@ -17,4 +17,8 @@
     & * {
         max-width: 470px;
     }
+}
+
+.placeholder {
+    max-width: 100vw;
 }

@@ -7,6 +7,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import style from './app.module.scss'
 import { PostSkeleton } from '../../components/skeletons/post';
 import { LoginPage } from '../../components/pages/login';
+import { NewPostModal } from '../../components/templates/new-post-modal';
+import MemegramIcon from '../../imgs/memegram-logo-circle.webp'
 
 const App = (): JSX.Element => {
 
@@ -47,7 +49,7 @@ const App = (): JSX.Element => {
         <div id={style.appDiv}>
              <UserContext.Provider value={UserInfo}>
                     <BrowserRouter>
-                        {isLoading? <h1>Memegram</h1>
+                        {isLoading? <img className={style.placeholder} src={MemegramIcon} />
                         : UserInfo?.userId?
                         <>
                             <Navbar/>
@@ -55,6 +57,7 @@ const App = (): JSX.Element => {
                                 {/* TODO: Create all pages components */}
                                 <Route path='/' element={<MemegramFeed/>}/>
                                 <Route path='/chats' element={<h2>Chats Page</h2>} />
+                                <Route path='/new-post' element={<NewPostModal />} />
                                 <Route path='/logout' element={<h2>Logout</h2>}/>
                                 <Route path='*' element={<h2>404 Not Found</h2>}/>
                             </Routes>
