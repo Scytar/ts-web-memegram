@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import {v4 as uuid} from "uuid";
+import iResp from "../interfaces/iResp";
 
 dotenv.config();
 const MONGODB_DSN = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PSW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
@@ -34,8 +35,7 @@ const postModel = mongoose.model('post', postSchem);
 export default class PostRepository{
     async insert(postData: any){
         //Receive an Object with the data to insert
-        let data: any;
-        let error: any;
+        let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
             const newPost = new postModel({
@@ -51,51 +51,48 @@ export default class PostRepository{
             });
             const result: any = await newPost.save()
             if(result){
-                data = `Postagem realizada com sucesso!`;
+                resp.data = `Postagem realizada com sucesso!`;
             };
             await mongoose.connection.close();
         } catch (err: any) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
     
     async listAll() {
-        let data: any;
-        let error: any;
+        let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
             const result: any = await postModel.find();
             if (result) {
-                data = result;
+                resp.data = result;
             }
             await mongoose.connection.close();
         } catch (err: any) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
     
     async listBy(query: any) { 
         //Receive an Object with the filter of search
-        let data: any;
-        let error: any;
+        let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
             const result: any = await postModel.find(query);
             if (result) {
-                data = result;
+                resp.data = result;
             }
             await mongoose.connection.close();
         } catch (err: any) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
 
     async like(postData: any){
-        let data: any;
-        let error: any;
+        let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
             const result = await postModel.findOne(
@@ -104,18 +101,17 @@ export default class PostRepository{
             if (result) {
                 result?.post?.likes?.push(postData.userKey);
                 await result.save();
-                data = 'Liked';
+                resp.data = 'Liked';
              }
             await mongoose.connection.close();
         } catch (err) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
 
     async unlike(postData: any){
-        let data: any;
-        let error: any;
+        let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
             const result = await postModel.findOne(
@@ -125,18 +121,17 @@ export default class PostRepository{
                 const index = result?.post?.likes?.indexOf(postData.userKey);
                 result?.post?.likes?.splice(index, 1);
                 await result.save();
-                data = 'Unliked';
+                resp.data = 'Unliked';
             }
             await mongoose.connection.close();
         } catch (err) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
 
     async comment(postData: any){
-        let data: any;
-        let error: any;
+        let resp: iResp = {data: null, error: null};
         try{
             await mongoose.connect(MONGODB_DSN);
             const result = await postModel.findOne(
@@ -145,12 +140,12 @@ export default class PostRepository{
             if (result) {
                 result?.post?.comments?.push(postData.comment);
                 await result.save();
-                data = 'Commented';
+                resp.data = 'Commented';
             }
             await mongoose.connection.close();
         }catch (err) {
-            error = err.message;
+            resp.error = err.message;
         }
-        return {data, error};
+        return resp;
     }
 }
