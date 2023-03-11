@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Memegram';
+  src: url('../fonts/Italianno-Regular.ttf');
+}
+
 :root {
   /* ##### Colors ####### */
   /* Main Colors */
@@ -72,6 +77,7 @@
   --border-danger-secondary-light: 1px solid var(--color-danger-light);
 
   /**  ##### Typography ####### */
+  --font-heading: 'Memegram';
   --font-family: 'Lato', sans-serif, 'Poppins';
   --font-style: normal;
 

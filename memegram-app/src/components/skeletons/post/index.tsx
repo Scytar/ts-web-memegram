@@ -3,12 +3,12 @@ import Stack from '@mui/material/Stack';
 
 const PostSkeleton = (): JSX.Element => {
   return (
-    <Stack spacing={1}>
+    <Stack width="100%" spacing={1}>
       {/* For variant="text", adjust the height via font-size */}
-      <Skeleton animation='wave' variant="text" sx={{ fontSize: '3rem' }} />
+      <Skeleton animation='wave' variant="text" width="80%" sx={{ fontSize: '3rem' }} />
 
       {/* For other variants, adjust the size with `width` and `height` */}
-      <Skeleton animation='wave' variant="rectangular" height={200} />
+      <Skeleton animation='wave' variant="rectangular" width='100%' max-width={470} height={200} />
       <Skeleton animation='wave' variant="rectangular" width={"50%"} height={'1rem'} />
       <Skeleton animation='wave' variant="rectangular" width={"90%"} height={'1rem'} />
       <Skeleton animation='wave' variant="rectangular" width={"70%"} height={'1rem'} />

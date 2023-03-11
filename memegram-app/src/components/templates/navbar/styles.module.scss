@@ -4,6 +4,14 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    max-width: 470px;
     padding: 0 1rem;
     max-height: 3rem;
+    position: fixed;
+    background-color: white;
+    z-index: 100;
+}
+
+.navSpacer {
+    height: 3rem;
 }

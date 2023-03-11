@@ -6,34 +6,24 @@ import ForumRoundedIcon from '@mui/icons-material/ForumRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MemegramLogo from '../../../imgs/memegram-logo-circle.webp'
 
-const NavItem = ({ alt }: {alt: NavItemEnum}): JSX.Element => {
-
-  // eslint-disable-next-line
-  let itemToDisplay: any;
+const NavItem = ({ alt }: { alt: NavItemEnum }): JSX.Element => {
 
   switch (alt) {
     case NavItemEnum.newPost:
-        itemToDisplay = AddCircleOutlineIcon;
-      break;
+      return <AddCircleOutlineIcon className={styles.navItem}/>;
 
     case NavItemEnum.chats:
-        itemToDisplay = ForumRoundedIcon;
-      break;
+      return <ForumRoundedIcon className={styles.navItem}/>;
 
     case NavItemEnum.logout:
-        itemToDisplay = LogoutRoundedIcon;
-      break;
-  
+      return <LogoutRoundedIcon className={styles.navItem}/>;
+
     case NavItemEnum.home:
-      itemToDisplay = MemegramLogo;
-      break;
+      return <img className={styles.navItem} src={MemegramLogo} alt={alt} />;
 
     default:
-        itemToDisplay = MemegramLogo;
-      break;
+      return <img className={styles.navItem} src={MemegramLogo} alt={alt} />;
   }
-
-  return <img className={styles.navItem} src={itemToDisplay} alt={alt} />
 }
 
 export { NavItem }
