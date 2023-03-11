@@ -11,60 +11,70 @@ import { IPostProps } from '../../components/organisms';
 
 const feedItems: IPostProps[] = [
   {
-    key: 1,
-    authorId: 13,
+    key: "1",
+    authorId: "13",
     author: 'Scytar',
     timestamp: new Date(),
     media: 'memegram-logo.webp',
-    likes: [5, 12, 15, 87],
+    likes: ["5", "12", "15", "87"],
     comments: [
       {
-        key: 1001,
+        key: "1001",
         author: 'Machadão',
         comment: 'Cocoricó!'
       },
       {
-        key: 1002,
+        key: "1002",
+        author: 'Machadette',
+        comment: 'Pó pô pó?'
+      },
+      {
+        key: "1012",
+        author: 'Machadette',
+        comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae?'
+      },
+      {
+        key: "1032",
         author: 'Machadette',
         comment: 'Pó pô pó?'
       },
     ],
   },
   {
-    key: 3,
-    authorId: 12,
+    key: "3",
+    authorId: "12",
     author: 'Cecília',
     timestamp: new Date(),
     media: 'memegram-logo-circle.webp',
-    likes: [13, 15, 87],
+    likes: ["13", "15"],
     comments: [
       {
-        key: 1003,
+        key: "1003",
         author: 'Machadão',
         comment: 'Cocó coricocó!'
       },
       {
-        key: 1004,
+        key: "1004",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae'
       },
     ],
   },
   {
-    key: 4,
-    authorId: 1,
+    key: "4",
+    authorId: "1",
     author: 'Machadão',
     timestamp: new Date(),
     media: 'memegram-logo-circle.webp',
-    likes: [1, 13, 15, 87],
+    likes: ["1", "13", "15", "87"],
     comments: [
       {
-        key: 1006,
+        key: "1006",
         author: 'Machadão',
         comment: 'Cocó coricocó!'
       },
       {
-        key: 1005,
+        key: "1005",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae'
       },
@@ -72,14 +82,33 @@ const feedItems: IPostProps[] = [
   }
 ]
 
+const updateLike = (_postId: string, _userId: string): void => {
+  const postIndex = feedItems.findIndex(post => post.key === _postId);
+
+  if (postIndex) {
+    const postToUpdate = feedItems.splice(postIndex,1)[0];
+    const likeIndex = postToUpdate.likes.findIndex(userId => userId === _userId)
+
+    if (likeIndex !== -1) {
+      postToUpdate.likes.splice(likeIndex,1);
+    } else {
+      postToUpdate.likes.push(_userId);
+    }
+    feedItems.push(postToUpdate);
+  }
+}
+
 const makeServer = (): Server => {
   const server = createServer({
     routes() {
       this.get('/api/feedItems', () => {
-        return new Response(200, {}, {
-          feedItems
-        });
+        return new Response(200, {}, {feedItems}); 
       });
+      this.put('/api/like-post', (schema, req) => {
+        const body = JSON.parse(req.requestBody)
+        updateLike(body.postId, body.userId);
+        return new Response(200, {}, {feedItems});
+      })
     },
   });
 

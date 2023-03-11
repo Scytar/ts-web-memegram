@@ -4,12 +4,12 @@ import { PostHeader, PostMedia, ICommentProps } from '../../atoms'
 import { PostActions, PostComments } from '../../molecules'
 
 export interface IPostProps {
-  key: number
-  authorId: number
+  key: string
+  authorId: string
   author: string
   timestamp: Date
   media: string
-  likes: number[]
+  likes: string[]
   comments: ICommentProps[]
 }
 
@@ -29,6 +29,7 @@ const Post = (props: {props:IPostProps}): JSX.Element => {
       <PostHeader title={postElement.author} subheader={postElement.timestamp} />
       <PostMedia image={postElement.media} />
       <PostActions
+        postId={postElement.key}
         expanded={expanded}
         handleExpandClick={handleExpandClick}
         likeCounts={postElement.likes.length}

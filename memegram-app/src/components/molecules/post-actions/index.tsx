@@ -6,6 +6,7 @@ import { CommentButton, LikeButton, ExpandButton, Counter } from '../../atoms';
 
 
 export interface IPostActionsProps {
+  postId: string
   handleExpandClick: () => void
   expanded: boolean
   likeCounts: number
@@ -13,6 +14,7 @@ export interface IPostActionsProps {
 }
 
 const PostActions = ({
+  postId,
   handleExpandClick,
   expanded,
   likeCounts,
@@ -20,7 +22,7 @@ const PostActions = ({
 }: IPostActionsProps): JSX.Element => {
   return (
     <CardActions disableSpacing>
-      <LikeButton />
+      <LikeButton postId={postId} />
       <Counter count={likeCounts} />
       <CommentButton handleExpandClick={handleExpandClick} />
       <Counter count={commentCounts} />
