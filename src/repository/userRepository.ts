@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
+import {v4 as uuid} from "uuid";
 
 dotenv.config();
 const MONGODB_DSN = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PSW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 
 const userSchem = new mongoose.Schema({
-    _id: mongoose.Types.ObjectId,
+    key: {
+        type: String,
+        unique: true
+    },
     user: {
         name: {
             type: String,
@@ -36,13 +40,13 @@ export default class UserRepository{
         try {
             await mongoose.connect(MONGODB_DSN);
             const newUser = new userModel({
-                _id: new mongoose.Types.ObjectId(),
+                key: uuid(),
                 user:{
                     name: userData.name,
                     email: userData.email,
                     password: userData.password
                 },
-                created_at: new Date().toLocaleDateString(),
+                created_at: Date.now(),
                 updated_at: null,
                 deleted_at: null
             });
@@ -92,11 +96,11 @@ export default class UserRepository{
     
     async update(updateData: any){ 
         //Receive an Object with the filter of search(query) and the data to update(content)
-        let data: any = null;
-        let error: any = null;
+        let data: any;
+        let error: any;
         try {
             await mongoose.connect(MONGODB_DSN);
-            updateData.content.updated_at = new Date().toLocaleDateString();
+            updateData.content.updated_at = Date.now();
             const result: any = await userModel.findOneAndUpdate(
                 updateData.query, 
                 updateData.content,
