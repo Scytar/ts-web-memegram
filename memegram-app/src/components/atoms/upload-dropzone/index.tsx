@@ -1,26 +1,42 @@
 import style from './style.module.scss';
-import React, { useCallback } from 'react';
+import React, { useCallback , useContext } from 'react';
 import { Accept, useDropzone } from 'react-dropzone';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 // import BackupIcon from '@mui/icons-material/Backup';
 import CloseIcon from '@mui/icons-material/Close';
+import { UserContext } from '../../../contexts/userInfo';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 /* eslint-disable  @typescript-eslint/no-unused-vars */
 const Dropzone = (): JSX.Element => {
+    
+    const userInfo = useContext(UserContext);
 
+    // Must create a handler for user selecting not supported file extension
     const onDrop = useCallback((acceptedFiles: any[], rejectedFiles: any[]): void => {
         const file = acceptedFiles[0];
         const formData = new FormData();
+
+        
+        // eslint-disable-next-line
+        console.log('file',file);
+        // eslint-disable-next-line
+        console.log('data',userInfo)
+
         formData.append('file', file);
-        fetch('api/upload', {
+        formData.append('body', JSON.stringify(userInfo))
+
+        // This could be an separate file server, that only saves images and serves them staticly
+        fetch('http://localhost:3030/api/upload', {
             method: 'POST',
             body: formData,
-        });
+        })
+        // eslint-disable-next-line
+        .then((res) => console.log(res));
     }, []);
 
     const acceptedFileExtensions: Accept = {
-        image: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+        image: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif', 'image/webp', ],
         extension: ['.jpg', '.jpeg', '.png', '.gif', '.webp']
     };
     const string = acceptedFileExtensions.extension.join(', ');

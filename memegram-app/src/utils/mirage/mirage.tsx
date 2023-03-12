@@ -128,9 +128,12 @@ const makeServer = (): Server => {
         }       
       });
 
-      this.post('api/upload', () => {
-        return new Response(201), {}, {}
-      });
+      // this.post('api/upload', (schema, req) => {
+      //   // const body = req.requestBody
+      //   // // eslint-disable-next-line
+      //   // console.log(body)
+      //   return new Response(201), {}, {}
+      // });
 
     },
   });

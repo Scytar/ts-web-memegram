@@ -23,7 +23,7 @@ const MemegramFeed = (): JSX.Element => {
   return (
     <>
       {isLoading ? <><PostSkeleton/><PostSkeleton/></> : null}
-      {isError ? <><p>Error fetching feed items</p><PostSkeleton/></> : null}
+      {isError ? <><p>Erro ao requisitar feed</p><PostSkeleton/></> : null}
       {data?
         data.feedItems.map(
           (item: IPostProps) => {
