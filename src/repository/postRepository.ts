@@ -101,13 +101,13 @@ export default class PostRepository{
     async comment(postData: any){
         //Add a comment in a post
         let resp: iResp = await this.base(this.postModel.findOne(
-                {key: postData.postKey}
-            ));
-            if (resp.data) {
-                await mongoose.connect(MONGODB_DSN);
-                resp.data.post.comments.push(postData.comment);
-                resp = await this.base(resp.data.save());
-            }
+            {key: postData.postKey}
+        ));
+        if (resp.data) {
+            await mongoose.connect(MONGODB_DSN);
+            resp.data.post.comments.push(postData.comment);
+            resp = await this.base(resp.data.save());
+        }
         return resp;
     }
 }
