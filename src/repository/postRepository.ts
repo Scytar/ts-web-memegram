@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import {v4 as uuid} from "uuid";
 import iResp from "../interfaces/iResp";
+import CommentRepository from "./commentRepository.js";
 
 dotenv.config();
 const MONGODB_DSN = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PSW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
@@ -26,7 +27,7 @@ export default class PostRepository{
                 required: true,
             },
             likes: Array<String>,
-            comments: Array<any>
+            comments: Array<String>
         },
         created_at: Date,
     })
@@ -38,10 +39,8 @@ export default class PostRepository{
         let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
-            console.log('abriu')
             resp.data = await resultFunc;
             await mongoose.connection.close();
-            console.log('fechoou')
         } catch (err: any) {
             resp.error = err.message;
         }
@@ -104,9 +103,15 @@ export default class PostRepository{
             {key: postData.postKey}
         ));
         if (resp.data) {
-            await mongoose.connect(MONGODB_DSN);
-            resp.data.post.comments.push(postData.comment);
-            resp = await this.base(resp.data.save());
+            const comment = new CommentRepository();
+            const result = await comment.insert(postData.comment);
+            if (!result.data) {
+                resp.error = result.data.error;
+            }else{
+                await mongoose.connect(MONGODB_DSN);
+                resp.data.post.comments.push(result.data.key);
+                resp = await this.base(resp.data.save());
+            }
         }
         return resp;
     }
