@@ -162,6 +162,11 @@ app.get('/api/feedItems', (req, res, next) => {
   res.status(200).json({feedItems: feedItems})
 });
 
+// This route MUST be the last one, as its generic and will redirect the URL to the react-router
+app.get("/*", (req, res, next) => {
+  res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
+})
+
 server.listen(PORT, () => {
   console.log('Server listening on port ' + PORT);
 });
