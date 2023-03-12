@@ -1,0 +1,36 @@
+.commentInput {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: #0000;
+    width: 100%;
+    height: 2rem;
+    min-height: 2rem;
+    font-size: 1rem;
+    padding: 0.5rem 0.5rem 0;
+    outline: 0;
+    color: #000;
+    border-radius: 0.5rem;
+    resize: none;
+
+    &:focus {
+        background-color: #EEE;
+    }
+
+    &:hover {
+        background-color: #EEE;
+    }
+}
+
+.commentContainer {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    margin-bottom: 0.2rem;
+    border-radius: 0.5rem;
+    cursor: default;
+
+    &:hover {
+        background-color: #EEE;
+    }
+}

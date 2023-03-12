@@ -5,13 +5,17 @@ import App from './app/core/App'
 import reportWebVitals from './config/reportWebVitals';
 
 import './index.css';
+import { QueryClientProvider } from 'react-query';
+import { queryClient } from './querys';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

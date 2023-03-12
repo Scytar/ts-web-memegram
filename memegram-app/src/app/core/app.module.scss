@@ -1,0 +1,24 @@
+* {
+    padding: 0;
+    margin: 0;
+
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+}
+
+#appDiv {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    & * {
+        max-width: 470px;
+    }
+}
+
+.placeholder {
+    max-width: 100vw;
+}
