@@ -24,10 +24,10 @@ const MemegramFeed = (): JSX.Element => {
     <>
       {isLoading ? <><PostSkeleton/><PostSkeleton/></> : null}
       {isError ? <><p>Erro ao requisitar feed</p><PostSkeleton/></> : null}
-      {data?
+      {data ?
         data.feedItems.map(
           (item: IPostProps) => {
-            return <Post props={item} />
+            return <Post key={item.postId} {...item} />
           }
         ) : null
       }

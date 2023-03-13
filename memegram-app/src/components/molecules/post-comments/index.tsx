@@ -1,29 +1,33 @@
-import { CardContent, Collapse } from '@mui/material'
-
-import { Comment, CommentInput, ICommentProps } from '../../atoms'
+import { CardContent, Collapse } from '@mui/material';
+import { Dispatch, SetStateAction } from 'react';
+import { Comment, CommentInput } from '../../atoms';
+import { IPostProps } from '../../organisms';
 
 export interface IPostCommentsProps {
-  commentsFromServer: ICommentProps[]
-  expanded: boolean
+  postInfo: IPostProps,
+  setPostInfo: Dispatch<SetStateAction<IPostProps>>,
+  expanded: boolean,
 }
 
 const PostComments = ({
-  commentsFromServer,
+  postInfo,
+  setPostInfo,
   expanded,
 }: IPostCommentsProps): JSX.Element => {
   return (
     <Collapse in={expanded} timeout="auto" unmountOnExit>
       <CardContent>
-        {commentsFromServer.map(item => {
+        {postInfo.comments.map(item => {
           return (
             <Comment
-              key={item.key}
+              key={item.commentId}
+              commentId={item.commentId}
               author={item.author}
               comment={item.comment}
             />
           )
         })}
-        <CommentInput />
+        <CommentInput postInfo={postInfo} setPostInfo={setPostInfo}/>
       </CardContent>
     </Collapse>
   )

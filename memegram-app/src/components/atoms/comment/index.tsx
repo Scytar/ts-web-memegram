@@ -1,7 +1,7 @@
 import styles from './styles.module.scss'
 
 export interface ICommentProps {
-  key: string
+  commentId: string
   author: string
   comment: string
 }

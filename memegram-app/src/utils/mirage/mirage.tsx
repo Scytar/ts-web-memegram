@@ -11,7 +11,7 @@ import { IPostProps } from '../../components/organisms';
 
 const feedItems: IPostProps[] = [
   {
-    key: "1",
+    postId: "1",
     authorId: "13",
     author: 'Scytar',
     timestamp: new Date(),
@@ -19,29 +19,29 @@ const feedItems: IPostProps[] = [
     likes: ["5", "12", "15", "87"],
     comments: [
       {
-        key: "1001",
+        commentId: "1001",
         author: 'Machadão',
         comment: 'Cocoricó!'
       },
       {
-        key: "1002",
+        commentId: "1002",
         author: 'Machadette',
         comment: 'Pó pô pó?'
       },
       {
-        key: "1012",
+        commentId: "1012",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae?'
       },
       {
-        key: "1032",
+        commentId: "1032",
         author: 'Machadette',
         comment: 'Pó pô pó?'
       },
     ],
   },
   {
-    key: "3",
+    postId: "3",
     authorId: "12",
     author: 'Cecília',
     timestamp: new Date(),
@@ -49,19 +49,19 @@ const feedItems: IPostProps[] = [
     likes: ["13", "15"],
     comments: [
       {
-        key: "1003",
+        commentId: "1003",
         author: 'Machadão',
         comment: 'Cocó coricocó!'
       },
       {
-        key: "1004",
+        commentId: "1004",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae'
       },
     ],
   },
   {
-    key: "4",
+    postId: "4",
     authorId: "1",
     author: 'Machadão',
     timestamp: new Date(),
@@ -69,12 +69,12 @@ const feedItems: IPostProps[] = [
     likes: ["1", "13", "15", "87"],
     comments: [
       {
-        key: "1006",
+        commentId: "1006",
         author: 'Machadão',
         comment: 'Cocó coricocó!'
       },
       {
-        key: "1005",
+        commentId: "1005",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae'
       },
@@ -83,7 +83,7 @@ const feedItems: IPostProps[] = [
 ]
 
 const updateLike = (_postId: string, _userId: string): void => {
-  const postIndex = feedItems.findIndex(post => post.key === _postId);
+  const postIndex = feedItems.findIndex(post => post.postId === _postId);
 
   if (postIndex) {
     const postToUpdate = feedItems.splice(postIndex,1)[0];

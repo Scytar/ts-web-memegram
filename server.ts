@@ -42,6 +42,7 @@ ws.on('connection', (socket) => {
       }
     }
   });
+
 });
 
 app.get('/api/userInfo', (req, res, next) => {
@@ -87,7 +88,7 @@ app.get("/", (req, res, next) => {
 // Example of database response of the global feed
 const feedItems = [
   {
-    key: "1",
+    postId: "1",
     authorId: "13",
     author: 'Scytar',
     timestamp: new Date(),
@@ -95,29 +96,29 @@ const feedItems = [
     likes: ["5", "12", "15", "87"],
     comments: [
       {
-        key: "1001",
+        commentId: "1001",
         author: 'Machadão',
         comment: 'Cocoricó!'
       },
       {
-        key: "1002",
+        commentId: "1002",
         author: 'Machadette',
         comment: 'Pó pô pó?'
       },
       {
-        key: "1012",
+        commentId: "1012",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae?'
       },
       {
-        key: "1032",
+        commentId: "1032",
         author: 'Machadette',
         comment: 'Pó pô pó?'
       },
     ],
   },
   {
-    key: "3",
+    postId: "3",
     authorId: "12",
     author: 'Cecília',
     timestamp: new Date(),
@@ -125,19 +126,19 @@ const feedItems = [
     likes: ["13", "15"],
     comments: [
       {
-        key: "1003",
+        commentId: "1003",
         author: 'Machadão',
         comment: 'Cocó coricocó!'
       },
       {
-        key: "1004",
+        commentId: "1004",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae'
       },
     ],
   },
   {
-    key: "4",
+    postId: "4",
     authorId: "1",
     author: 'Machadão',
     timestamp: new Date(),
@@ -145,12 +146,12 @@ const feedItems = [
     likes: ["1", "13", "15", "87"],
     comments: [
       {
-        key: "1006",
+        commentId: "1006",
         author: 'Machadão',
         comment: 'Cocó coricocó!'
       },
       {
-        key: "1005",
+        commentId: "1005",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae'
       },
@@ -161,6 +162,27 @@ const feedItems = [
 app.get('/api/feedItems', (req, res, next) => {
   res.status(200).json({feedItems: feedItems})
 });
+
+app.post('/api/comment', (req, res, next) => {
+  const body = req.body;
+  
+  let updatePost;
+
+  feedItems.forEach((element, index): void => {
+    if (element.postId === body.postId) {
+      const newComment = {
+        commentId: "" + Math.random(),
+        author: body.userId,
+        comment: body.comment
+      };
+      feedItems[index].comments.push(newComment);
+
+      updatePost = feedItems[index];
+    }
+  });
+
+  res.status(201).json(JSON.stringify(updatePost));
+})
 
 // This route MUST be the last one, as its generic and will redirect the URL to the react-router
 app.get("/*", (req, res, next) => {
