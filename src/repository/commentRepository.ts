@@ -8,7 +8,7 @@ const MONGODB_DSN = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PSW
 
 export default class CommentRepository{
     private commentSchem = new mongoose.Schema({
-        key: {
+        commentId: {
             type: String,
             unique: true
         },
@@ -43,7 +43,7 @@ export default class CommentRepository{
     async insert(commentData: any){
         //Receive an Object with the data to insert
         const newComment = new this.commentModel({
-            key: uuid(),
+            commentId: uuid(),
             comment:{
                 author: commentData.author,
                 text: commentData.text
