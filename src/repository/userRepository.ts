@@ -8,7 +8,7 @@ const MONGODB_DSN = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PSW
 
 export default class UserRepository{
     private userSchem = new mongoose.Schema({
-        key: {
+        userId: {
             type: String,
             unique: true
         },
@@ -50,7 +50,7 @@ export default class UserRepository{
     async insert(userData: any){
         //Receive an Object with the data to insert
         const newUser = new this.userModel({
-            key: uuid(),
+            userId: uuid(),
             user:{
                 name: userData.name,
                 email: userData.email,

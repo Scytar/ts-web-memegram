@@ -9,7 +9,7 @@ const MONGODB_DSN = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PSW
 
 export default class PostRepository{
     private postSchem = new mongoose.Schema({
-        key: {
+        postId: {
             type: String,
             unique: true
         },
@@ -50,7 +50,7 @@ export default class PostRepository{
     async insert(postData: any){
         //Receive an Object with the data to insert
         const newPost = new this.postModel({
-            key: uuid(),
+            postId: uuid(),
             post: {      
                 authorId: postData.authorId,
                 author: postData.author,
