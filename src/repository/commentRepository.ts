@@ -6,28 +6,29 @@ import iResp from "../interfaces/iResp";
 dotenv.config();
 const MONGODB_DSN = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PSW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 
-export default class CommentRepository{
-    private commentSchem = new mongoose.Schema({
-        commentId: {
+const commentSchem = new mongoose.Schema({
+    commentId: {
+        type: String,
+        unique: true
+    },
+    comment: {
+        author: {
             type: String,
-            unique: true
+            required: true
         },
-        comment: {
-            author: {
-                type: String,
-                required: true
-            },
-            text: {
-                type: String,
-                required: true 
-            }
-        },
-        created_at: Date
-    })
-    
-    private commentModel = mongoose.model('comment', this.commentSchem);
+        text: {
+            type: String,
+            required: true 
+        }
+    },
+    created_at: Date
+})
 
-    private async base(resultFunc){
+const commentModel = mongoose.model('comment', commentSchem);
+
+export default class CommentRepository{
+
+    private async base(resultFunc: any){
         //Receive an function, make conection with database and run the operation
         let resp: iResp = {data: null, error: null};
         try {
@@ -42,7 +43,7 @@ export default class CommentRepository{
 
     async insert(commentData: any){
         //Receive an Object with the data to insert
-        const newComment = new this.commentModel({
+        const newComment = new commentModel({
             commentId: uuid(),
             comment:{
                 author: commentData.author,
@@ -56,7 +57,7 @@ export default class CommentRepository{
     
     async listBy(query: any) { 
         //Receive an Object with the comment's key of search
-        const resp: iResp = await this.base(this.commentModel.find(query));
+        const resp: iResp = await this.base(commentModel.find(query));
         return resp;
     }
 }

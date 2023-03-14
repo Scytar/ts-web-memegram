@@ -2,14 +2,13 @@
 import { Response, Request } from 'express'
 import * as dotenv from 'dotenv';
 dotenv.config();
-import { multer } from 'multer';
+import Multer from 'multer';
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
-const storage = multer.diskStorage({
+const storage = Multer.diskStorage({
     destination: "../uploads/",
-    filename: (req: Request, res: Response, file: multer.File, cb: multer.FileFilterCallback) => {
-      
+    filename: (req: Request, res: Response, file: Multer.File, cb: Multer.FileFilterCallback) => {
         if (!file || !file.originalname) {
            
             cb(null, "nochange");
@@ -24,6 +23,6 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ storage });
+const upload = Multer({ storage });
 
 export default upload;

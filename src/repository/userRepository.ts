@@ -6,35 +6,36 @@ import iResp from "../interfaces/iResp";
 dotenv.config();
 const MONGODB_DSN = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PSW}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 
-export default class UserRepository{
-    private userSchem = new mongoose.Schema({
-        userId: {
+const userSchem = new mongoose.Schema({
+    userId: {
+        type: String,
+        unique: true
+    },
+    user: {
+        name: {
             type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true,
             unique: true
         },
-        user: {
-            name: {
-                type: String,
-                required: true
-            },
-            email: {
-                type: String,
-                required: true,
-                unique: true
-            },
-            password: {
-                type: String,
-                required: true
-            },
+        password: {
+            type: String,
+            required: true
         },
-        created_at: Date,
-        updated_at: Date,
-        deleted_at: Date
-    })
-    
-    private userModel = mongoose.model('user', this.userSchem);
+    },
+    created_at: Date,
+    updated_at: Date,
+    deleted_at: Date
+})
 
-    private async base(resultFunc){
+const userModel = mongoose.model('user', userSchem);
+
+export default class UserRepository{
+
+    private async base(resultFunc: any){
         //Receive an function, make conection with database and run the operation
         let resp: iResp = {data: null, error: null};
         try {
@@ -49,7 +50,7 @@ export default class UserRepository{
 
     async insert(userData: any){
         //Receive an Object with the data to insert
-        const newUser = new this.userModel({
+        const newUser = new userModel({
             userId: uuid(),
             user:{
                 name: userData.name,
@@ -60,18 +61,18 @@ export default class UserRepository{
             updated_at: null,
             deleted_at: null
         });
-        const resp: iResp = await this.base(newUser.save())
+        const resp: iResp = await this.base(newUser.save());
         return resp;
     }
     
     async listAll() {
-        const resp: iResp = await this.base(this.userModel.find());
+        const resp: iResp = await this.base(userModel.find());
         return resp;
     }
     
     async listBy(query: any) { 
         //Receive an Object with the filter of search
-        const resp: iResp = await this.base(this.userModel.find(query));
+        const resp: iResp = await this.base(userModel.find(query));
         if (resp.data[0] == null) {
            resp.error = "Error: not found" 
         }
@@ -81,7 +82,7 @@ export default class UserRepository{
     async update(updateData: any){
         //Receive an Object with the query to search the document and the data to update
         updateData.content.updated_at = Date.now();
-        const resp: iResp = await this.base(this.userModel.findOneAndUpdate(
+        const resp: iResp = await this.base(userModel.findOneAndUpdate(
             updateData.query, 
             updateData.content,
             {new: true}
@@ -94,7 +95,7 @@ export default class UserRepository{
     
     async deleteBy(deleteData: any){ 
         //Receive an Object with the filter of search(query) and try delete
-        const resp: iResp = await this.base(this.userModel.findOneAndDelete(
+        const resp: iResp = await this.base(userModel.findOneAndDelete(
             deleteData.query, {new: true}
         ));
         if (resp.data) {

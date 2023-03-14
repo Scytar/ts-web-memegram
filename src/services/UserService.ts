@@ -36,17 +36,19 @@ export const createUser = async (data: User) => {
         if (!response.error) {
             const token = jwt.sign(
                 {
-                    id: response.data[0].userId,
-                    name: data.name,
-                    email: data.email
+                    id: response.data.userId,
+                    name: response.data.user.name,
+                    email: response.data.user.email
                 }, secret,
                 { expiresIn: "1d" });
 
             return { response, token };
+        } else{
+            throw new Error(`${response.error}`);
         }
     }
     catch (err: any) {
-        return { err: err }
+        return { err: err.message }
     }
 
 }
@@ -63,9 +65,9 @@ export const selectUser = async (data: User) => {
         //---------------------------------------------------------------------------verify
         const userRep = new UserRepository();
         //const response: iResp = await userRep.listBy({key:"5672b0ff-dcd9-4e29-82d7-bb991d485b3b"}) 
-        const response: iResp = await userRep.listBy({email: emailUser}) 
+        const response: iResp = await userRep.listBy({"user.email": emailUser});
         //---------------------------------------------------------------------------verify
-        
+
         //verificar se o response da consulta é válido
         if (!response.error) {
 
@@ -84,10 +86,12 @@ export const selectUser = async (data: User) => {
                 { expiresIn: "1d" });
 
             return { response, token };
-       }
+        } else{
+            throw new Error(`${response.error}`);
+        }
     }
     catch (err: any) {
-        return { err: err }
+        return { err: err.message }
     }
 
 }
