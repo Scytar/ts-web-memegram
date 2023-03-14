@@ -81,16 +81,15 @@ export default class PostRepository{
     async like(postData: any){
         //Add or remove a like based on user key
         let resp: iResp = await this.base(this.postModel.findOne(
-            {key: postData.postKey}
+            {postId: postData.postId}
         ));
-        if (!resp.data.post.likes.includes(postData.userKey)) {
+        if (!resp.data.post.likes.includes(postData.userId)) {
             await mongoose.connect(MONGODB_DSN);
-            resp.data.post.likes.push(postData.userKey);
-            console.log(resp.data)
+            resp.data.post.likes.push(postData.userId);
             resp = await this.base(resp.data.save());
         } else{
             await mongoose.connect(MONGODB_DSN);
-            const index = resp.data.post.likes.indexOf(postData.userKey);
+            const index = resp.data.post.likes.indexOf(postData.userId);
             resp.data.post.likes.splice(index, 1);
             resp = await this.base(resp.data.save());
         }
@@ -100,16 +99,17 @@ export default class PostRepository{
     async comment(postData: any){
         //Add a comment in a post
         let resp: iResp = await this.base(this.postModel.findOne(
-            {key: postData.postKey}
+            {postId: postData.postId}
         ));
         if (resp.data) {
             const comment = new CommentRepository();
             const result = await comment.insert(postData.comment);
             if (!result.data) {
-                resp.error = result.data.error;
+                resp.error = result.error;
+                return resp;
             }else{
                 await mongoose.connect(MONGODB_DSN);
-                resp.data.post.comments.push(result.data.key);
+                resp.data.post.comments.push(result.data.commentId);
                 resp = await this.base(resp.data.save());
             }
         }

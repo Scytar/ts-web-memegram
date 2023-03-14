@@ -61,9 +61,6 @@ export default class UserRepository{
             deleted_at: null
         });
         const resp: iResp = await this.base(newUser.save())
-        if(resp.data){
-            resp.data = `Usuario ${resp.data.user.name} cadastrado com sucesso!`;
-        }
         return resp;
     }
     
