@@ -21,7 +21,6 @@ export const createUser = async (data: User) => {
         const encryptedPasswd: string = await bcrypt.hash(data.password as string, 10);
 
         const dataUser: User = {
-            id: uuid(),
             name: data.name,
             email: data.email,
             password: encryptedPasswd,
@@ -30,21 +29,20 @@ export const createUser = async (data: User) => {
         //acesso ao database do repositories para persistencia dos dados de cadastro
         //---------------------------------------------------------------------------verify
         const userRep = new UserRepository();
-        const response: iResp = await userRep.insert({name:'test', email:'test@teste.com', password:"0000"});
-        //const response: iResp = await userRep.insert(dataUser);
+        //const response: iResp = await userRep.insert({name:'test', email:'test@teste.com', password:"0000"});
+        const response: iResp = await userRep.insert({name: dataUser.name, email: dataUser.email, password: dataUser.password});
         //---------------------------------------------------------------------------verify
 
-        if (response.data) {
-            // const token = jwt.sign(
-            //     {
-            //         id: user.id,
-            //         name: data.username,
-            //         email: data.email,
-            //     }, secret,
-            //     { expiresIn: "1d" });
+        if (!response.error) {
+            const token = jwt.sign(
+                {
+                    id: response.data[0].userId,
+                    name: data.name,
+                    email: data.email
+                }, secret,
+                { expiresIn: "1d" });
 
-            // return { response, token };
-            return response.data;
+            return { response, token };
         }
     }
     catch (err: any) {
@@ -64,29 +62,29 @@ export const selectUser = async (data: User) => {
         //acessar o database
         //---------------------------------------------------------------------------verify
         const userRep = new UserRepository();
-        const response: iResp = await userRep.listBy({key:"5672b0ff-dcd9-4e29-82d7-bb991d485b3b"}) 
-        //const response: iResp = await userRep.listBy({email: emailUser}) 
+        //const response: iResp = await userRep.listBy({key:"5672b0ff-dcd9-4e29-82d7-bb991d485b3b"}) 
+        const response: iResp = await userRep.listBy({email: emailUser}) 
         //---------------------------------------------------------------------------verify
         
         //verificar se o response da consulta é válido
-        //if (!response.error) {
+        if (!response.error) {
 
-            //comparar password para validação
-           // const compare = await bcrypt.compare(password as string, response.password as string)
+           // comparar password para validação
+           const compare = await bcrypt.compare(password as string, response.data[0].user.password as string)
 
-            //if (!compare) throw new Error("Error: Incorrect data");
+            if (!compare) throw new Error("Error: Incorrect data");
 
             //password válidado, gerar token
-            // const token = jwt.sign(
-            //     {
-            //         id: user.id,
-            //         name: data.name,
-            //         email: data.email
-            //     }, secret,
-            //     { expiresIn: "1d" });
+            const token = jwt.sign(
+                {
+                    id: response.data[0].userId,
+                    name: data.name,
+                    email: data.email
+                }, secret,
+                { expiresIn: "1d" });
 
-            // return { response, token };
-       // }
+            return { response, token };
+       }
     }
     catch (err: any) {
         return { err: err }
