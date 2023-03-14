@@ -13,13 +13,13 @@ export async function newItems(req: Request, res: Response) {
     } else {
         itemsObject.media = req.file.filename;
     }
- 
+
     try {
         const data = await newPost(itemsObject);
         res.status(202).send(data);
         return;
     } catch (error: any) {
-        res.status(error.status).send(error.message);
+        res.status(500).send(error);
         return;
     }
 
