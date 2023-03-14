@@ -2,11 +2,6 @@
 import { Request, Response } from "express";
 import { Post } from "../interfaces";
 import { newPost } from "../services/postService";
-import jwt from 'jsonwebtoken';
-
-
-// const secret: string = process.env.JWT_SECRET;
-const secret: string = 'xfeyi356##$qsWRE';
 
 export async function newItems(req: Request, res: Response) {
 
@@ -17,12 +12,6 @@ export async function newItems(req: Request, res: Response) {
         res.status(400).send("Please upload a file");
     } else {
         itemsObject.media = req.file.filename;
-
-        const [, token] = req.headers.authorization!.split(" ");
-        const data: any = jwt.verify(token, secret);
-       
-        itemsObject.authorId = data.id;
-        itemsObject.author = data.name;
     }
  
     try {
