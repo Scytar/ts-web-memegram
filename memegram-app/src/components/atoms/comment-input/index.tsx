@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useRef, useState } from 'react';
 import { IPostProps } from '../../organisms';
+import { UserContext } from '../../../contexts/userInfo';
 
 import styles from './styles.module.scss';
 
@@ -45,13 +46,16 @@ const CommentInput = ({postInfo, setPostInfo}: IPostCommentInput): JSX.Element =
       })
   }
 
+  const userInfo = useContext(UserContext);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       //TODO: send comment to API
+    
 
       const myBody = {
-        userId: '321',
+        user: userInfo.user, //TODO: get this from userInfo context
         postId: postInfo.postId,
         comment: commentContent,
       };

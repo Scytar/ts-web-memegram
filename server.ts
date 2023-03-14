@@ -31,59 +31,11 @@ app.use(logIp);
 
 // TODO: a lot of the code below needs to be modularized
 
-ws.on('connection', (socket) => {
-  socket.send('Welcome to memegram websocket!');
-
-  socket.on('message', (message) => {
-    for (const client of ws.clients) {
-      if (client !== socket && client.readyState === webSocket.OPEN) {
-        client.send(`Client: ${message}`);
-        console.log(`Client: ${message}`);
-      }
-    }
-  });
-
-});
-
-app.get('/api/userInfo', (req, res, next) => {
-  const userInfo = {
-    token: 'asd',
-    userId: '123',
-  }
-  res.status(200).json({userInfo: userInfo});
-})
-
-// TODO: modularize this
-// ============ Code-block start ============
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // This must be an express.static served folder
-    cb(null, "memegram-app/public");
-  },
-  filename: (req, file, cb) => {
-    // Database must store filename string with extension
-    // It would be better to hash this filename
-    cb(null, file.originalname);
-  },
-});
-
-const upload = multer({storage});
-
-app.post('/api/upload', upload.single('file') ,(req, res, next) => {
-
-  const data = JSON.parse(req.body.body); // data = { token: string , userId: string }
-
-  console.log('file', req.file);
-  console.log('data', data);
-  res.sendStatus(201)
-})
-
-// ============ Code-block end ============
-
-app.get("/", (req, res, next) => {
-  res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
-})
+const userInfo = {
+  token: '987654321',
+  userId: 'gottagofast',
+  user: 'Sonic The Hedgehog',
+}
 
 // Example of database response of the global feed
 const feedItems = [
@@ -159,20 +111,130 @@ const feedItems = [
   }
 ]
 
+// =============== Websocket Channels ===============
+const globalFeedChannel = new Set();
+const genericChatChannel = new Set();
+
+ws.on('connection', (socket: any, req: any) => {
+  // socket.send(JSON.stringify(feedItems))
+
+  //Identify the channel the websocket connection belongs
+  if (req.url === '/globalFeed') { //Develop switch cases
+    console.log('globalFeed')
+    globalFeedChannel.add(socket);
+    socket.send(JSON.stringify(feedItems));
+  }
+  if (req.url === '/chats') {
+    console.log('chats')
+    genericChatChannel.add(socket);
+  }
+
+  // Identify the channel the message sent by the client belongs
+  socket.on('message', (message) => {
+    if (req.url === '/globalFeed') { //Develop switch cases
+      globalFeedChannel.forEach((client: any) => {
+        if (client.readyState === webSocket.OPEN) {
+          console.log('message',message)
+          client.send(message);
+        }
+      })
+    }
+    if (req.url === '/chats') {
+      genericChatChannel.forEach((client: any) => {
+        if (client.readyState === webSocket.OPEN) {
+          client.send(message);
+        }
+      })
+    }
+  });
+
+
+  //Remove the connection from correct channel when closed
+  socket.on('close', () => {
+    if (req.url === '/globalFeed') {
+      console.log('socket close')
+      globalFeedChannel.delete(socket);
+    }
+    if (req.url === '/chats') {
+      console.log('socket close')
+      genericChatChannel.delete(socket);
+    }
+  });
+});
+// =============== END of Websocket Channels ===============
+
+app.get('/api/userInfo/:token', (req, res, next) => {
+  //TODO: do authentication properly
+  req.params.token !== '987654321' ?
+    res.status(200).json({ userInfo: userInfo }) :
+    res.sendStatus(401);
+})
+
+// TODO: modularize this
+// ============ Code-block start ============
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // This must be an express.static served folder
+    cb(null, "memegram-app/public");
+  },
+  filename: (req, file, cb) => {
+    // Database must store filename string with extension
+    // It would be better to hash this filename
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+app.post('/api/upload', upload.single('file'), (req, res, next) => {
+
+  const data = JSON.parse(req.body.body); // data = { token: string , userId: string }
+
+  const newPost = {
+    postId: '' + Math.random(),
+    authorId: data.userId,
+    author: data.user,
+    timestamp: new Date(),
+    media: req.file.filename,
+    likes: [],
+    comments: [],
+  }
+
+  feedItems.push(newPost);
+
+  console.log('file', req.file);
+  console.log('data', data);
+
+  // globalFeedChannel.forEach((client: any) => {
+  //   console.log(' ============ message sent ============')
+  //   client.send('koé');
+  // });
+
+  res.sendStatus(201)
+})
+
+// ============ Code-block end ============
+
+app.get("/", (req, res, next) => {
+  res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
+})
+
 app.get('/api/feedItems', (req, res, next) => {
-  res.status(200).json({feedItems: feedItems})
+  res.status(200).json({ feedItems: feedItems })
 });
 
 app.post('/api/comment', (req, res, next) => {
   const body = req.body;
-  
+  console.log('body', body);
+
   let updatePost;
 
   feedItems.forEach((element, index): void => {
     if (element.postId === body.postId) {
       const newComment = {
         commentId: "" + Math.random(),
-        author: body.userId,
+        author: body.user,
         comment: body.comment
       };
       feedItems[index].comments.push(newComment);
@@ -181,6 +243,7 @@ app.post('/api/comment', (req, res, next) => {
     }
   });
 
+  //Must return
   res.status(201).json(JSON.stringify(updatePost));
 })
 
