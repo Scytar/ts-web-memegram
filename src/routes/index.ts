@@ -1,17 +1,23 @@
 //rotas
 import * as express from 'express';
-import { getLogin, postUser } from '../controller/index';
-
+import { login, newUser } from '../controller/userController';
+import { newItems } from '../controller/postController';
+import { authUser } from '../middleware/authUser';
+import upload from "../middleware/uploadItems";
 
 const router = express.Router();
 router.use(express.json());
 
 //Login
-router.get("/login", getLogin);
+router.post("/login", login);
 //Sign up
-router.post("/users/", postUser);
-//Logout
-//Auth - home
+router.post("/newUser", newUser);
+//Auth - post
+router.post("/upload", upload.single("file"), authUser, newItems);
+
+//"/users/:user_id"
+//Auth - feed
+//router.get("/feedItems", );
 //Auth - post
 //Auth - like
 //Auth - comment

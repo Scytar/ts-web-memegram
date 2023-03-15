@@ -41,9 +41,15 @@ class NameValidator {
 
 interface User {
     id?: string,
-    username?: string,
+    name?: string,
     email?: string,
     password?: string
 }
 
-export { User, NameValidator, PasswordValidator, EmailValidator };
+interface Post{
+    authorId?: string,
+    author?: string,
+    media?: string
+}
+
+export { User, Post, NameValidator, PasswordValidator, EmailValidator };
