@@ -105,6 +105,7 @@ export default class PostRepository{
             {postId: postData.postId}
         ));
         if (resp.data) {
+            await mongoose.connect(MONGODB_DSN);
             const comment = new CommentRepository();
             const result = await comment.insert(postData.comment);
             if (!result.data) {
