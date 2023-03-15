@@ -2,6 +2,7 @@
 import * as express from 'express';
 import { login, newUser } from '../controller/userController';
 import { newItems } from '../controller/postController';
+import { newComment, listComment } from '../controller/commentController';
 import { authUser } from '../middleware/authUser';
 import upload from "../middleware/uploadItems";
 
@@ -14,14 +15,13 @@ router.post("/login", login);
 router.post("/newUser", newUser);
 //Auth - post
 router.post("/upload", upload.single("media"), authUser, newItems);
+//Auth - insert comment
+router.post("/comment", authUser, newComment);
+//Auth - list comment
+router.get("/comment/:postId", authUser, listComment);
 
-//"/users/:user_id"
 //Auth - feed
-//router.get("/feedItems", );
-//Auth - post
 //Auth - like
-//Auth - comment
-
 
 
 export default router;
