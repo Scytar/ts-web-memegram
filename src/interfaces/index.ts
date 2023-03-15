@@ -52,4 +52,12 @@ interface Post{
     media?: string
 }
 
-export { User, Post, NameValidator, PasswordValidator, EmailValidator };
+interface Comment {
+    postId?: string,
+    comment?: {
+        author?: string,
+        text?: string
+    }
+}
+
+export { User, Post, Comment, NameValidator, PasswordValidator, EmailValidator };
