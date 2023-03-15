@@ -1,0 +1,21 @@
+.buttonDiv {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+}
+
+.upLike {
+    position: absolute;
+    z-index: 10;
+    inset: 0;
+    opacity: 0;
+}
+
+.downLike {
+    position: absolute;
+    z-index: 20;
+    inset: 0;
+}

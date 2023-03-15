@@ -1,31 +1,117 @@
-import { Favorite, FavoriteBorder } from '@mui/icons-material'
-import { Dispatch, SetStateAction, useState } from 'react'
-import { IconButton } from '@mui/material'
-import { IPostProps } from '../../organisms'
-// import { useRequestLikePost } from '../../../customHooks/useRequestFeedFromApi'
+import { Favorite, FavoriteBorder } from '@mui/icons-material';
+import { useState, useRef, useContext, useEffect } from 'react';
+import { IconButton } from '@mui/material';
+import likeUp from '../../../gsap/likeAnimations/likeUp';
+import likeDown from '../../../gsap/likeAnimations/likeDown';
+import styles from './styles.module.scss';
+import { UserContext } from '../../../contexts/userInfo';
+
+export interface IPostLikeProps {
+  postId: string,
+  postLikes: string[],
+}
 
 // eslint-disable-next-line
-const LikeButton = ({ postId, setPostInfo }: {postId: string, setPostInfo: Dispatch<SetStateAction<IPostProps>>}): JSX.Element => {
-  const [liked, setLiked] = useState(false)
+const LikeButton = ({ postId, postLikes }: IPostLikeProps): JSX.Element => {
+
+  const buttonRef = useRef(null)
+  const filledLikeButtonRef = useRef(null)
+  const notFilledLikeButtonRef = useRef(null)
+
+  const refsToBeAnimated = [buttonRef, notFilledLikeButtonRef, filledLikeButtonRef,]
+
+  const userInfo = useContext(UserContext);
+
+  const [liked, setLiked] = useState(false);
+
+  useEffect(() => {
+    if (userInfo.userId) {
+      const bool = postLikes.includes(userInfo.userId)
+      // eslint-disable-next-line
+      console.log('postId/likes', postId, postLikes)
+      bool ?
+        likeUp(refsToBeAnimated, liked, setLiked) :
+        likeDown(refsToBeAnimated, liked, setLiked)
+    }
+  }, [])
+
+
+  const [isInCooldown, setIsInCooldown] = useState(false);
+  // eslint-disable-next-line
+  const likeUpRef = useRef((): void => { });
+  // eslint-disable-next-line
+  const likeDownRef = useRef((): void => { });
+
+  const handleLike = (): void => {
+    if (!isInCooldown) {
+      setIsInCooldown(true);
+
+      setTimeout(() => {
+        setIsInCooldown(false);
+      }, 2000);
+
+      likeUpRef.current();
+    }
+  }
+
+  const handleUnlike = (): void => {
+    if (!isInCooldown) {
+      setIsInCooldown(true);
+
+      setTimeout(() => {
+        setIsInCooldown(false);
+      }, 2000);
+
+      likeDownRef.current();
+    }
+  }
+
+  likeUpRef.current = (): void => {
+    likeUp(refsToBeAnimated, liked, setLiked);
+    request();
+  }
+  likeDownRef.current = (): void => {
+    likeDown(refsToBeAnimated, liked, setLiked);
+    request();
+  }
+
+  const request = (): void => {
+    const body = {
+      like: !liked,
+      postId: postId,
+      userId: userInfo.userId,
+    }
+
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }
+
+    fetch('http://localhost:3030/api/like', options);
+  }
 
   const handleLikeClick = (): void => {
-    setLiked(!liked);
-    // TODO: handle postInfo local update
-    //setPostInfo();
-
-    // TODO: Add request to server know there's a like change in the post
-    // const body = {
-    //   like: liked,
-    //   postId: postId,
-    // }
-    // const { data , isLoading, isError } = useRequestLikePost(body);
-    
+    if (liked) {
+      handleUnlike()
+    } else {
+      handleLike()
+    }
   }
-  
+
   return (
-    <IconButton onClick={handleLikeClick} aria-label="like">
-      {liked ? <Favorite/> : <FavoriteBorder />}
-    </IconButton>
+    <div ref={buttonRef}>
+      <IconButton onClick={handleLikeClick} aria-label="like">
+
+        <div className={styles.buttonDiv}>
+          <div ref={filledLikeButtonRef} className={styles.upLike}><Favorite color='error' /></div >
+          <div ref={notFilledLikeButtonRef} className={styles.downLike}><FavoriteBorder /></div>
+        </div>
+
+      </IconButton>
+    </div>
   )
 }
 
