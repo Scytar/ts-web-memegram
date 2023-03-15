@@ -13,7 +13,7 @@ router.post("/login", login);
 //Sign up
 router.post("/newUser", newUser);
 //Auth - post
-router.post("/upload", upload.single("file"), authUser, newItems);
+router.post("/upload", upload.single("media"), authUser, newItems);
 
 //"/users/:user_id"
 //Auth - feed
