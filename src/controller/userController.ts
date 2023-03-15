@@ -9,10 +9,13 @@ export async function login(req: Request, res: Response) {
 
     try {
         const data = await selectUser(userData);
+        if (data?.err) {
+            throw new Error(data.err);
+        }
         res.status(202).send(data);
         return;
     } catch (error: any) {
-        res.status(500).send(error);
+        res.status(500).send(error.message);
         return;
     }
 }
@@ -25,10 +28,13 @@ export async function newUser(req: Request, res: Response) {
 
     try {
         const data = await createUser(userData);
+        if (data?.err) {
+            throw new Error(data.err);
+        }
         res.status(202).send(data);
         return;
     } catch (error: any) {
-        res.status(500).send(error);
+        res.status(500).send(error.message);
         return;
     }
 }

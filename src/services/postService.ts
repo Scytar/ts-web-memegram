@@ -18,15 +18,15 @@ export const newPost = async (dataPost: Post) => {
         //---------------------------------------------------------------------------verify
         const postRep = new PostRepository();
         //const response: iResp = await postRep.insert({media: '../../img/download.png', authorId: '5672b0ff-dcd9-4e29-82d7-bb991d485b3b', author: 'test'})
-       const response: iResp = await postRep.insert({media: dataPost.media, authorId: dataPost.authorId, author: dataPost.author});
+        const response: iResp = await postRep.insert({media: dataPost.media, authorId: dataPost.authorId, author: dataPost.author});
         //---------------------------------------------------------------------------verify
 
-       if (!response.error) {
+        if (!response.error) {
            return response;
         }
     }
     catch (err: any) {
-        return { err: err }
+        return { err: err.message }
     }
 
 }
