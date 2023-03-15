@@ -1,15 +1,10 @@
-import { Dispatch, SetStateAction, useContext, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { IPostProps } from '../../organisms';
 import { UserContext } from '../../../contexts/userInfo';
 
 import styles from './styles.module.scss';
 
-export interface IPostCommentInput {
-  postInfo: IPostProps,
-  setPostInfo: Dispatch<SetStateAction<IPostProps>>
-}
-
-const CommentInput = ({postInfo, setPostInfo}: IPostCommentInput): JSX.Element => {
+const CommentInput = ({postInfo}: {postInfo: IPostProps}): JSX.Element => {
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -37,7 +32,6 @@ const CommentInput = ({postInfo, setPostInfo}: IPostCommentInput): JSX.Element =
       .then(res => res.json())
       .then((data) => {
         setFetchData(data);
-        setPostInfo(JSON.parse(data));
       })
       .catch((e) => {
         setFetchData('error');

@@ -1,17 +1,14 @@
 import { CardContent, Collapse } from '@mui/material';
-import { Dispatch, SetStateAction } from 'react';
 import { Comment, CommentInput } from '../../atoms';
 import { IPostProps } from '../../organisms';
 
 export interface IPostCommentsProps {
   postInfo: IPostProps,
-  setPostInfo: Dispatch<SetStateAction<IPostProps>>,
   expanded: boolean,
 }
 
 const PostComments = ({
   postInfo,
-  setPostInfo,
   expanded,
 }: IPostCommentsProps): JSX.Element => {
   return (
@@ -27,7 +24,7 @@ const PostComments = ({
             />
           )
         })}
-        <CommentInput postInfo={postInfo} setPostInfo={setPostInfo}/>
+        <CommentInput postInfo={postInfo}/>
       </CardContent>
     </Collapse>
   )

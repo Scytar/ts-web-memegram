@@ -15,8 +15,6 @@ export interface IPostProps {
 
 const Post = (postInfo: IPostProps): JSX.Element => {
 
-  const [postState, setPostState] = useState(postInfo)
-
   const [expanded, setExpanded] = useState(false)
 
   const handleExpandClick = (): void => {
@@ -26,15 +24,16 @@ const Post = (postInfo: IPostProps): JSX.Element => {
 
   return (
     <Card sx={{ maxWidth: '470px' }}>
-      <PostHeader {...postState} />
-      <PostMedia {...postState} />
+      <PostHeader {...postInfo} />
+      <PostMedia {...postInfo} /> 
       <PostActions
-        postInfo={postState}
-        setPostInfo={setPostState}
+        postInfo={postInfo}
         handleExpandClick={handleExpandClick}
         expanded={expanded}
-      />
-      <PostComments postInfo={postState} setPostInfo={setPostState} expanded={expanded} />
+      /> 
+      <PostComments 
+      postInfo={postInfo} 
+      expanded={expanded} />
     </Card>
   )
 }

@@ -134,7 +134,6 @@ ws.on('connection', (socket: any, req: any) => {
     if (req.url === '/globalFeed') { //Develop switch cases
       globalFeedChannel.forEach((client: any) => {
         if (client.readyState === webSocket.OPEN) {
-          console.log('message',message)
           client.send(message);
         }
       })
@@ -189,6 +188,7 @@ const upload = multer({ storage });
 
 app.post('/api/upload', upload.single('file'), (req, res, next) => {
 
+
   const data = JSON.parse(req.body.body); // data = { token: string , userId: string }
 
   const newPost = {
@@ -202,16 +202,17 @@ app.post('/api/upload', upload.single('file'), (req, res, next) => {
   }
 
   feedItems.push(newPost);
+  // console.log(`req`, req)
+  // console.log('file', req.file);
+  // console.log('data', data);
 
-  console.log('file', req.file);
-  console.log('data', data);
+  globalFeedChannel.forEach((client: any) => {
+    if (client.readyState === webSocket.OPEN) {
+      client.send(JSON.stringify(feedItems));
+    }
+  });
 
-  // globalFeedChannel.forEach((client: any) => {
-  //   console.log(' ============ message sent ============')
-  //   client.send('koé');
-  // });
-
-  res.sendStatus(201)
+  res.send(`File ${req.file.filename} uploaded successfully.`)
 })
 
 // ============ Code-block end ============
@@ -223,6 +224,35 @@ app.get("/", (req, res, next) => {
 app.get('/api/feedItems', (req, res, next) => {
   res.status(200).json({ feedItems: feedItems })
 });
+
+app.put('/api/like', (req, res, next) => {
+  console.log('body', req.body)
+
+  feedItems.forEach((element, elementIndex) => {
+    if (element.postId === req.body.postId) {
+      const index = element.likes.findIndex((el)=> {
+        // console.log('el',el);
+        return el == req.body.userId;
+      });
+      // console.log('index',index);
+      if (index != -1) {
+        feedItems[elementIndex].likes.splice(index, 1);
+        // console.log('element',element.likes);
+      } else {
+        element.likes.push(req.body.userId)
+        // console.log('element',element.likes);
+      }
+    }
+  })
+
+  globalFeedChannel.forEach((client: any) => {
+    if (client.readyState === webSocket.OPEN) {
+      client.send(JSON.stringify(feedItems));
+    }
+  });
+
+  res.sendStatus(200)
+})
 
 app.post('/api/comment', (req, res, next) => {
   const body = req.body;
@@ -242,6 +272,12 @@ app.post('/api/comment', (req, res, next) => {
       updatePost = feedItems[index];
     }
   });
+
+  globalFeedChannel.forEach((client: any) => {
+    if (client.readyState === webSocket.OPEN) {
+      client.send(JSON.stringify(feedItems));
+    }
+  })
 
   //Must return
   res.status(201).json(JSON.stringify(updatePost));

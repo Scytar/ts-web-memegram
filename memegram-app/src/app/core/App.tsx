@@ -34,17 +34,25 @@ const App = (): JSX.Element => {
     // eslint-disable-next-line
     const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
 
+    useEffect(() => {
+        if (feedState) {
+            // eslint-disable-next-line
+            console.log('feedState', feedState)
+        }
+    }, [feedState])
+    
     // eslint-disable-next-line
     function handleWebSocketConnection(ws: WebSocket): void {
         // eslint-disable-next-line
         console.log('WebSocket connection established');
 
         ws.addEventListener('message', function (event: MessageEvent) {
-            // eslint-disable-next-line
-            console.log('Received message: ' + JSON.parse(event.data));
-            event.preventDefault();
+            //TODO: refactor ws.message response to only send a specific post data, not the entire feed.
             setfeedState(JSON.parse(event.data));
+      
         });
+
+        
 
         ws.addEventListener('close', function () {
             // eslint-disable-next-line
@@ -54,12 +62,12 @@ const App = (): JSX.Element => {
 
     useEffect(() => {
         if (!webSocket) {
-          const ws = new WebSocket(globalFeedSocketUrl);
-          setWebSocket(ws);
+            const ws = new WebSocket(globalFeedSocketUrl);
+            setWebSocket(ws);
         } else {
             handleWebSocketConnection(webSocket);
         }
-      }, [webSocket]);
+    }, [webSocket]);
 
 
     // As the react query for the socket connection starts as innitialy not loading, it`s required for us 
@@ -91,6 +99,7 @@ const App = (): JSX.Element => {
 
 
     // Authenticate session
+    //TODO: create a singleton for this fetch
     const { data, isLoading, isError } = useQuery('userInfo', () =>
         fetch('http://localhost:3030/api/userInfo/' + UserInfo.token)
             .then((res) => {

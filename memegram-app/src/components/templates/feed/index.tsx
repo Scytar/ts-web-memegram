@@ -28,10 +28,21 @@ const MemegramFeed = ({feedItems}: {feedItems: IPostProps[]}): JSX.Element => {
       {feedItems ?
         feedItems.map(
           (item: IPostProps) => {
-            return <Post key={item.postId} {...item} />
+            return <Post
+            key={item.postId}             
+            postId={item.postId}
+            authorId={item.authorId}
+            author={item.author}
+            timestamp={item.timestamp}
+            media={item.media}
+            likes={item.likes}
+            comments={item.comments}            
+            />
           }
         ) : null
       }
+      <PostSkeleton/>
+      <PostSkeleton/>
     </>
   )
 }
