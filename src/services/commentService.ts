@@ -49,7 +49,7 @@ export const getComment = async (postId: string) => {
         const comment = new CommentRepository();
 
         //Get a post by key
-        const post: iResp = await postRep.listBy({ key: postId });
+        const post: iResp = await postRep.listBy({ postId: postId });
         if (post.data[0].post) {
             const result = post.data[0].post;
             const response: iResp = {
@@ -58,7 +58,7 @@ export const getComment = async (postId: string) => {
             };
             for (let index = 0; index < result.comments.length; index++) {
                 //Receive all comments ids of post and return each comment
-                const comments = await comment.listBy({ key: result.comments[index] });
+                const comments = await comment.listBy({ commentId: result.comments[index] });
                 console.log(comments.data[0].comment);
                 response.data.push(comments.data[0].comment);
             }

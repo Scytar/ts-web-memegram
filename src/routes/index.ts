@@ -14,7 +14,7 @@ router.post("/login", login);
 //Sign up
 router.post("/newUser", newUser);
 //Auth - post
-router.post("/upload", upload.single("media"), authUser, newItems);
+router.post("/upload",  authUser, upload.single("media"), newItems);
 //Auth - insert comment
 router.post("/comment", authUser, newComment);
 //Auth - list comment

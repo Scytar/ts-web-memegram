@@ -28,36 +28,37 @@ const commentModel = mongoose.model('comment', commentSchem);
 
 export default class CommentRepository{
 
-    private async base(resultFunc: any){
-        //Receive an function, make conection with database and run the operation
+    async insert(commentData: any){
+        //Receive an Object with the data to insert
         let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
-            resp.data = await resultFunc;
+            const newComment = new commentModel({
+                commentId: uuid(),
+                comment:{
+                    author: commentData.author,
+                    text: commentData.text
+                },
+                created_at: Date.now()
+            });
+            resp.data = await newComment.save();
             await mongoose.connection.close();
         } catch (err: any) {
             resp.error = err.message;
         }
         return resp;
     }
-
-    async insert(commentData: any){
-        //Receive an Object with the data to insert
-        const newComment = new commentModel({
-            commentId: uuid(),
-            comment:{
-                author: commentData.author,
-                text: commentData.text
-            },
-            created_at: Date.now()
-        });
-        const resp: iResp = await this.base(newComment.save())
-        return resp;
-    }
     
     async listBy(query: any) { 
         //Receive an Object with the comment's key of search
-        const resp: iResp = await this.base(commentModel.find(query));
+        let resp: iResp = {data: null, error: null};
+        try {
+            await mongoose.connect(MONGODB_DSN);
+            resp.data = await commentModel.find(query);
+            await mongoose.connection.close();
+        } catch (err: any) {
+            resp.error = err.message;
+        }
         return resp;
     }
 }

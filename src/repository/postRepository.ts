@@ -35,23 +35,12 @@ const postModel = mongoose.model('post', postSchem);
 
 export default class PostRepository{
 
-    private async base(resultFunc: any){
-        //Receive an function, make conection with database and run the operation
+    async insert(postData: any){
+        //Receive an Object with the data to insert
         let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
-            resp.data = await resultFunc;
-            await mongoose.connection.close();
-        } catch (err: any) {
-            resp.error = err.message;
-        }
-        return resp;
-    }
-
-    async insert(postData: any){
-        console.log(postData)
-        //Receive an Object with the data to insert
-        const newPost = new postModel({
+            const newPost = new postModel({
             postId: uuid(),
             post: {      
                 authorId: postData.authorId,
@@ -62,60 +51,88 @@ export default class PostRepository{
             },
             created_at: Date.now()
         });
-        const resp:iResp = await this.base(newPost.save());
-        console.log(resp, 'repo resp')
+        resp.data = await newPost.save();
+        await mongoose.connection.close();
+        } catch (err: any) {
+            resp.error = err.message;
+        }
         return resp;
     }
     
     async listAll() {
-        const resp: iResp = await this.base(postModel.find());
+        let resp: iResp = {data: null, error: null};
+        try {
+            await mongoose.connect(MONGODB_DSN);
+            resp.data = await postModel.find();
+            await mongoose.connection.close();
+        } catch (err: any) {
+            resp.error = err.message;
+        }
         return resp;
     }
     
     async listBy(query: any) { 
         //Receive an Object with the filter of search
-        const resp: iResp = await this.base(postModel.find(query));
-        if (resp.data[0] == null) {
-            resp.error = "Error: not found" 
+        let resp: iResp = {data: null, error: null};
+        try {
+            await mongoose.connect(MONGODB_DSN);
+            resp.data = await postModel.find(query);
+            if (resp.data[0] == null) {
+                resp.error = "Error: not found" 
+            }
+            await mongoose.connection.close();
+        } catch (err: any) {
+            resp.error = err.message;
         }
         return resp;
     }
 
     async like(postData: any){
         //Add or remove a like based on user key
-        let resp: iResp = await this.base(postModel.findOne(
-            {postId: postData.postId}
-        ));
-        if (!resp.data.post.likes.includes(postData.userId)) {
+        let resp: iResp = {data: null, error: null};
+        try {
             await mongoose.connect(MONGODB_DSN);
-            resp.data.post.likes.push(postData.userId);
-            resp = await this.base(resp.data.save());
-        } else{
-            await mongoose.connect(MONGODB_DSN);
-            const index = resp.data.post.likes.indexOf(postData.userId);
-            resp.data.post.likes.splice(index, 1);
-            resp = await this.base(resp.data.save());
+            resp.data = await postModel.findOne(
+                {postId: postData.postId}
+            );
+            if (!resp.data.post.likes.includes(postData.userId)) {
+                resp.data.post.likes.push(postData.userId);
+                resp = await resp.data.save();
+            } else{
+                const index = resp.data.post.likes.indexOf(postData.userId);
+                resp.data.post.likes.splice(index, 1);
+                resp = await resp.data.save();
+            }
+            await mongoose.connection.close();
+        } catch (err: any) {
+            resp.error = err.message;
         }
         return resp;
     }
 
     async comment(postData: any){
         //Add a comment in a post
-        let resp: iResp = await this.base(postModel.findOne(
-            {postId: postData.postId}
-        ));
-        if (resp.data) {
+        let resp: iResp = {data: null, error: null};
+        try {
             await mongoose.connect(MONGODB_DSN);
-            const comment = new CommentRepository();
-            const result = await comment.insert(postData.comment);
-            if (!result.data) {
-                resp.error = result.error;
-                return resp;
-            }else{
-                await mongoose.connect(MONGODB_DSN);
-                resp.data.post.comments.push(result.data.commentId);
-                resp = await this.base(resp.data.save());
+            resp.data = await postModel.findOne(
+                {postId: postData.postId}
+            );
+            if (resp.data) {
+                const comment = new CommentRepository();
+                const result = await comment.insert(postData.comment);
+                if (!result.data) {
+                    resp.error = result.error;
+                    return resp;
+                }else{
+                    resp.data.post.comments.push(result.data.commentId);
+                    await mongoose.connect(MONGODB_DSN);
+                    resp.data = await resp.data.save();       
+                }
             }
+            await mongoose.connection.close();
+        } catch (err: any) {
+            resp.error = err.message;
         }
         return resp;
     }
