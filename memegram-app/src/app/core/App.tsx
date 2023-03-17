@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MemegramFeed } from '../../components/templates';
 import { Navbar } from '../../components/templates/navbar';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
@@ -7,11 +7,30 @@ import { LoginPage } from '../../components/pages/login';
 import { NewPostModal } from '../../components/templates/new-post-modal';
 import MemegramIcon from '../../imgs/memegram-logo-circle.webp'
 import { UserContext } from '../../contexts/userInfo';
-// import { useWebSocket } from '../../customHooks/useWebSocket/useWebSocket';
-import { IPostProps } from '../../components/organisms';
 import { useQuery } from 'react-query';
+import ChatPage from '../../components/pages/chat/index';
+import {useLocation} from 'react-router-dom'
+import gsap from 'gsap'
 
 const App = (): JSX.Element => {
+
+    const PageTransitionComponent = () => {
+           // use gsap to animate the page transition
+    const location = useLocation()
+    const tlRef = useRef(gsap.timeline())
+    const transitionDivRef = useRef(null)
+
+
+    useEffect(() => {     
+        tlRef.current.fromTo(transitionDivRef.current, {opacity: 0}, {opacity: 1, duration: 0})
+        tlRef.current.fromTo(transitionDivRef.current, {opacity: 1}, {opacity: 0, duration: 0.5})
+    }, [location])
+
+    return (
+    <div ref={transitionDivRef} className={style.pageTransitionEnter}>
+    </div>)
+    }
+ 
 
     // eslint-disable-next-line
     const [UserInfo, setUserInfo] = useState({
@@ -26,59 +45,6 @@ const App = (): JSX.Element => {
     //     userId: '123', 
     // }
 
-    const globalFeedSocketUrl = 'ws://127.0.0.1:3030/globalFeed';
-
-    // eslint-disable-next-line
-    const [feedState, setfeedState] = useState(null as IPostProps[] | any | null)
-
-    // eslint-disable-next-line
-    const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
-
-    useEffect(() => {
-        if (feedState) {
-            // eslint-disable-next-line
-            console.log('feedState', feedState)
-        }
-    }, [feedState])
-    
-    // eslint-disable-next-line
-    function handleWebSocketConnection(ws: WebSocket): void {
-        // eslint-disable-next-line
-        console.log('WebSocket connection established');
-
-        ws.addEventListener('message', function (event: MessageEvent) {
-            //TODO: refactor ws.message response to only send a specific post data, not the entire feed.
-            setfeedState(JSON.parse(event.data));
-      
-        });
-
-        
-
-        ws.addEventListener('close', function () {
-            // eslint-disable-next-line
-            console.log('WebSocket connection closed');
-        });
-    }
-
-    useEffect(() => {
-        if (!webSocket) {
-            const ws = new WebSocket(globalFeedSocketUrl);
-            setWebSocket(ws);
-        } else {
-            handleWebSocketConnection(webSocket);
-        }
-    }, [webSocket]);
-
-
-    // As the react query for the socket connection starts as innitialy not loading, it`s required for us 
-    // to refetch the socket connection once the user is authenticated. By refetch in this context we mean to
-    // initialize the socket connection for the very first time, which is described by react query as `refetch`.
-    // because react query offers state friendly updates that can trigger UI changes and useEffects hook triggers
-    // we opted to use this way as the prefered way to handle the socket connection once the user is logged in.
-
-    // eslint-disable-next-line
-    // const { socket, isLoading: isSocketLoading, data: socketData, error: socketError, refetch: socketRefetch } = useWebSocket(globalFeedSocketUrl)
-
     useEffect(() => {
         if (UserInfo.token) {
             // socketRefetch()
@@ -86,26 +52,21 @@ const App = (): JSX.Element => {
 
     }, [UserInfo])
 
-    // For testing purposes only this useffect will let us know when socketdata and everything else 
-    // from the query above gets updated
-    // useEffect(() => {
-    //     if (socketData) {
-    //         setfeedState(socketData)
-    //         // eslint-disable-next-line
-    //         console.log('socketData',socketData)
-    //     }
-
-    // }, [socketData])
-
-
     // Authenticate session
     //TODO: create a singleton for this fetch
     const { data, isLoading, isError } = useQuery('userInfo', () =>
         fetch('http://localhost:3030/api/userInfo/' + UserInfo.token)
             .then((res) => {
                 return res.json();
-            })
-    );
+            }), 
+     {
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
+        refetchInterval: false,
+        refetchIntervalInBackground: false,
+     }
+    )
 
 
 
@@ -118,7 +79,8 @@ const App = (): JSX.Element => {
 
 
     return (
-        <div id={style.appDiv}>
+        <div className={style.appDiv}>
+            
             <UserContext.Provider value={UserInfo}>
                 <BrowserRouter>
                     {isLoading ?
@@ -127,10 +89,11 @@ const App = (): JSX.Element => {
                         UserInfo?.userId ?
                             <>
                                 <Navbar />
+                                <PageTransitionComponent />
                                 <Routes>
                                     {/* TODO: Create all pages components */}
-                                    <Route path='/' element={<MemegramFeed feedItems={feedState} />} />
-                                    <Route path='/chats' element={<h2>Chats Page</h2>} />
+                                    <Route path='/' element={<MemegramFeed />} />
+                                    <Route path='/chats' element={<ChatPage/>} />
                                     <Route path='/new-post' element={<NewPostModal />} />
                                     <Route path='/logout' element={<h2>Logout</h2>} />
                                     <Route path='*' element={<><h2>404 Not Found</h2><img className={style.placeholder} src={MemegramIcon} /></>} />

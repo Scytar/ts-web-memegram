@@ -17,7 +17,7 @@ const server = require('http').createServer(app);
 const ws = new webSocket.Server({ server });
 
 //Logs client IP upon its request
-const logIp = (req, res, next): void => {
+const logIp = (req: { ip: any; url: any; }, res: any, next: () => void): void => {
   console.log('Request received from', req.ip, 'to', req.url);
   next();
 }
@@ -31,11 +31,182 @@ app.use(logIp);
 
 // TODO: a lot of the code below needs to be modularized
 
+// Example of user
 const userInfo = {
   token: '987654321',
   userId: 'gottagofast',
   user: 'Sonic The Hedgehog',
 }
+
+// Example of data response of chat
+const chats = [
+  {
+    chatId: '5465466540',
+    chatName: 'Super Mario Bros',
+    chatRoles: {
+      owner: 'gottagofast',
+    },
+    participants: [
+      {
+        userId: 'gottagofast',
+        username: 'Sonic The Hedgehog',
+      },
+      {
+        userId: '13',
+        username: 'Scytar',
+      },
+    ],
+    messages: [
+      {
+        messageId: '9999999990',
+        username: 'Scytar',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Primeira mensagem',
+      },
+      {
+        messageId: '9999999991',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Segunda mensagem',
+      },
+      {
+        messageId: '9999999992',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Telceila mensagem',
+      },
+    ]
+  },
+  {
+    chatId: '5465466541',
+    chatName: 'Tooney Loones',
+    chatRoles: {
+      owner: '13',
+    },
+    participants: [
+      {
+        userId: 'gottagofast',
+        username: 'Sonic The Hedgehog',
+      },
+      {
+        userId: '13',
+        username: 'Scytar',
+      },
+      {
+        userId: '77',
+        username: 'Cebolinha',
+      },
+    ],
+    messages: [
+      {
+        messageId: '9999999980',
+        username: 'Scytar',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Caramba',
+      },
+      {
+        messageId: '9999999982',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Calamba!',
+      },
+      {
+        messageId: '9999999981',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Sonic Boom',
+      },
+    ]
+  },
+  {
+    chatId: '5465466542',
+    chatName: 'Machadão',
+    chatRoles: {
+      owner: '1337',
+    },
+    participants: [
+      {
+        userId: '13',
+        username: 'Scytar',
+      },
+      {
+        userId: '1337',
+        username: 'Machadão',
+      },
+    ],
+    messages: [
+      {
+        messageId: '9999999970',
+        username: 'Machadão',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Primeira mensagem',
+      },
+      {
+        messageId: '9999999971',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Segunda mensagem',
+      },
+      {
+        messageId: '9999999972',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Telceila mensagem',
+      }, {
+        messageId: '9999999973',
+        username: 'Machadão',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Primeira mensagem',
+      },
+      {
+        messageId: '9999999974',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Segunda mensagem',
+      },
+      {
+        messageId: '9999999975',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Telceila mensagem',
+      }, {
+        messageId: '9999999976',
+        username: 'Machadão',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Primeira mensagem',
+      },
+      {
+        messageId: '9999999977',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Segunda mensagem',
+      },
+      {
+        messageId: '9999999978',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Telceila mensagem',
+      }, {
+        messageId: '9999999979',
+        username: 'Machadão',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Primeira mensagem',
+      },
+      {
+        messageId: '9999999969',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Segunda mensagem',
+      },
+      {
+        messageId: '9999999968',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Telceila mensagem',
+      },
+    ]
+  },
+];
 
 // Example of database response of the global feed
 const feedItems = [
@@ -94,7 +265,7 @@ const feedItems = [
     authorId: "1",
     author: 'Machadão',
     timestamp: new Date(),
-    media: 'memegram-logo-circle.webp',
+    media: 'jin-sherlock.png',
     likes: ["1", "13", "15", "87"],
     comments: [
       {
@@ -127,10 +298,11 @@ ws.on('connection', (socket: any, req: any) => {
   if (req.url === '/chats') {
     console.log('chats')
     genericChatChannel.add(socket);
+    socket.send(JSON.stringify(chats));
   }
 
   // Identify the channel the message sent by the client belongs
-  socket.on('message', (message) => {
+  socket.on('message', (message: any) => {
     if (req.url === '/globalFeed') { //Develop switch cases
       globalFeedChannel.forEach((client: any) => {
         if (client.readyState === webSocket.OPEN) {
@@ -162,22 +334,22 @@ ws.on('connection', (socket: any, req: any) => {
 });
 // =============== END of Websocket Channels ===============
 
-app.get('/api/userInfo/:token', (req, res, next) => {
+app.get('/api/userInfo/:token', (req: { params: { token: string; }; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userInfo: { token: string; userId: string; user: string; }; }): any; new(): any; }; }; sendStatus: (arg0: number) => any; }, next: any) => {
   //TODO: do authentication properly
   req.params.token !== '987654321' ?
     res.status(200).json({ userInfo: userInfo }) :
-    res.sendStatus(401);
+    res.status(200).json({ userInfo: userInfo });
 })
 
 // TODO: modularize this
 // ============ Code-block start ============
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (req: any, file: any, cb: (arg0: null, arg1: string) => void) => {
     // This must be an express.static served folder
     cb(null, "memegram-app/public");
   },
-  filename: (req, file, cb) => {
+  filename: (req: any, file: { originalname: any; }, cb: (arg0: null, arg1: any) => void): void => {
     // Database must store filename string with extension
     // It would be better to hash this filename
     cb(null, file.originalname);
@@ -186,7 +358,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.post('/api/upload', upload.single('file'), (req, res, next) => {
+app.post('/api/upload', upload.single('file'), (req: { body: { body: string; }; file: { filename: any; }; }, res: { send: (arg0: string) => void; }, next: any) => {
 
 
   const data = JSON.parse(req.body.body); // data = { token: string , userId: string }
@@ -217,20 +389,20 @@ app.post('/api/upload', upload.single('file'), (req, res, next) => {
 
 // ============ Code-block end ============
 
-app.get("/", (req, res, next) => {
+app.get("/", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
   res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
 })
 
-app.get('/api/feedItems', (req, res, next) => {
+app.get('/api/feedItems', (req: any, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { feedItems: { postId: string; authorId: string; author: string; timestamp: Date; media: string; likes: string[]; comments: { commentId: string; author: string; comment: string; }[]; }[]; }): void; new(): any; }; }; }, next: any) => {
   res.status(200).json({ feedItems: feedItems })
 });
 
-app.put('/api/like', (req, res, next) => {
+app.put('/api/like', (req: { body: { postId: string; userId: string; }; }, res: { sendStatus: (arg0: number) => void; }, next: any) => {
   console.log('body', req.body)
 
   feedItems.forEach((element, elementIndex) => {
     if (element.postId === req.body.postId) {
-      const index = element.likes.findIndex((el)=> {
+      const index = element.likes.findIndex((el) => {
         // console.log('el',el);
         return el == req.body.userId;
       });
@@ -254,7 +426,7 @@ app.put('/api/like', (req, res, next) => {
   res.sendStatus(200)
 })
 
-app.post('/api/comment', (req, res, next) => {
+app.post('/api/comment', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: string): void; new(): any; }; }; }, next: any) => {
   const body = req.body;
   console.log('body', body);
 
@@ -284,7 +456,7 @@ app.post('/api/comment', (req, res, next) => {
 })
 
 // This route MUST be the last one, as its generic and will redirect the URL to the react-router
-app.get("/*", (req, res, next) => {
+app.get("/*", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
   res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
 })
 

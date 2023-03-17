@@ -27,8 +27,6 @@ const LikeButton = ({ postId, postLikes }: IPostLikeProps): JSX.Element => {
   useEffect(() => {
     if (userInfo.userId) {
       const bool = postLikes.includes(userInfo.userId)
-      // eslint-disable-next-line
-      console.log('postId/likes', postId, postLikes)
       bool ?
         likeUp(refsToBeAnimated, liked, setLiked) :
         likeDown(refsToBeAnimated, liked, setLiked)

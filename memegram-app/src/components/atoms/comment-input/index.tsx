@@ -44,12 +44,10 @@ const CommentInput = ({postInfo}: {postInfo: IPostProps}): JSX.Element => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      //TODO: send comment to API
-    
+      e.preventDefault();    
 
       const myBody = {
-        user: userInfo.user, //TODO: get this from userInfo context
+        user: userInfo.user,
         postId: postInfo.postId,
         comment: commentContent,
       };
