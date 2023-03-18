@@ -9,28 +9,30 @@ import MemegramIcon from '../../imgs/memegram-logo-circle.webp'
 import { UserContext } from '../../contexts/userInfo';
 import { useQuery } from 'react-query';
 import ChatPage from '../../components/pages/chat/index';
-import {useLocation} from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import gsap from 'gsap'
+import { LogoutModal } from '../../components/organisms/logout-modal';
+import { LogoutPage } from '../../components/pages/logout';
 
 const App = (): JSX.Element => {
 
     const PageTransitionComponent = () => {
-           // use gsap to animate the page transition
-    const location = useLocation()
-    const tlRef = useRef(gsap.timeline())
-    const transitionDivRef = useRef(null)
+        // use gsap to animate the page transition
+        const location = useLocation()
+        const tlRef = useRef(gsap.timeline())
+        const transitionDivRef = useRef(null)
 
 
-    useEffect(() => {     
-        tlRef.current.fromTo(transitionDivRef.current, {opacity: 0}, {opacity: 1, duration: 0})
-        tlRef.current.fromTo(transitionDivRef.current, {opacity: 1}, {opacity: 0, duration: 0.5})
-    }, [location])
+        useEffect(() => {
+            tlRef.current.fromTo(transitionDivRef.current, { opacity: 0 }, { opacity: 1, duration: 0 })
+            tlRef.current.fromTo(transitionDivRef.current, { opacity: 1 }, { opacity: 0, duration: 0.5 })
+        }, [location])
 
-    return (
-    <div ref={transitionDivRef} className={style.pageTransitionEnter}>
-    </div>)
+        return (
+            <div ref={transitionDivRef} className={style.pageTransitionEnter}>
+            </div>)
     }
- 
+
 
     // eslint-disable-next-line
     const [UserInfo, setUserInfo] = useState({
@@ -58,17 +60,23 @@ const App = (): JSX.Element => {
         fetch('http://localhost:3030/api/userInfo/' + UserInfo.token)
             .then((res) => {
                 return res.json();
-            }), 
-     {
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false,
-        refetchInterval: false,
-        refetchIntervalInBackground: false,
-     }
+            }),
+        {
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+            refetchOnReconnect: false,
+            refetchInterval: false,
+            refetchIntervalInBackground: false,
+        }
     )
 
-
+    const handleLogout = () => {
+        setUserInfo({
+            token: null,
+            user: null,
+            userId: null,
+        });
+    }
 
     useEffect(() => {
         if (data && !isLoading && !isError) {
@@ -80,7 +88,7 @@ const App = (): JSX.Element => {
 
     return (
         <div className={style.appDiv}>
-            
+
             <UserContext.Provider value={UserInfo}>
                 <BrowserRouter>
                     {isLoading ?
@@ -93,9 +101,9 @@ const App = (): JSX.Element => {
                                 <Routes>
                                     {/* TODO: Create all pages components */}
                                     <Route path='/' element={<MemegramFeed />} />
-                                    <Route path='/chats' element={<ChatPage/>} />
+                                    <Route path='/chats' element={<ChatPage />} />
                                     <Route path='/new-post' element={<NewPostModal />} />
-                                    <Route path='/logout' element={<h2>Logout</h2>} />
+                                    <Route path='/logout' element={<LogoutPage handleLogout={handleLogout} />} />
                                     <Route path='*' element={<><h2>404 Not Found</h2><img className={style.placeholder} src={MemegramIcon} /></>} />
                                 </Routes>
                             </>

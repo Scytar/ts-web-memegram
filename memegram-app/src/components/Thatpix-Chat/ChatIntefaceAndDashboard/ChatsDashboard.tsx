@@ -25,8 +25,14 @@ export default function ChatsDashboard(): JSX.Element {
     isEditingOrCreatingOptionsModalOpen: false,
     currentEditingOrCreatingOptionsModalChatId: null,
     currentEditingOrCreatingOptionsModalChatName: null,
-    currentEditingOrCreatingOptionsModalChatRoles: { owner: null },
+    currentEditingOrCreatingOptionsModalChatRoles: { owner: 'null' },
     currentEditingOrCreatingOptionsModalParticipants: [],
+    queueOfChangesForServerUpdatingOfInformation: {
+      chatId: null,  // if the chatId is set to 0 the chat will be created.
+      chatName: null,
+      chatRoles: { owner: '' },
+      participants: [] // if empthy will delete the chat
+    },
     isConversationOpen: false,
     currentActiveConversationId: null,
   })
@@ -40,6 +46,76 @@ export default function ChatsDashboard(): JSX.Element {
   const editingOrCreatingOptionsModal = useRef(null)
   const activeConversationsDisplay = useRef(null)
   const singleConversation = useRef(null)
+
+  //////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////
+  // handlers to be used by EditingOptionsModal
+
+  const updateTheTemporaryQueueToBeSentToTheServer = () => {
+    // this functions is designed to be executed inside a useEffect on the first time the 
+    // EditingOptionsModal is rendered
+    // it will take the data from the currently loaded chat and update the temporary queue
+    // to be sent to the server possibly in the future
+    const temporaryState = { ...chatDashboardState }
+    temporaryState.queueOfChangesForServerUpdatingOfInformation.chatId = temporaryState.currentEditingOrCreatingOptionsModalChatId
+    temporaryState.queueOfChangesForServerUpdatingOfInformation.chatName = temporaryState.currentEditingOrCreatingOptionsModalChatName
+    temporaryState.queueOfChangesForServerUpdatingOfInformation.chatRoles = temporaryState.currentEditingOrCreatingOptionsModalChatRoles
+    temporaryState.queueOfChangesForServerUpdatingOfInformation.participants = temporaryState.currentEditingOrCreatingOptionsModalParticipants
+    setChatDashboardState(temporaryState)
+  }
+
+  const addNewPossibleParticipantToChatInTheTemporaryQueueToBeSentToTheServer = (participant: ISingleConversationParticipant) => {
+    // the dashboard state is the responsible for keeping track of the changes that the user is making
+    // that will ultimately lead to the server to update the information in the database
+    // this function takes in consideration that once the editing component is rendered the
+    // dashboard state will reflect the current chatID, current chatName, current chatRoles and current participants
+    // this function will change the dashboard queue of changes state to be sent to the server
+    // this function will be activated everytime the user clicks to add a new participant
+
+    let temporaryState = { ...chatDashboardState }
+    temporaryState.queueOfChangesForServerUpdatingOfInformation.participants.push(participant)
+    setChatDashboardState(temporaryState)
+  }
+
+  const removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer = (participant: ISingleConversationParticipant) => {
+    console.log('removing participant from chat in the temporary queue to be sent to the server')
+  }
+
+
+  const sendTheTemporaryQueueToBeSentToTheServer = () => {
+    // this function will be executed when the user clicks on the save button
+    // it will send the temporary queue to the server
+    // the server will then update the database and send back the new information
+    // the new information will be used to update the dashboard state
+    // the dashboard state will then be used to update the information on the screen
+    // the temporary queue will be reset to its initial state
+    // the editing component will be closed
+
+    console.log(
+      'sending the temporary queue to the server. The information being sent is:',
+      chatDashboardState.queueOfChangesForServerUpdatingOfInformation)
+
+    fetch('/api/chats/updateChat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(chatDashboardState.queueOfChangesForServerUpdatingOfInformation),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Success:', data);
+        handleCloseEditOrCreateConversationModal()
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      }
+      );
+  }
+
+  // end of handlers to be used by EditingOptionsModals
+  //////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////
 
 
   const handleSelectConversation = (conversationId: string) => {
@@ -61,7 +137,7 @@ export default function ChatsDashboard(): JSX.Element {
 
     if (chatDashboardState.isConversationOpen) {
       gsap.to(singleConversation.current, {
-        duration: 0.4, translateX:0, ease: 'sine.out',
+        duration: 0.4, translateX: 0, ease: 'sine.out',
         onStart: () => {
           isAnimationInProgress.current = true
         },
@@ -72,7 +148,68 @@ export default function ChatsDashboard(): JSX.Element {
     }
   }, [chatDashboardState.isConversationOpen])
 
- 
+  const handleDeleteConversation = (chatId: string) => {
+    console.log('deleteConversation')
+  }
+
+  const handleOpenEditOrCreateConversationModal = (chatId: string, chatName: string, chatRoles: {
+    owner: string,
+  }, participants: ISingleConversationParticipant[]) => {
+    // handler that will be passed to the ActiveConversationsDisplay component
+    // to be able to open the EditingOrCreatingOptionsModal when the user clicks on the edit button
+    // not supposed to be able to execute in the middle of animations
+    if (!isAnimationInProgress.current) {
+      const temporaryState = { ...chatDashboardState }
+      temporaryState.isEditingOrCreatingOptionsModalOpen = true
+      temporaryState.currentEditingOrCreatingOptionsModalChatId = chatId
+      temporaryState.currentEditingOrCreatingOptionsModalChatName = chatName
+      temporaryState.currentEditingOrCreatingOptionsModalChatRoles = chatRoles
+      temporaryState.currentEditingOrCreatingOptionsModalParticipants = participants
+      setChatDashboardState(temporaryState)
+      gsap.to(editingOrCreatingOptionsModal.current, {
+        duration: 0.4, translateX: 0, ease: 'sine.out',
+        onStart: () => {
+          isAnimationInProgress.current = true
+        },
+        onComplete: () => {
+          isAnimationInProgress.current = false
+        }
+      })
+
+    }
+  }
+
+  const handleCloseEditOrCreateConversationModal = () => {
+    // handler that will be passed to the EditingOrCreatingOptionsModal component
+    // to be able to close the EditingOrCreatingOptionsModal when the user clicks on the close button
+    // not supposed to be able to execute in the middle of animations
+    if (!isAnimationInProgress.current) {
+      const temporaryState = { ...chatDashboardState }
+      temporaryState.isEditingOrCreatingOptionsModalOpen = false
+      temporaryState.currentEditingOrCreatingOptionsModalChatId = null
+      temporaryState.currentEditingOrCreatingOptionsModalChatName = null
+      temporaryState.currentEditingOrCreatingOptionsModalChatRoles = { owner: 'null' }
+      temporaryState.currentEditingOrCreatingOptionsModalParticipants = []
+      temporaryState.queueOfChangesForServerUpdatingOfInformation.chatId = null
+      temporaryState.queueOfChangesForServerUpdatingOfInformation.chatName = null
+      temporaryState.queueOfChangesForServerUpdatingOfInformation.chatRoles = { owner: '' }
+      temporaryState.queueOfChangesForServerUpdatingOfInformation.participants = []
+      setChatDashboardState(temporaryState)
+
+      gsap.to(editingOrCreatingOptionsModal.current, {
+        duration: 0.4, translateX: '100%', ease: 'power2.out',
+        onStart: () => {
+          isAnimationInProgress.current = true
+        },
+        onComplete: () => {
+          isAnimationInProgress.current = false
+
+        }
+      })
+    }
+  }
+
+
   const handleDeselectConversation = () => {
     // handler that will be passed to the SingleConversation component
     // to be able to close a conversation when the user clicks on the close button
@@ -84,7 +221,7 @@ export default function ChatsDashboard(): JSX.Element {
       temporaryState.currentActiveConversationId = null
       gsap.to(singleConversation.current,
         {
-          duration: 0.4, translateX:'-100%', ease: 'power2.out',
+          duration: 0.4, translateX: '-100%', ease: 'power2.out',
           onStart: () => {
             isAnimationInProgress.current = true
           },
@@ -97,60 +234,6 @@ export default function ChatsDashboard(): JSX.Element {
     }
   }
 
-  const handleDeleteConversation = (chatId: string) => {
-    console.log('deleteConversation')
-  }
-
-  const handleOpenEditOrCreateConversationModal = (chatId: string,  chatName: string, chatRoles: {
-    owner: string,}, participants: ISingleConversationParticipant[]) => {
-    // handler that will be passed to the ActiveConversationsDisplay component
-    // to be able to open the EditingOrCreatingOptionsModal when the user clicks on the edit button
-    // not supposed to be able to execute in the middle of animations
-    if(!isAnimationInProgress.current) {
-        const temporaryState = { ...chatDashboardState }    
-        temporaryState.isEditingOrCreatingOptionsModalOpen = true
-        temporaryState.currentEditingOrCreatingOptionsModalChatId = chatId
-        temporaryState.currentEditingOrCreatingOptionsModalChatName = chatName
-        temporaryState.currentEditingOrCreatingOptionsModalChatRoles = chatRoles
-        temporaryState.currentEditingOrCreatingOptionsModalParticipants = participants
-        setChatDashboardState(temporaryState)   
-        gsap.to(editingOrCreatingOptionsModal.current, {
-            duration: 0.4, translateX:0, ease: 'sine.out',
-            onStart: () => {
-                isAnimationInProgress.current = true         
-            },
-            onComplete: () => {
-                isAnimationInProgress.current = false            
-            }
-        })
-        setChatDashboardState(temporaryState)
-    }
-}
-
-const handleCloseEditOrCreateConversationModal = () => {
-    // handler that will be passed to the EditingOrCreatingOptionsModal component
-    // to be able to close the EditingOrCreatingOptionsModal when the user clicks on the close button
-    // not supposed to be able to execute in the middle of animations
-    if(!isAnimationInProgress.current) {
-        const temporaryState = { ...chatDashboardState }        
-        gsap.to(editingOrCreatingOptionsModal.current, {
-            duration: 0.4, translateX:'100%', ease: 'power2.out',
-            onStart: () => {            
-                isAnimationInProgress.current = true
-            },
-            onComplete: () => {
-                temporaryState.isEditingOrCreatingOptionsModalOpen = false
-                temporaryState.currentEditingOrCreatingOptionsModalChatId = null         
-                temporaryState.currentEditingOrCreatingOptionsModalChatName = null
-                temporaryState.currentEditingOrCreatingOptionsModalChatRoles = {owner: null}
-                temporaryState.currentEditingOrCreatingOptionsModalParticipants = []
-                isAnimationInProgress.current = false
-                setChatDashboardState(temporaryState)
-            }
-        }) 
-    }
-}
-
 
   const handleEditOrCreateConversation = (chatId: string) => {
     console.log('editConversation')
@@ -162,6 +245,7 @@ const handleCloseEditOrCreateConversationModal = () => {
 
   return (
     <div className={styles.chatDashboardParent}>
+      {/* {<p>{JSON.stringify(chatDashboardState)}</p>} */}
       {/* This is the loading screen/component that will be displayed when the websocket is not connected */}
       {!websocketReceivedState ? <div>Loading...</div> : null}
 
@@ -178,17 +262,22 @@ const handleCloseEditOrCreateConversationModal = () => {
       {/* This modal below is the modal that will open when a user clicks giving the sign it wants to edit a conversation group */}
 
       <div ref={editingOrCreatingOptionsModal}>
-          {chatDashboardState.isEditingOrCreatingOptionsModalOpen &&         
-            <EditingOrCreatingOptionsModal  
-              currentEditingOrCreatingOptionsModalChatId={chatDashboardState.currentEditingOrCreatingOptionsModalChatId}
-              currentEditingOrCreatingOptionsModalChatName={chatDashboardState.currentEditingOrCreatingOptionsModalChatName}
-              currentEditingOrCreatingOptionsModalChatRoles={chatDashboardState.currentEditingOrCreatingOptionsModalChatRoles}
-              currentEditingOrCreatingOptionsModalParticipants={chatDashboardState.currentEditingOrCreatingOptionsModalParticipants}
-              handleCloseEditOrCreateConversationModal={handleCloseEditOrCreateConversationModal}
-              setChatDashboardState={setChatDashboardState}
-            />       
-             }
-      </div> 
+        {chatDashboardState.isEditingOrCreatingOptionsModalOpen &&
+          <EditingOrCreatingOptionsModal
+            currentEditingOrCreatingOptionsModalChatId={chatDashboardState.currentEditingOrCreatingOptionsModalChatId}
+            currentEditingOrCreatingOptionsModalChatName={chatDashboardState.currentEditingOrCreatingOptionsModalChatName}
+            currentEditingOrCreatingOptionsModalChatRoles={chatDashboardState.currentEditingOrCreatingOptionsModalChatRoles}
+            currentEditingOrCreatingOptionsModalParticipants={chatDashboardState.currentEditingOrCreatingOptionsModalParticipants}
+            queueOfChangesForServerUpdatingOfInformation={chatDashboardState.queueOfChangesForServerUpdatingOfInformation}
+            handleCloseEditOrCreateConversationModal={handleCloseEditOrCreateConversationModal}
+            updateTheTemporaryQueueToBeSentToTheServer={updateTheTemporaryQueueToBeSentToTheServer}
+            addNewPossibleParticipantToChatInTheTemporaryQueueToBeSentToTheServer={addNewPossibleParticipantToChatInTheTemporaryQueueToBeSentToTheServer}
+            sendTheTemporaryQueueToBeSentToTheServer={sendTheTemporaryQueueToBeSentToTheServer}
+            setChatDashboardState={setChatDashboardState}
+            chatDashboardState={chatDashboardState}
+          />
+        }
+      </div>
       {/* This is the main component that will display all modals and components relevant for the chat */}
 
       <>

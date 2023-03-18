@@ -4,7 +4,7 @@
     width: 100vw;
     position: relative;
     height: 100%;
-    height: calc(100vh - 6rem);
+    height: calc(100vh - 3rem);
     overflow-x: hidden;
 }
 
@@ -207,6 +207,7 @@
     align-items: center;
     justify-content: start;
     overflow-y: scroll;
+    gap: 0.2rem;
 
     &::-webkit-scrollbar-track {
         width: 12px;
@@ -254,16 +255,17 @@
     padding: 0.5rem 1rem;
     gap: 1rem;
     border: 1px solid #444;
+    border-radius: 0.25rem;
     background-color: #FFF;
     transition-duration: 200ms;
     cursor: pointer;
 
     &:hover {
-        background-color: #EEE;
+        background-color: #0C8CE980;
     }
 
     &:active {
-        background-color: #AAA;
+        background-color: #0C8CE9;
     }
 
     .chatLabelName {
@@ -305,7 +307,7 @@
     position: absolute;
     background-color: whitesmoke;
     width: 100vw;
-    height: calc(100vh - 6rem);
+    height: calc(100vh - 3rem);
     max-width: 470px;   
     display: flex;
     flex-direction: column;
@@ -320,7 +322,7 @@
 
 .singleChatContainer{
     width: 100vw;
-    height: calc(100vh - 6rem);
+    height: calc(100vh - 3rem);
     display: flex;
     flex-direction: column;    
     align-items: stretch;      
@@ -333,8 +335,9 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 1rem;
-    background-color: #FFF;
+    background-color: #0C8CE980;
     border: 1px solid #000;
+    border-radius: 0.5rem 0.5rem 0 0;
     z-index: 10;
 
     .leftChatLabelDiv {
@@ -373,7 +376,7 @@
 .chatActiveContainer {
     width: 100%;
     height: 100vh;
-    max-height: calc(100vh - 6rem);
+    max-height: calc(100vh - 3rem);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;

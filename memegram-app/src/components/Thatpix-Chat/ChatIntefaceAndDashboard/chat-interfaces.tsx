@@ -22,10 +22,24 @@ export interface ISingleConversationObject {
   }
 
   export interface IEditingOrCreatingOptionsModalProps {
-    setChatDashboardState: unknown,
+    setChatDashboardState: any,
     handleCloseEditOrCreateConversationModal: () => void,
     currentEditingOrCreatingOptionsModalChatId?: string | null,
     currentEditingOrCreatingOptionsModalChatName?: string | null,
+    updateTheTemporaryQueueToBeSentToTheServer: ()=>void,
+    resetTheTemporaryQueueToBeSentToTheServer: ()=>void,
+    addNewPossibleParticipantToChatInTheTemporaryQueueToBeSentToTheServer: (participant: ISingleConversationParticipant)=>void,
+    removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer: (participant: ISingleConversationParticipant)=>void,
+    sendTheTemporaryQueueToBeSentToTheServer: ()=>void,
+    
+    queueOfChangesForServerUpdatingOfInformation: {
+      chatId: string | null,
+      chatName: string | null,
+      chatRoles: {
+        owner: string,
+      } | null,
+      participants: ISingleConversationParticipant[] | null
+    },
     currentEditingOrCreatingOptionsModalChatRoles?: {
       owner: string | null,
     },
@@ -48,9 +62,17 @@ export interface IChatDashboardState {
   isEditingOrCreatingOptionsModalOpen: boolean,
   isConversationOpen: boolean,
   currentEditingOrCreatingOptionsModalChatRoles: {
-    owner: string | null,
+    owner: string,
   },
   currentEditingOrCreatingOptionsModalChatName: string | null,
   currentEditingOrCreatingOptionsModalParticipants: ISingleConversationParticipant[],
+  queueOfChangesForServerUpdatingOfInformation:{
+    chatId: string | null,
+    chatName: string | null,
+    chatRoles: {
+      owner: string,
+    },
+    participants: ISingleConversationParticipant[]
+  }
   currentActiveConversationId: string | null | undefined | unknown | any | number,
 }

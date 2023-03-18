@@ -5,11 +5,12 @@
     align-items: center;
     width: 100%;
     max-width: 470px;
-    padding: 0 1rem;
+    padding: 0 0.5rem;
     max-height: 3rem;
     position: fixed;
     background-color: white;
     z-index: 100;
+    border: 1px solid #AAA4;
 }
 
 .navSpacer {

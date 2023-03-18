@@ -10,6 +10,17 @@ import { UserContext } from '../../../contexts/userInfo';
 // eslint-disable-next-line
 export default function SingleConversation({ handleDeselectConversation, chatName, chatRoles, chatId, participants, messages }: ISingleConversationObject): JSX.Element {
 
+
+  useEffect(() => {
+    
+      console.log('SingleConversationRendered')
+  
+    return () => {
+      console.log('SingleConversationUnmounted')
+    }
+  }, [])
+  
+
   const userInfoContext = useContext(UserContext);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
