@@ -58,14 +58,16 @@ export interface IActiveConversationsDisplayProps {
 
 export interface IChatDashboardState {
   notificationsInQueue: unknown[],
-  currentEditingOrCreatingOptionsModalChatId:string | null,
+  currentEditingOrCreatingOptionsModal: {
+    chatId: string | null,
+    chatName: string | null,
+    chatRoles: {
+      owner: string,
+    },
+    participants: ISingleConversationParticipant[]
+  }
   isEditingOrCreatingOptionsModalOpen: boolean,
-  isConversationOpen: boolean,
-  currentEditingOrCreatingOptionsModalChatRoles: {
-    owner: string,
-  },
-  currentEditingOrCreatingOptionsModalChatName: string | null,
-  currentEditingOrCreatingOptionsModalParticipants: ISingleConversationParticipant[],
+  isConversationOpen: boolean, 
   queueOfChangesForServerUpdatingOfInformation:{
     chatId: string | null,
     chatName: string | null,

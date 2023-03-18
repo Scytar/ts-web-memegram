@@ -298,7 +298,11 @@ ws.on('connection', (socket: any, req: any) => {
   if (req.url === '/chats') {
     console.log('chats')
     genericChatChannel.add(socket);
-    socket.send(JSON.stringify(chats));
+    const answer = {
+      type: 'global chat',
+      data: chats,
+    }
+    socket.send(JSON.stringify(answer));
   }
 
   // Identify the channel the message sent by the client belongs
@@ -334,11 +338,28 @@ ws.on('connection', (socket: any, req: any) => {
 });
 // =============== END of Websocket Channels ===============
 
-app.get('/api/userInfo/:token', (req: { params: { token: string; }; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userInfo: { token: string; userId: string; user: string; }; }): any; new(): any; }; }; sendStatus: (arg0: number) => any; }, next: any) => {
+app.post('/api/login/:token?', (req, res, next) => {
   //TODO: do authentication properly
-  req.params.token !== '987654321' ?
-    res.status(200).json({ userInfo: userInfo }) :
-    res.status(200).json({ userInfo: userInfo });
+  if (req.params.token == '987654321') return res.status(200).json({ userInfo: userInfo })
+
+  const body = req.body;
+
+  if (body.email == 'sonic@hedgehog.boom' && body.password == 'gottagofast') {
+    return res.status(200).json({ userInfo: userInfo })
+  }
+  return res.sendStatus(401);
+})
+
+app.post('/api/signup', (req, res, next) => {
+  // Mock of user registration
+  const body = req.body;
+  const newUser = {
+    token: 'xablau',
+    userId: body.username,
+    user: body.username,
+  }
+
+  res.status(200).json({ userInfo: newUser });
 })
 
 // TODO: modularize this
@@ -403,16 +424,12 @@ app.put('/api/like', (req: { body: { postId: string; userId: string; }; }, res: 
   feedItems.forEach((element, elementIndex) => {
     if (element.postId === req.body.postId) {
       const index = element.likes.findIndex((el) => {
-        // console.log('el',el);
         return el == req.body.userId;
       });
-      // console.log('index',index);
       if (index != -1) {
         feedItems[elementIndex].likes.splice(index, 1);
-        // console.log('element',element.likes);
       } else {
         element.likes.push(req.body.userId)
-        // console.log('element',element.likes);
       }
     }
   })
@@ -453,6 +470,69 @@ app.post('/api/comment', (req: { body: any; }, res: { status: (arg0: number) => 
 
   //Must return
   res.status(201).json(JSON.stringify(updatePost));
+})
+
+app.put('/api/chat', (req, res, next) => {
+  const body = req.body;
+  console.log('body',body)
+
+  const newMessage = {
+    messageId: 'msg' + Math.random(),
+    username: body.username as string,
+    dateWithTime: '' + new Date(),
+    message: body.messageText as string,
+  };
+
+  let chatElementToAnswer: {
+    chatId: string;
+    chatName: string;
+    chatRoles: { owner: string; };
+    participants: {
+      userId: string;
+      username: string;
+    }[];
+    messages: {
+      messageId: string;
+      username: string;
+      dateWithTime: string;
+      message: string;
+    }[];
+  } | null;
+
+  try {
+    chats.forEach((element, elementIndex) => {
+      if (element.chatId === body.chatId) {
+        const index = element.participants.findIndex((el) => {
+          return el.userId == body.userId;  //Check if user is a participant
+        });
+        if (index != -1) {
+          chats[elementIndex].messages.push(newMessage); //Add the new message in the database
+          chatElementToAnswer = chats[elementIndex];
+        } else {
+          throw 'not a participant';
+        }
+      }
+    })
+  } catch (error) {
+    chatElementToAnswer = null;
+    error == 'not a participant' ? res.sendStatus(401) : res.sendStatus(500);
+  }
+
+  
+
+  genericChatChannel.forEach((client: any) => {
+    if (client.readyState === webSocket.OPEN) {
+      if (chatElementToAnswer) {
+        const answer = {
+          type: 'single chat message',
+          data: chatElementToAnswer,
+        }
+        client.send(JSON.stringify(answer));
+      };
+    }
+  })
+
+  return res.sendStatus(200);
 })
 
 // This route MUST be the last one, as its generic and will redirect the URL to the react-router

@@ -12,22 +12,30 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
 
 
   useEffect(() => {
-    
-      console.log('SingleConversationRendered')
-  
+
+    console.log('SingleConversationRendered');
+    (chatDiv.current as HTMLDivElement).scrollTop = (chatDiv.current as HTMLDivElement).scrollHeight;
+
     return () => {
       console.log('SingleConversationUnmounted')
     }
   }, [])
-  
+
 
   const userInfoContext = useContext(UserContext);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [fetchData, setFetchData] = useState({})
+  const chatDiv = useRef<HTMLDivElement>(null);
+
+  const [fetchData, setFetchData] = useState('ok')
 
   const [chatMessageText, setChatMessageText] = useState('');
+
+  useEffect(() => {
+    (chatDiv.current as HTMLDivElement).scrollTop = (chatDiv.current as HTMLDivElement).scrollHeight;
+  }, [messages])
+
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setChatMessageText(e.target.value);
@@ -39,32 +47,40 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-
-      const myBody = {
-        userId: userInfoContext.userId,
-        user: userInfoContext.user,
-        chatId: chatId,
-        comment: chatMessageText,
-      };
-
-      const options = {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(myBody)
-      }
-
-      request(options);
-
-      e.currentTarget.value = '';
-      // setChatMessageText('')
+      handleSendMessage(e);
     }
   }
 
-  const handleSendMessage = () => {
-    console.log('send message');
+  const handleSendMessage = (e: React.KeyboardEvent | React.ChangeEvent | React.MouseEvent) => {
+    if (fetchData != 'ok') return
+    e.preventDefault();
+
+    if (chatMessageText.trim() === '') {
+      (textareaRef.current as HTMLTextAreaElement).value = '';
+      return
+    }
+
+    const myBody = {
+      userId: userInfoContext.userId,
+      username: userInfoContext.user,
+      chatId: chatId,
+      messageText: chatMessageText.trim(),
+    };
+
+    const options = {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(myBody)
+    }
+
+    request(options);
+
+    (textareaRef.current as HTMLTextAreaElement).value = '';
+    (textareaRef.current as HTMLTextAreaElement).focus();
+    (chatDiv.current as HTMLDivElement).scrollTop = (chatDiv.current as HTMLDivElement).scrollHeight;
+    setChatMessageText('');
   };
 
   const request = (_options: any): void => {
@@ -72,15 +88,15 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
     // eslint-disable-next-line
     console.log('Sent!', _options.body)
 
-    fetch('http://localhost:3030/api/comment', _options)
-      .then(res => res.json())
-      .then((data) => {
-        setFetchData(data);
+    fetch('http://localhost:3030/api/chat', _options)
+      .then((res) => {
+        console.log('data from chat api', res)
+        res.status === 200 ? setFetchData('ok') : null;
       })
       .catch((e) => {
         setFetchData('error');
         // eslint-disable-next-line
-        console.log(e);
+        console.log('error', e);
       })
   }
 
@@ -104,7 +120,9 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
         )
       })
       } */}
-      <div className={styles.chatActiveContainer}>
+      <div
+        ref={chatDiv}
+        className={styles.chatActiveContainer} >
         {messages.map((message) => {
           if (userInfoContext.user === message.username) {
             return (
@@ -127,22 +145,25 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
       </div>
       <div className={styles.bottomChatInputs}>
         <textarea
+          ref={textareaRef}
           placeholder='Escreva...'
-          onChange={(e): void => handleChange(e)}
-          onKeyDown={(e): void => handleKeyDown(e)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => handleChange(e)}
+          onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>): void => handleKeyDown(e)}
           className={
-            fetchData === 'loading' ? styles.isLoading :
-              fetchData === 'error' ? styles.isError : styles.mainTextInput
+            fetchData === 'loading' ? styles.isLoadingTextInput :
+              fetchData === 'error' ? styles.isErrorTextInput : styles.mainTextInput
           }
           value={
             fetchData === 'loading' ? 'Enviando...'
               : fetchData === 'error' ? 'Erro ao enviar!' : chatMessageText
           }
-          disabled={fetchData === 'error' || fetchData === 'loading' ? true : false}
+        // disabled={fetchData === 'error' || fetchData === 'loading' ? true : false}
         />
         <button
           className={styles.sendChatButton}
-          onClick={() => { handleSendMessage() }}>
+          onClick={(e): void => { handleSendMessage(e) }}
+          disabled={fetchData === 'error' || fetchData === 'loading' ? true : false}
+        >
           <SendRoundedIcon className={styles.singleSendComponent} />
         </button>
       </div>

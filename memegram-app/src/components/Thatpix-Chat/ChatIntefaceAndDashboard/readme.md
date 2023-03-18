@@ -1,3 +1,7 @@
+A fazer:
+Quando um estado que alimenta o .map for adicionado, dar scroll ate a parte inferior daquele .map
+Adicionar barra de rolagem quando overflow acontecer
+
 UI
 https://www.figma.com/file/Mw2vDGTxBTh04yN39lU020/Memegram?node-id=0%3A1
 
@@ -25,18 +29,18 @@ From websocket>JSON.stringfy{
         chatRoles:{
             owner: 'userId',
         },
-        participantes:[
+        participants:[
             {
                 userId: 'userId',
                 username: string
             }
         ],
-        mensagens:[
+        messages:[
             {
                 messageId: uuid,
                 username: string,
                 dateWithTime: date,
-                mensagem: string,
+                message: string,
             }
         ]
     }

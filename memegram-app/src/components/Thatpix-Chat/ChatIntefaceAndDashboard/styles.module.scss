@@ -8,6 +8,15 @@
     overflow-x: hidden;
 }
 
+.editModalMasterParentThatReceivesGSAP {
+    position: absolute;
+    transform: translateX(100%);
+    width:100vw;
+    height:100%;
+    height: calc(100vh - 3rem);
+    top:0;
+}
+
 .chatEditModalIcon {
             width: 64px;
             height: 64px;
@@ -380,7 +389,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    padding: 0.25rem;
+    padding: 0.25rem 2rem;
     overflow-y: scroll;
 
     &::-webkit-scrollbar {
@@ -454,8 +463,8 @@
 
     .mainTextInput {
         width: 100%;
-        padding: 0.25rem 1rem;
-        border-radius: 50px;
+        padding: 0 0.5rem;
+        border-radius: 0.35rem;
         border: 1px solid #444;
         background-color: #EEE4;
         color: #000;
@@ -463,6 +472,7 @@
         font-size: 1rem;
         font-weight: 500;
         resize: none;
+        user-select: contain;
 
         &:hover {
             background-color: #EEEA;
@@ -471,6 +481,37 @@
         &:focus {
             background-color: #EEE;
         }
+    }
+
+    .isLoadingTextInput {
+        width: 100%;
+        padding: 0 0.5rem;
+        border-radius: 0.35rem;
+        border: 1px solid #444;
+        background-color: #EEE8;
+        color: #000;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        font-weight: 500;
+        resize: none;
+        user-select: none;
+        cursor: not-allowed;
+    }
+
+    
+    .isErrorTextInput {
+        width: 100%;
+        padding: 0 0.5rem;
+        border-radius: 0.35rem;
+        border: 1px solid #ff3b3b;
+        background-color: #ff3b3b80;
+        color: #000;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        font-weight: 500;
+        resize: none;
+        user-select: none;
+        cursor: not-allowed;
     }
 
     .sendChatButton {
@@ -497,13 +538,26 @@
 
         &:active {
             background-color: #FFF;
-            border: 1px solid #000;
+            border: 1px solid #0C8CE9;
+            background-color: #0C8CE920;
             fill: #000;
             color: #000;
         }
 
         .singleSendComponent {
             position: absolute;
+            border-radius: 500rem;
+            transition: 100ms ease-in-out;
+            transform: scale(0.9) rotate(0deg);
+
+            &:hover {
+                transform: scale(0.9) rotate(-40deg);
+            }
+            
+            &:active {
+                transform: scale(1.1) rotate(-40deg);
+                fill: #0C8CE9
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Post } from '../../organisms/post';
 import { IPostProps } from '../../organisms/post';
 import { PostSkeleton } from '../../skeletons/post';
+import styles from './styles.module.scss'
 
 // This feed is the main feed that will be displayed on the page
 // it will be a list of all the feed items rendered as multiples of the Post component
@@ -30,8 +31,9 @@ const MemegramFeed = (): JSX.Element => {
 
     ws.addEventListener('message', function (event: MessageEvent) {
       //TODO: refactor ws.message response to only send a specific post data, not the entire feed.
-      setfeedState(JSON.parse(event.data));
+      const dataFromSocket = JSON.parse(event.data);
 
+      setfeedState(dataFromSocket);
     });
 
     ws.addEventListener('close', function () {
@@ -57,7 +59,7 @@ const MemegramFeed = (): JSX.Element => {
   const isError = false;
 
   return (
-    <>
+    <div className={styles.feedContainer} >
       {isLoading ? <><PostSkeleton /><PostSkeleton /></> : null}
       {isError ? <><p>Erro ao requisitar feed</p><PostSkeleton /></> : null}
       {feedState ?
@@ -78,7 +80,7 @@ const MemegramFeed = (): JSX.Element => {
       }
       <PostSkeleton />
       <PostSkeleton />
-    </>
+    </div>
   )
 }
 

@@ -11,12 +11,12 @@ import { useQuery } from 'react-query';
 import ChatPage from '../../components/pages/chat/index';
 import { useLocation } from 'react-router-dom'
 import gsap from 'gsap'
-import { LogoutModal } from '../../components/organisms/logout-modal';
 import { LogoutPage } from '../../components/pages/logout';
+import { NotificationContextProvider } from '../../contexts/Notifications/NotificationContext';
 
 const App = (): JSX.Element => {
 
-    const PageTransitionComponent = () => {
+    const PageTransitionComponent = (): JSX.Element => {
         // use gsap to animate the page transition
         const location = useLocation()
         const tlRef = useRef(gsap.timeline())
@@ -36,9 +36,9 @@ const App = (): JSX.Element => {
 
     // eslint-disable-next-line
     const [UserInfo, setUserInfo] = useState({
-        token: null,
-        user: null,
-        userId: null,
+        token: '987654321' as string | null,
+        user: null as string | null,
+        userId: null as string | null,
     })
 
     // {
@@ -48,19 +48,28 @@ const App = (): JSX.Element => {
     // }
 
     useEffect(() => {
-        if (UserInfo.token) {
-            // socketRefetch()
-        }
+        // eslint-disable-next-line
+        console.log('UserInfo',UserInfo)
 
     }, [UserInfo])
 
+    
+    const loginFetchOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json',
+        },
+        body: JSON.stringify(UserInfo)
+    }
+
     // Authenticate session
     //TODO: create a singleton for this fetch
-    const { data, isLoading, isError } = useQuery('userInfo', () =>
-        fetch('http://localhost:3030/api/userInfo/' + UserInfo.token)
+    const { data, isLoading, isError } = useQuery('userInfo', () => 
+        fetch('http://localhost:3030/api/login/' + UserInfo.token, loginFetchOptions)
             .then((res) => {
                 return res.json();
-            }),
+            })
+            ,
         {
             refetchOnWindowFocus: false,
             refetchOnMount: false,
@@ -70,12 +79,15 @@ const App = (): JSX.Element => {
         }
     )
 
-    const handleLogout = () => {
+    const handleLogout = (): void => {
         setUserInfo({
             token: null,
             user: null,
             userId: null,
         });
+        // TODO: uncomment this after authentication flow is completed
+        // window.history.pushState(null,'','/')
+        // window.history.go();
     }
 
     useEffect(() => {
@@ -88,7 +100,7 @@ const App = (): JSX.Element => {
 
     return (
         <div className={style.appDiv}>
-
+            <NotificationContextProvider>
             <UserContext.Provider value={UserInfo}>
                 <BrowserRouter>
                     {isLoading ?
@@ -108,10 +120,11 @@ const App = (): JSX.Element => {
                                 </Routes>
                             </>
                             : <>
-                                <LoginPage />
+                                <LoginPage setUserInfo={setUserInfo}/>
                             </>}
                 </BrowserRouter>
             </UserContext.Provider>
+            </NotificationContextProvider>
         </div>
     )
 }
