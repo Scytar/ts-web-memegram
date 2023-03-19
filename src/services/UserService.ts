@@ -80,7 +80,7 @@ export const selectUser = async (data: User) => {
             const token = jwt.sign(
                 {
                     id: response.data[0].userId,
-                    name: data.name,
+                    name: response.data[0].user.name,
                     email: data.email
                 }, secret,
                 { expiresIn: "1d" });

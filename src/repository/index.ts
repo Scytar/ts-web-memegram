@@ -19,9 +19,10 @@ import iResp from "../interfaces/iResp.js";
 //     //const t: iResp = await postRep.insert({media: 'download.png', authorId: '05bdfc68-4add-4d7a-abb9-22d8b59fff32', author: 'test'})
 //     //const t: iResp = await postRep.listAll();
 //     //const t: iResp = await postRep.listBy({postId :"e2546030-1785-4ae9-9a3a-86a58147eb23"});
-//     //const t: iResp = await postRep.like({postId: "99226fd8-6c81-496f-931a-1fd788d8b605", userId: "05bdfc68-4add-4d7a-abb9-22d8b59fff32"})
-//     //const t: iResp = await postRep.comment({postId: "99226fd8-6c81-496f-931a-1fd788d8b605", comment:{author: 'test2', text:'test comment2'}})
-//     console.log(t)
+//     //const t: iResp = await postRep.like({postId: "424eb7a9-a4d7-4f88-8f4c-27789fb11a7e", userId: "89311d70-69c9-4899-8fca-537f9a272c4a"})
+//     //const t: iResp = await postRep.comment({postId: "424eb7a9-a4d7-4f88-8f4c-27789fb11a7e", comment:{author: 'test', text:'test comment'}})
+
+//     //console.log(t)
 // }
 // testPost();
 
@@ -29,12 +30,13 @@ import iResp from "../interfaces/iResp.js";
 //     const postRep = new PostRepository();
 //     const comment = new CommentRepository();
 //     //Get a post by key
-//     const t: iResp = await postRep.listBy({key :"e2546030-1785-4ae9-9a3a-86a58147eb23"});
+//     const t: iResp = await postRep.listBy({postId :"424eb7a9-a4d7-4f88-8f4c-27789fb11a7e"});
+//     console.log(t, 't')
 //     const result = t.data[0].post;
 //     for (let index = 0; index < result.comments.length; index++) {
 //         //Receive all comments ids of post and return each comment
-//         const comments = await comment.listBy({key: result.comments[index]}) 
-//         console.log(comments.data[0].comment);
+//         const comments = await comment.listBy({commentId: result.comments[index]}) 
+//         console.log(comments.data[0].comment, 'final');
 //     }
 // }
 // testComments()

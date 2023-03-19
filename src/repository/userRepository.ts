@@ -35,73 +35,95 @@ const userModel = mongoose.model('user', userSchem);
 
 export default class UserRepository{
 
-    private async base(resultFunc: any){
-        //Receive an function, make conection with database and run the operation
+    async insert(userData: any){
+        //Receive an Object with the data to insert
         let resp: iResp = {data: null, error: null};
         try {
             await mongoose.connect(MONGODB_DSN);
-            resp.data = await resultFunc;
+            const newUser = new userModel({
+                userId: uuid(),
+                user:{
+                    name: userData.name,
+                    email: userData.email,
+                    password: userData.password
+                },
+                created_at: Date.now(),
+                updated_at: null,
+                deleted_at: null
+            });
+            resp.data = await newUser.save();
             await mongoose.connection.close();
         } catch (err: any) {
             resp.error = err.message;
         }
         return resp;
     }
-
-    async insert(userData: any){
-        //Receive an Object with the data to insert
-        const newUser = new userModel({
-            userId: uuid(),
-            user:{
-                name: userData.name,
-                email: userData.email,
-                password: userData.password
-            },
-            created_at: Date.now(),
-            updated_at: null,
-            deleted_at: null
-        });
-        const resp: iResp = await this.base(newUser.save());
-        return resp;
-    }
     
     async listAll() {
-        const resp: iResp = await this.base(userModel.find());
+        let resp: iResp = {data: null, error: null};
+            try {
+                await mongoose.connect(MONGODB_DSN);
+                resp.data = await userModel.find();
+                await mongoose.connection.close();
+            } catch (err: any) {
+                resp.error = err.message;
+            }
         return resp;
     }
     
     async listBy(query: any) { 
         //Receive an Object with the filter of search
-        const resp: iResp = await this.base(userModel.find(query));
-        if (resp.data[0] == null) {
-           resp.error = "Error: not found" 
+        let resp: iResp = {data: null, error: null};
+        try {
+            await mongoose.connect(MONGODB_DSN);
+            resp.data = await userModel.find(query);
+            if (!resp.data) {
+            resp.error = "Error: not found" 
+            }
+            await mongoose.connection.close();
+        } catch (err: any) {
+            resp.error = err.message;
         }
         return resp;
     }
     
     async update(updateData: any){
         //Receive an Object with the query to search the document and the data to update
-        updateData.content.updated_at = Date.now();
-        const resp: iResp = await this.base(userModel.findOneAndUpdate(
-            updateData.query, 
-            updateData.content,
-            {new: true}
-        ));
-        if (!resp.data) {
-            resp.error = "Error: not found";
+        let resp: iResp = {data: null, error: null};
+        try {
+            await mongoose.connect(MONGODB_DSN);
+            updateData.content.updated_at = Date.now();
+            resp.data = await userModel.findOneAndUpdate(
+                updateData.query, 
+                updateData.content,
+                {new: true}
+            );
+            if (!resp.data) {
+                resp.error = "Error: not found";
+            }
+            await mongoose.connection.close();
+        } catch (err: any) {
+            resp.error = err.message;
         }
         return resp;
     }
     
     async deleteBy(deleteData: any){ 
         //Receive an Object with the filter of search(query) and try delete
-        const resp: iResp = await this.base(userModel.findOneAndDelete(
-            deleteData.query, {new: true}
-        ));
-        if (resp.data) {
-            resp.data = `Usuario ${resp.data.user.name} / ${resp.data.user.email} foi deletado!`;
-        } else{
-            resp.error = "Error: not found";
+        let resp: iResp = {data: null, error: null};
+        try {
+            await mongoose.connect(MONGODB_DSN);
+            resp.data = await userModel.findOneAndDelete(
+                deleteData.query, {new: true}
+            );
+            if (resp.data) {
+                resp.data = `Usuario ${resp.data.user.name} / ${resp.data.user.email} foi deletado!`;
+            } else{
+                resp.error = "Error: not found";
+            }
+            await mongoose.connection.close();
+        } catch (err: any) {
+            resp.error = err.message;
         }
         return resp;
     }
