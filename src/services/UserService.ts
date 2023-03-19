@@ -41,7 +41,7 @@ export const createUser = async (data: User) => {
                     email: response.data.user.email
                 }, secret,
                 { expiresIn: "1d" });
-
+            
             return { response, token };
         } else{
             throw new Error(`${response.error}`);

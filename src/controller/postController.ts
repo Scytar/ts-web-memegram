@@ -14,7 +14,8 @@ export async function newItems(req: Request, res: Response) {
             res.status(400).send("Please upload a file");
         } else {
 
-            const [, token] = req.headers.authorization!.split(" ");
+            // const [, token] = req.headers.authorization!.split(" ");
+            const { token } = req.cookies;
             const author: any = jwt.verify(token, secret);
 
             const itemsObject: Post = {

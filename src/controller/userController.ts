@@ -12,7 +12,8 @@ export async function login(req: Request, res: Response) {
         if (data?.err) {
             throw new Error(data.err);
         }
-        res.status(202).send(data);
+        res.cookie('token', data.token, { httpOnly: true, maxAge: 86400000, secure: false })
+        res.status(202).send(data.response);
         return;
     } catch (error: any) {
         res.status(500).send(error.message);
@@ -31,7 +32,8 @@ export async function newUser(req: Request, res: Response) {
         if (data?.err) {
             throw new Error(data.err);
         }
-        res.status(202).send(data);
+        res.cookie('token', data.token, { httpOnly: true, maxAge: 86400000, secure: false })
+        res.status(202).send(data.response);
         return;
     } catch (error: any) {
         res.status(500).send(error.message);
