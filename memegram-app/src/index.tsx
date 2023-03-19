@@ -11,12 +11,10 @@ import { queryClient } from './querys';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-root.render(
-  <React.StrictMode>
+root.render(  
     <QueryClientProvider client={queryClient}>
       <App />
-    </QueryClientProvider>
-  </React.StrictMode>
+    </QueryClientProvider> 
 );
 
 // If you want to start measuring performance in your app, pass a function

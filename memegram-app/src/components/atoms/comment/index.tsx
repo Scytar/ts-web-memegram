@@ -1,7 +1,7 @@
 import styles from './styles.module.scss'
 
 export interface ICommentProps {
-  key: string
+  commentId: string
   author: string
   comment: string
 }
@@ -9,9 +9,9 @@ export interface ICommentProps {
 const Comment = ({ author, comment }: ICommentProps): JSX.Element => {
   return (
     <div className={styles.commentContainer}>
-      <span>
-        <b>{author}</b> - {comment}{' '}
-      </span>
+      <p className={styles.commentText}>
+        <b>{author}</b> - {comment}
+      </p>
     </div>
   )
 }

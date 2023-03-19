@@ -17,7 +17,7 @@ const server = require('http').createServer(app);
 const ws = new webSocket.Server({ server });
 
 //Logs client IP upon its request
-const logIp = (req, res, next): void => {
+const logIp = (req: { ip: any; url: any; }, res: any, next: () => void): void => {
   console.log('Request received from', req.ip, 'to', req.url);
   next();
 }
@@ -31,63 +31,187 @@ app.use(logIp);
 
 // TODO: a lot of the code below needs to be modularized
 
-ws.on('connection', (socket) => {
-  socket.send('Welcome to memegram websocket!');
+// Example of user
+const userInfo = {
+  token: '987654321',
+  userId: 'gottagofast',
+  user: 'Sonic The Hedgehog',
+}
 
-  socket.on('message', (message) => {
-    for (const client of ws.clients) {
-      if (client !== socket && client.readyState === webSocket.OPEN) {
-        client.send(`Client: ${message}`);
-        console.log(`Client: ${message}`);
-      }
-    }
-  });
-});
-
-app.get('/api/userInfo', (req, res, next) => {
-  const userInfo = {
-    token: 'asd',
-    userId: '123',
-  }
-  res.status(200).json({userInfo: userInfo});
-})
-
-// TODO: modularize this
-// ============ Code-block start ============
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // This must be an express.static served folder
-    cb(null, "memegram-app/public");
+// Example of data response of chat
+const chats = [
+  {
+    chatId: '5465466540',
+    chatName: 'Super Mario Bros',
+    chatRoles: {
+      owner: 'gottagofast',
+    },
+    participants: [
+      {
+        userId: 'gottagofast',
+        username: 'Sonic The Hedgehog',
+      },
+      {
+        userId: '13',
+        username: 'Scytar',
+      },
+    ],
+    messages: [
+      {
+        messageId: '9999999990',
+        username: 'Scytar',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Primeira mensagem',
+      },
+      {
+        messageId: '9999999991',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Segunda mensagem',
+      },
+      {
+        messageId: '9999999992',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Telceila mensagem',
+      },
+    ]
   },
-  filename: (req, file, cb) => {
-    // Database must store filename string with extension
-    // It would be better to hash this filename
-    cb(null, file.originalname);
+  {
+    chatId: '5465466541',
+    chatName: 'Tooney Loones',
+    chatRoles: {
+      owner: '13',
+    },
+    participants: [
+      {
+        userId: 'gottagofast',
+        username: 'Sonic The Hedgehog',
+      },
+      {
+        userId: '13',
+        username: 'Scytar',
+      },
+      {
+        userId: '77',
+        username: 'Cebolinha',
+      },
+    ],
+    messages: [
+      {
+        messageId: '9999999980',
+        username: 'Scytar',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Caramba',
+      },
+      {
+        messageId: '9999999982',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Calamba!',
+      },
+      {
+        messageId: '9999999981',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Sonic Boom',
+      },
+    ]
   },
-});
-
-const upload = multer({storage});
-
-app.post('/api/upload', upload.single('file') ,(req, res, next) => {
-
-  const data = JSON.parse(req.body.body); // data = { token: string , userId: string }
-
-  console.log('file', req.file);
-  console.log('data', data);
-  res.sendStatus(201)
-})
-
-// ============ Code-block end ============
-
-app.get("/", (req, res, next) => {
-  res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
-})
+  {
+    chatId: '5465466542',
+    chatName: 'Machadão',
+    chatRoles: {
+      owner: '1337',
+    },
+    participants: [
+      {
+        userId: '13',
+        username: 'Scytar',
+      },
+      {
+        userId: '1337',
+        username: 'Machadão',
+      },
+    ],
+    messages: [
+      {
+        messageId: '9999999970',
+        username: 'Machadão',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Primeira mensagem',
+      },
+      {
+        messageId: '9999999971',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Segunda mensagem',
+      },
+      {
+        messageId: '9999999972',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Telceila mensagem',
+      }, {
+        messageId: '9999999973',
+        username: 'Machadão',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Primeira mensagem',
+      },
+      {
+        messageId: '9999999974',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Segunda mensagem',
+      },
+      {
+        messageId: '9999999975',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Telceila mensagem',
+      }, {
+        messageId: '9999999976',
+        username: 'Machadão',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Primeira mensagem',
+      },
+      {
+        messageId: '9999999977',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Segunda mensagem',
+      },
+      {
+        messageId: '9999999978',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Telceila mensagem',
+      }, {
+        messageId: '9999999979',
+        username: 'Machadão',
+        dateWithTime: '2023-03-15T16:45:16.109Z',
+        message: 'Primeira mensagem',
+      },
+      {
+        messageId: '9999999969',
+        username: 'Sonic The Hedgehog',
+        dateWithTime: '2023-03-15T16:46:16.109Z',
+        message: 'Segunda mensagem',
+      },
+      {
+        messageId: '9999999968',
+        username: 'Cebolinha',
+        dateWithTime: '2023-03-15T16:47:16.109Z',
+        message: 'Telceila mensagem',
+      },
+    ]
+  },
+];
 
 // Example of database response of the global feed
 const feedItems = [
   {
-    key: "1",
+    postId: "1",
     authorId: "13",
     author: 'Scytar',
     timestamp: new Date(),
@@ -95,29 +219,29 @@ const feedItems = [
     likes: ["5", "12", "15", "87"],
     comments: [
       {
-        key: "1001",
+        commentId: "1001",
         author: 'Machadão',
         comment: 'Cocoricó!'
       },
       {
-        key: "1002",
+        commentId: "1002",
         author: 'Machadette',
         comment: 'Pó pô pó?'
       },
       {
-        key: "1012",
+        commentId: "1012",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae?'
       },
       {
-        key: "1032",
+        commentId: "1032",
         author: 'Machadette',
         comment: 'Pó pô pó?'
       },
     ],
   },
   {
-    key: "3",
+    postId: "3",
     authorId: "12",
     author: 'Cecília',
     timestamp: new Date(),
@@ -125,32 +249,32 @@ const feedItems = [
     likes: ["13", "15"],
     comments: [
       {
-        key: "1003",
+        commentId: "1003",
         author: 'Machadão',
         comment: 'Cocó coricocó!'
       },
       {
-        key: "1004",
+        commentId: "1004",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae'
       },
     ],
   },
   {
-    key: "4",
+    postId: "4",
     authorId: "1",
     author: 'Machadão',
     timestamp: new Date(),
-    media: 'memegram-logo-circle.webp',
+    media: 'jin-sherlock.png',
     likes: ["1", "13", "15", "87"],
     comments: [
       {
-        key: "1006",
+        commentId: "1006",
         author: 'Machadão',
         comment: 'Cocó coricocó!'
       },
       {
-        key: "1005",
+        commentId: "1005",
         author: 'Machadette',
         comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae'
       },
@@ -158,12 +282,261 @@ const feedItems = [
   }
 ]
 
-app.get('/api/feedItems', (req, res, next) => {
-  res.status(200).json({feedItems: feedItems})
+// =============== Websocket Channels ===============
+const globalFeedChannel = new Set();
+const genericChatChannel = new Set();
+
+ws.on('connection', (socket: any, req: any) => {
+  // socket.send(JSON.stringify(feedItems))
+
+  //Identify the channel the websocket connection belongs
+  if (req.url === '/globalFeed') { //Develop switch cases
+    console.log('globalFeed')
+    globalFeedChannel.add(socket);
+    socket.send(JSON.stringify(feedItems));
+  }
+  if (req.url === '/chats') {
+    console.log('chats')
+    genericChatChannel.add(socket);
+    const answer = {
+      type: 'global chat',
+      data: chats,
+    }
+    socket.send(JSON.stringify(answer));
+  }
+
+  // Identify the channel the message sent by the client belongs
+  socket.on('message', (message: any) => {
+    if (req.url === '/globalFeed') { //Develop switch cases
+      globalFeedChannel.forEach((client: any) => {
+        if (client.readyState === webSocket.OPEN) {
+          client.send(message);
+        }
+      })
+    }
+    if (req.url === '/chats') {
+      genericChatChannel.forEach((client: any) => {
+        if (client.readyState === webSocket.OPEN) {
+          client.send(message);
+        }
+      })
+    }
+  });
+
+
+  //Remove the connection from correct channel when closed
+  socket.on('close', () => {
+    if (req.url === '/globalFeed') {
+      console.log('socket close')
+      globalFeedChannel.delete(socket);
+    }
+    if (req.url === '/chats') {
+      console.log('socket close')
+      genericChatChannel.delete(socket);
+    }
+  });
+});
+// =============== END of Websocket Channels ===============
+
+app.post('/api/login/:token?', (req, res, next) => {
+  //TODO: do authentication properly
+  if (req.params.token == '987654321') return res.status(200).json({ userInfo: userInfo })
+
+  const body = req.body;
+
+  if (body.email == 'sonic@hedgehog.boom' && body.password == 'gottagofast') {
+    return res.status(200).json({ userInfo: userInfo })
+  }
+  return res.sendStatus(401);
+})
+
+app.post('/api/signup', (req, res, next) => {
+  // Mock of user registration
+  const body = req.body;
+  const newUser = {
+    token: 'xablau',
+    userId: body.username,
+    user: body.username,
+  }
+
+  res.status(200).json({ userInfo: newUser });
+})
+
+// TODO: modularize this
+// ============ Code-block start ============
+
+const storage = multer.diskStorage({
+  destination: (req: any, file: any, cb: (arg0: null, arg1: string) => void) => {
+    // This must be an express.static served folder
+    cb(null, "memegram-app/public");
+  },
+  filename: (req: any, file: { originalname: any; }, cb: (arg0: null, arg1: any) => void): void => {
+    // Database must store filename string with extension
+    // It would be better to hash this filename
+    cb(null, file.originalname);
+  },
 });
 
+const upload = multer({ storage });
+
+app.post('/api/upload', upload.single('file'), (req: { body: { body: string; }; file: { filename: any; }; }, res: { send: (arg0: string) => void; }, next: any) => {
+
+
+  const data = JSON.parse(req.body.body); // data = { token: string , userId: string }
+
+  const newPost = {
+    postId: '' + Math.random(),
+    authorId: data.userId,
+    author: data.user,
+    timestamp: new Date(),
+    media: req.file.filename,
+    likes: [],
+    comments: [],
+  }
+
+  feedItems.push(newPost);
+  // console.log(`req`, req)
+  // console.log('file', req.file);
+  // console.log('data', data);
+
+  globalFeedChannel.forEach((client: any) => {
+    if (client.readyState === webSocket.OPEN) {
+      client.send(JSON.stringify(feedItems));
+    }
+  });
+
+  res.send(`File ${req.file.filename} uploaded successfully.`)
+})
+
+// ============ Code-block end ============
+
+app.get("/", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
+  res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
+})
+
+app.get('/api/feedItems', (req: any, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { feedItems: { postId: string; authorId: string; author: string; timestamp: Date; media: string; likes: string[]; comments: { commentId: string; author: string; comment: string; }[]; }[]; }): void; new(): any; }; }; }, next: any) => {
+  res.status(200).json({ feedItems: feedItems })
+});
+
+app.put('/api/like', (req: { body: { postId: string; userId: string; }; }, res: { sendStatus: (arg0: number) => void; }, next: any) => {
+  console.log('body', req.body)
+
+  feedItems.forEach((element, elementIndex) => {
+    if (element.postId === req.body.postId) {
+      const index = element.likes.findIndex((el) => {
+        return el == req.body.userId;
+      });
+      if (index != -1) {
+        feedItems[elementIndex].likes.splice(index, 1);
+      } else {
+        element.likes.push(req.body.userId)
+      }
+    }
+  })
+
+  globalFeedChannel.forEach((client: any) => {
+    if (client.readyState === webSocket.OPEN) {
+      client.send(JSON.stringify(feedItems));
+    }
+  });
+
+  res.sendStatus(200)
+})
+
+app.post('/api/comment', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: string): void; new(): any; }; }; }, next: any) => {
+  const body = req.body;
+  console.log('body', body);
+
+  let updatePost;
+
+  feedItems.forEach((element, index): void => {
+    if (element.postId === body.postId) {
+      const newComment = {
+        commentId: "" + Math.random(),
+        author: body.user,
+        comment: body.comment
+      };
+      feedItems[index].comments.push(newComment);
+
+      updatePost = feedItems[index];
+    }
+  });
+
+  globalFeedChannel.forEach((client: any) => {
+    if (client.readyState === webSocket.OPEN) {
+      client.send(JSON.stringify(feedItems));
+    }
+  })
+
+  //Must return
+  res.status(201).json(JSON.stringify(updatePost));
+})
+
+app.put('/api/chat', (req, res, next) => {
+  const body = req.body;
+  console.log('body',body)
+
+  const newMessage = {
+    messageId: 'msg' + Math.random(),
+    username: body.username as string,
+    dateWithTime: '' + new Date(),
+    message: body.messageText as string,
+  };
+
+  let chatElementToAnswer: {
+    chatId: string;
+    chatName: string;
+    chatRoles: { owner: string; };
+    participants: {
+      userId: string;
+      username: string;
+    }[];
+    messages: {
+      messageId: string;
+      username: string;
+      dateWithTime: string;
+      message: string;
+    }[];
+  } | null;
+
+  try {
+    chats.forEach((element, elementIndex) => {
+      if (element.chatId === body.chatId) {
+        const index = element.participants.findIndex((el) => {
+          return el.userId == body.userId;  //Check if user is a participant
+        });
+        if (index != -1) {
+          chats[elementIndex].messages.push(newMessage); //Add the new message in the database
+          chatElementToAnswer = chats[elementIndex];
+        } else {
+          throw 'not a participant';
+        }
+      }
+    })
+  } catch (error) {
+    chatElementToAnswer = null;
+    error == 'not a participant' ? res.sendStatus(401) : res.sendStatus(500);
+  }
+
+  
+
+  genericChatChannel.forEach((client: any) => {
+    if (client.readyState === webSocket.OPEN) {
+      if (chatElementToAnswer) {
+        const answer = {
+          type: 'single chat message',
+          data: chatElementToAnswer,
+        }
+        client.send(JSON.stringify(answer));
+      };
+    }
+  })
+
+  return res.sendStatus(200);
+})
+
 // This route MUST be the last one, as its generic and will redirect the URL to the react-router
-app.get("/*", (req, res, next) => {
+app.get("/*", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
   res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
 })
 

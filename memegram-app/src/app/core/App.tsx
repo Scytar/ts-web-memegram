@@ -1,95 +1,131 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MemegramFeed } from '../../components/templates';
-// import { makeServer } from '../../utils/mirage/mirage';
-import { useQuery } from 'react-query';
 import { Navbar } from '../../components/templates/navbar';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import style from './app.module.scss'
-import { PostSkeleton } from '../../components/skeletons/post';
 import { LoginPage } from '../../components/pages/login';
 import { NewPostModal } from '../../components/templates/new-post-modal';
 import MemegramIcon from '../../imgs/memegram-logo-circle.webp'
 import { UserContext } from '../../contexts/userInfo';
+import { useQuery } from 'react-query';
+import ChatPage from '../../components/pages/chat/index';
+import { useLocation } from 'react-router-dom'
+import gsap from 'gsap'
+import { LogoutPage } from '../../components/pages/logout';
+import { NotificationContextProvider } from '../../contexts/Notifications/NotificationContext';
 
 const App = (): JSX.Element => {
 
-    // Creates a mock server for testing using a MirageJS server
-    // For more information visit https://miragejs.com/
-    // This is being done by using a useEffect to start it that will turn it off if the component unmounts
-    // This mock server pretends to be an actual end point and retur a Json response when called
-    // TODO: remove this before deploy
+    const PageTransitionComponent = (): JSX.Element => {
+        // use gsap to animate the page transition
+        const location = useLocation()
+        const tlRef = useRef(gsap.timeline())
+        const transitionDivRef = useRef(null)
 
-    // useEffect(() => {
-    //     const server = makeServer()
-    //     return () => {
-    //         server.shutdown()
-    //     }
-    // }, []);
 
+        useEffect(() => {
+            tlRef.current.fromTo(transitionDivRef.current, { opacity: 0 }, { opacity: 1, duration: 0 })
+            tlRef.current.fromTo(transitionDivRef.current, { opacity: 1 }, { opacity: 0, duration: 0.5 })
+        }, [location])
+
+        return (
+            <div ref={transitionDivRef} className={style.pageTransitionEnter}>
+            </div>)
+    }
+
+
+    // eslint-disable-next-line
     const [UserInfo, setUserInfo] = useState({
-        token: null,
-        userId: '123', //Feeds an userId for conditional rendering
+        token: '987654321' as string | null,
+        user: null as string | null,
+        userId: null as string | null,
     })
+
+    // {
+    //     token: '987654321',
+    //     user: 'TestUser',
+    //     userId: '123', 
+    // }
 
     useEffect(() => {
         // eslint-disable-next-line
         console.log('UserInfo',UserInfo)
+
     }, [UserInfo])
 
-
+    
+    const loginFetchOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json',
+        },
+        body: JSON.stringify(UserInfo)
+    }
 
     // Authenticate session
-    const { data, isLoading, isError } = useQuery('userInfo', () =>
-        fetch('http://localhost:3030/api/userInfo')
+    //TODO: create a singleton for this fetch
+    const { data, isLoading, isError } = useQuery('userInfo', () => 
+        fetch('http://localhost:3030/api/login/' + UserInfo.token, loginFetchOptions)
             .then((res) => {
                 return res.json();
             })
-            // eslint-disable-next-line
-            .catch(e => console.log(e))
-    );
+            ,
+        {
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+            refetchOnReconnect: false,
+            refetchInterval: false,
+            refetchIntervalInBackground: false,
+        }
+    )
+
+    const handleLogout = (): void => {
+        setUserInfo({
+            token: null,
+            user: null,
+            userId: null,
+        });
+        // TODO: uncomment this after authentication flow is completed
+        // window.history.pushState(null,'','/')
+        // window.history.go();
+    }
 
     useEffect(() => {
-        // eslint-disable-next-line
-        console.log('data', data);
-        // eslint-disable-next-line
-        console.log('isLoading', isLoading);
-        // eslint-disable-next-line
-        console.log('isError', isError);
         if (data && !isLoading && !isError) {
             setUserInfo(data.userInfo)
-            // eslint-disable-next-line
-            console.log('setUserInfo', data);
         }
 
-    }, [data])
+    }, [data]);
 
 
     return (
-        <div id={style.appDiv}>
+        <div className={style.appDiv}>
+            <NotificationContextProvider>
             <UserContext.Provider value={UserInfo}>
                 <BrowserRouter>
-                    {isLoading ? 
-                    <img className={style.placeholder} src={MemegramIcon} />
-                        : 
+                    {isLoading ?
+                        <img className={style.placeholder} src={MemegramIcon} />
+                        :
                         UserInfo?.userId ?
                             <>
                                 <Navbar />
+                                <PageTransitionComponent />
                                 <Routes>
                                     {/* TODO: Create all pages components */}
                                     <Route path='/' element={<MemegramFeed />} />
-                                    <Route path='/chats' element={<h2>Chats Page</h2>} />
+                                    <Route path='/chats' element={<ChatPage />} />
                                     <Route path='/new-post' element={<NewPostModal />} />
-                                    <Route path='/logout' element={<h2>Logout</h2>} />
-                                    <Route path='*' element={<h2>404 Not Found</h2>} />
+                                    <Route path='/logout' element={<LogoutPage handleLogout={handleLogout} />} />
+                                    <Route path='*' element={<><h2>404 Not Found</h2><img className={style.placeholder} src={MemegramIcon} /></>} />
                                 </Routes>
-                                <PostSkeleton />
                             </>
                             : <>
-                                <LoginPage />
+                                <LoginPage setUserInfo={setUserInfo}/>
                             </>}
                 </BrowserRouter>
             </UserContext.Provider>
-        </div> //to do call a route
+            </NotificationContextProvider>
+        </div>
     )
 }
 

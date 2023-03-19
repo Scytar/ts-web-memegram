@@ -1,0 +1,563 @@
+
+.chatDashboardParent {   
+    max-width: 470px;
+    width: 100vw;
+    position: relative;
+    height: 100%;
+    height: calc(100vh - 3rem);
+    overflow-x: hidden;
+}
+
+.editModalMasterParentThatReceivesGSAP {
+    position: absolute;
+    transform: translateX(100%);
+    width:100vw;
+    height:100%;
+    height: calc(100vh - 3rem);
+    top:0;
+}
+
+.chatEditModalIcon {
+            width: 64px;
+            height: 64px;
+            color: #000;
+            fill: #000;
+            padding: 4px;
+}
+
+.closeIconButton {
+    width: 32px;
+    height: 32px;
+    color: #000;
+    fill: #000;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    cursor: pointer;
+    border-radius: 32px;
+    user-select: none;
+    
+    &:hover {
+        background-color: #EEE;
+    }
+
+    &:active {
+        background-color: #AAA;
+    }
+}
+
+.editChatModalParent {
+    position: absolute;
+    z-index: 90;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFF;
+}
+
+.editChatModalContainer {
+    width: 100vw;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #000;
+    border-radius: 1rem;
+    background-color: #FFF;
+}
+
+.editChatInput {
+    padding: 0.25rem 1rem;
+    border: 1px solid #000;
+    border-radius: 0.25rem;
+    background-color: #FFF0;
+    color: #000;
+
+    &:hover {
+        background-color: #EEE8;
+    }
+    
+    &:focus {
+        background-color: #EEE;
+    }
+}
+
+.editChatAddParticipantContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.participantDisplayContainer {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.2rem;
+    overflow-y: scroll;
+    border: none;
+    border-right: 4px solid #EEE8;
+
+    &::-webkit-scrollbar-track {
+        width: 12px;
+        border: 0 solid #0000;
+        border-radius: 12px;
+        background-color: #EEE8;
+
+        &:hover {
+            background-color: #EEE;
+        }
+    }
+
+    &::-webkit-scrollbar-thumb {
+        width: 12px;
+        border: 0 solid #0000;
+        border-radius: 12px;
+        background-color: #0C8CE980;
+
+        &:hover {
+            background-color: #0C8CE9;
+        }
+    }
+}
+
+.participantDisplay {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    text-overflow: ellipsis;
+    background-color: #EEE;
+}
+
+.addParticipantButton {
+    width: 32px;
+    height: 32px;
+    color: #000;
+    fill: #000;
+    padding: 4px;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    border-radius: 32px;
+    user-select: none;
+    
+    &:hover {
+        background-color: #EEE;
+    }
+
+    &:active {
+        background-color: #AAA;
+    }
+}
+
+.removeParticipantButton {
+    width: 32px;
+    height: 32px;
+    color: #000;
+    fill: #000;
+    padding: 4px;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    border-radius: 32px;
+    user-select: none;
+    background-color: #EEE;
+    
+    &:hover {
+        background-color: #AAA;
+    }
+
+    &:active {
+        background-color: #FFF;
+    }
+}
+
+.editModalConfirmButton {
+    width: 120px;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: #0C8CE9;
+    color: #FFF;
+    border: 1px solid #0000;
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #4baaee;
+    }
+
+    &:active {
+        background-color: #f8f8f8;
+        border: 1px solid black;
+        color: black;
+    }
+}
+
+// List of all chats the user is able to access
+.chatListContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    overflow-y: scroll;
+    gap: 0.2rem;
+
+    &::-webkit-scrollbar-track {
+        width: 12px;
+        border: 0 solid #0000;
+        border-radius: 12px;
+        background-color: #EEE8;
+
+        &:hover {
+            background-color: #EEE;
+        }
+    }
+
+    &::-webkit-scrollbar-thumb {
+        width: 12px;
+        border: 0 solid #0000;
+        border-radius: 12px;
+        background-color: #0C8CE980;
+
+        &:hover {
+            background-color: #0C8CE9;
+        }
+    }
+}
+
+.chatLabelCreateNewChatContainer {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1rem;
+    font-weight: 800;
+    background-color: #FFF;
+    
+    &:hover {
+        background-color: #EEE;
+    }
+
+    &:active {
+        background-color: #AAA;
+    }
+}
+
+.chatLabelSingleContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+    border: 1px solid #444;
+    border-radius: 0.25rem;
+    background-color: #FFF;
+    transition-duration: 200ms;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #0C8CE980;
+    }
+
+    &:active {
+        background-color: #0C8CE9;
+    }
+
+    .chatLabelName {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        font-weight: 500;
+        user-select: none;
+    }
+    
+    .chatLabelOptionsContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        user-select: none;
+    }
+
+}
+
+.chatOptionsIcon {
+    width: 32px;
+    height: 32px;
+    color: var(--primary-color);
+    fill: var(--primary-color);
+    padding: 2px;
+    border-radius: 32px;
+
+    &:hover {
+        background-color: #AAA;
+    }
+
+    &:active {
+        background-color: #FFF;
+    }
+}
+
+// The current active chat window
+.currentChatContainer {
+    position: absolute;
+    background-color: whitesmoke;
+    width: 100vw;
+    height: calc(100vh - 3rem);
+    max-width: 470px;   
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFF;
+    z-index: 5;
+    top: 0;    
+    transform: translateX(-100%);
+
+}
+
+.singleChatContainer{
+    width: 100vw;
+    height: calc(100vh - 3rem);
+    display: flex;
+    flex-direction: column;    
+    align-items: stretch;      
+    overflow-y: scroll;
+}
+
+.topLabelContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #0C8CE980;
+    border: 1px solid #000;
+    border-radius: 0.5rem 0.5rem 0 0;
+    z-index: 10;
+
+    .leftChatLabelDiv {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+
+        .chatBackButton {
+            width: 32px;
+            height: 32px;
+            color: #000;
+            fill: #000;
+            padding: 0.25rem;
+            cursor: pointer;
+            border-radius: 32px;
+            user-select: none;
+
+            &:hover {
+                background-color: #EEE;
+            }
+        
+            &:active {
+                background-color: #AAA;
+            }
+        }
+    }
+
+    .rightChatLabelDiv {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.chatActiveContainer {
+    width: 100%;
+    height: 100vh;
+    max-height: calc(100vh - 3rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.25rem 2rem;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+}
+
+.otherChatContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 0;
+
+    .otherUserLabel {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .otherChatBubble {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        padding: 0.25rem 1rem;
+        background-color: #EEE8;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #000;
+        border: 1px solid #888;
+        border-radius: 0.1rem 1rem 1rem 1rem;
+    }
+}
+
+
+.myChatContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: end;
+
+    .myChatBubble {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: end;
+        padding: 0.25rem 1rem;
+        background-color: #0C8CE940;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #000;
+        border: 1px solid #0C8CE9;
+        border-radius: 1rem 1rem 0.1rem 1rem;
+    }
+}
+
+.bottomChatInputs {
+    height:3rem;
+    width: 100%;
+    position: relative;
+    bottom:0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25rem;
+    gap: 0.25rem;
+    background-color: #0000;
+    z-index: 100;
+
+    .mainTextInput {
+        width: 100%;
+        padding: 0 0.5rem;
+        border-radius: 0.35rem;
+        border: 1px solid #444;
+        background-color: #EEE4;
+        color: #000;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        font-weight: 500;
+        resize: none;
+        user-select: contain;
+
+        &:hover {
+            background-color: #EEEA;
+        }
+
+        &:focus {
+            background-color: #EEE;
+        }
+    }
+
+    .isLoadingTextInput {
+        width: 100%;
+        padding: 0 0.5rem;
+        border-radius: 0.35rem;
+        border: 1px solid #444;
+        background-color: #EEE8;
+        color: #000;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        font-weight: 500;
+        resize: none;
+        user-select: none;
+        cursor: not-allowed;
+    }
+
+    
+    .isErrorTextInput {
+        width: 100%;
+        padding: 0 0.5rem;
+        border-radius: 0.35rem;
+        border: 1px solid #ff3b3b;
+        background-color: #ff3b3b80;
+        color: #000;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        font-weight: 500;
+        resize: none;
+        user-select: none;
+        cursor: not-allowed;
+    }
+
+    .sendChatButton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        background-color: #FFF8;
+        border: 1px solid #888;
+        border-radius: 32px;
+        fill: #888;
+        color: #888;
+        user-select: none;
+
+        &:hover {
+            background-color: #FFFA;
+            border: 1px solid #444;
+            fill: #444;
+            color: #444;
+        }
+
+        &:active {
+            background-color: #FFF;
+            border: 1px solid #0C8CE9;
+            background-color: #0C8CE920;
+            fill: #000;
+            color: #000;
+        }
+
+        .singleSendComponent {
+            position: absolute;
+            border-radius: 500rem;
+            transition: 100ms ease-in-out;
+            transform: scale(0.9) rotate(0deg);
+
+            &:hover {
+                transform: scale(0.9) rotate(-40deg);
+            }
+            
+            &:active {
+                transform: scale(1.1) rotate(-40deg);
+                fill: #0C8CE9
+            }
+        }
+    }
+}

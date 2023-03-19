@@ -4,7 +4,7 @@ import { PostHeader, PostMedia, ICommentProps } from '../../atoms'
 import { PostActions, PostComments } from '../../molecules'
 
 export interface IPostProps {
-  key: string
+  postId: string
   authorId: string
   author: string
   timestamp: Date
@@ -13,9 +13,7 @@ export interface IPostProps {
   comments: ICommentProps[]
 }
 
-const Post = (props: {props:IPostProps}): JSX.Element => {
-
-  const postElement: IPostProps = props.props;
+const Post = (postInfo: IPostProps): JSX.Element => {
 
   const [expanded, setExpanded] = useState(false)
 
@@ -26,16 +24,16 @@ const Post = (props: {props:IPostProps}): JSX.Element => {
 
   return (
     <Card sx={{ maxWidth: '470px' }}>
-      <PostHeader title={postElement.author} subheader={postElement.timestamp} />
-      <PostMedia image={postElement.media} />
+      <PostHeader {...postInfo} />
+      <PostMedia {...postInfo} /> 
       <PostActions
-        postId={postElement.key}
-        expanded={expanded}
+        postInfo={postInfo}
         handleExpandClick={handleExpandClick}
-        likeCounts={postElement.likes.length}
-        commentCounts={postElement.comments.length}
-      />
-      <PostComments commentsFromServer={postElement.comments} expanded={expanded} />
+        expanded={expanded}
+      /> 
+      <PostComments 
+      postInfo={postInfo} 
+      expanded={expanded} />
     </Card>
   )
 }

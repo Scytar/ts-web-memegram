@@ -2,6 +2,7 @@
     font-family: var(--font-heading);
     font-size: 2.5rem;
     text-decoration: none;
+    user-select: none;
 }
 
 .homeContainer {
@@ -12,9 +13,26 @@
     align-items: center;
     cursor: pointer;
     text-decoration: none;
+    background-color: #FFF;
+    border-radius: 3rem;
+
+    &:hover {
+        background-color: #EEE;
+    }
+
+    &:active {
+        background-color: #AAA;
+    }
 }
 
 a {
     text-decoration: none;
     color: var(--color-primary);
+}
+
+.homeIcon {
+    width: 38px;
+    height: 38px;
+    color: var(--color-blend);
+    fill: var(--color-primary);
 }

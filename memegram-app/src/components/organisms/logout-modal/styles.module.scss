@@ -1,0 +1,65 @@
+.logoutModalContainer {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #000;
+    border-radius: 1rem;
+    background-color: #FFF;
+
+    .buttonsContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .confirmButton {
+        width: 12rem;
+        font-weight: 700;
+        font-size: 1rem;
+        padding: 0.5rem 0;
+        background-color: #0C8CE9;
+        color: #FFF;
+        border: 1px solid #0000;
+        border-radius: 0.25rem;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #0C8CE9A0;
+        }
+
+        &:active {
+            color: #000;
+            background-color: #FFF;
+            border: 1px solid #000;
+        }
+    }
+
+    
+    .cancelButton {
+        width: 12rem;
+        font-weight: 700;
+        font-size: 0.9rem;
+        background-color: #ff3b3b;
+        padding: 0.25rem 0;
+        color: #FFF;
+        border: 1px solid #0000;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        
+        &:hover {
+            background-color: #ff3b3bA0;
+        }
+
+        &:active {
+            color: #000;
+            background-color: #FFF;
+            border: 1px solid #000;
+        }
+    }
+}

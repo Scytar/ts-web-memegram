@@ -1,31 +1,25 @@
 import CardActions from '@mui/material/CardActions';
-
-
-
+import { IPostProps } from '../../organisms';
 import { CommentButton, LikeButton, ExpandButton, Counter } from '../../atoms';
 
-
 export interface IPostActionsProps {
-  postId: string
-  handleExpandClick: () => void
-  expanded: boolean
-  likeCounts: number
-  commentCounts: number
+  postInfo: IPostProps,
+  handleExpandClick: () => void,
+  expanded: boolean,
 }
 
 const PostActions = ({
-  postId,
+  postInfo,
   handleExpandClick,
-  expanded,
-  likeCounts,
-  commentCounts,
-}: IPostActionsProps): JSX.Element => {
+  expanded }: IPostActionsProps): JSX.Element => {
   return (
     <CardActions disableSpacing>
-      <LikeButton postId={postId} />
-      <Counter count={likeCounts} />
+      <LikeButton 
+      postId={postInfo.postId}
+      postLikes={postInfo.likes}  />
+      <Counter count={postInfo.likes.length} />
       <CommentButton handleExpandClick={handleExpandClick} />
-      <Counter count={commentCounts} />
+      <Counter count={postInfo.comments.length} />
       <ExpandButton expanded={expanded} handleExpandClick={handleExpandClick} />
     </CardActions>
   )

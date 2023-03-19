@@ -1,17 +1,15 @@
 import { CardHeader } from '@mui/material'
+import { IPostProps } from '../../organisms'
 
-export interface IPostHeaderProps {
-  title: string
-  subheader: Date
-  className?: string
-}
+// export interface IPostHeaderProps {
+//   title: string
+//   subheader: Date
+//   className?: string
+// }
 
-const PostHeader = ({
-  title,
-  subheader
-}: IPostHeaderProps ): JSX.Element => {
+const PostHeader = (postInfo: IPostProps ): JSX.Element => {
 
-  const dateFromServer: Date = new Date(subheader)
+  const dateFromServer: Date = new Date(postInfo.timestamp)
 
   const dateOptions: Intl.DateTimeFormatOptions = {
     day: 'numeric',
@@ -29,7 +27,7 @@ const PostHeader = ({
 
   const dateToDisplay = `${timePart} - ${datePart}`;
 
-  return <CardHeader title={title} subheader={dateToDisplay} />
+  return <CardHeader title={postInfo.author} subheader={dateToDisplay} />
 }
 
 export { PostHeader }

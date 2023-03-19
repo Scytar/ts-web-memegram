@@ -1,12 +1,19 @@
 .commentContainer {
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     padding: 0 0.5rem;
     margin-bottom: 0.2rem;
     border-radius: 0.5rem;
     cursor: default;
+    max-width: 420px;
+    word-wrap: break-word;
 
     &:hover {
         background-color: #EEE;
+    }
+
+    .commentText {
+        max-width: 85vw;
     }
 }

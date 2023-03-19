@@ -3,8 +3,23 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  width: 2rem;
-  height: 2rem;
-  fill: var(--color-blend);
+  width: 38px;
+  height: 38px;
+  padding: 3px;
+  border: 1px solid #0000;
+  border-radius: 32px;
+  fill: var(--color-primary);
   cursor: pointer;
+
+
+  &:hover {
+    background-color: #EEE;
+    fill: var(--color-secondary);
+  }
+
+  &:active {
+    background-color: #FFF;
+    fill: #0C8CE9;
+    border: 1px solid #000;
+  }
 }
