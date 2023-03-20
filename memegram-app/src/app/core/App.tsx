@@ -85,6 +85,7 @@ const App = (): JSX.Element => {
             user: null,
             userId: null,
         });
+        window.history.back();
         // TODO: uncomment this after authentication flow is completed
         // window.history.pushState(null,'','/')
         // window.history.go();

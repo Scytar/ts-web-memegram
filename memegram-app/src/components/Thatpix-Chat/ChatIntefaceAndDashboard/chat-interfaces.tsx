@@ -50,7 +50,7 @@ export interface IActiveConversationsDisplayProps {
   data: any,
   chatDashboardState: any,
   setChatDashboardState: (any: any) => void,
-  handleDeleteConversation: (conversationId: string) => void,
+  handleDeleteConversation: (conversationId: string, conversationName: string, conversationOwner: { owner: string }) => void,
   handleSelectConversation: (conversationId: string) => void,
   handleOpenEditOrCreateConversationModal: (chatId: string,  chatName: string, chatRoles: {
     owner: string,}, participants: ISingleConversationParticipant[]) => void,

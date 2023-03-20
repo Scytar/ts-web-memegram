@@ -2,7 +2,7 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 /* eslint-disable  @typescript-eslint/no-unused-vars */
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import ActiveConversationsDisplay from './ActiveConversationsDisplay';
 import SingleConversation from './SingleConversation';
 // import gsap from 'gsap'
@@ -13,8 +13,14 @@ import gsap from 'gsap';
 import useChatWebsocket from '../useChatWebsocket';
 import { IChatDashboardState } from './chat-interfaces';
 import { ISingleConversationParticipant } from './chat-interfaces';
+import { UserContext } from '../../../contexts/userInfo';
+import { useNotificationContext } from '../../../contexts/Notifications/NotificationContext';
 
 export default function ChatsDashboard(): JSX.Element {
+
+  const UserInfo = useContext(UserContext);
+
+  const { notify } = useNotificationContext();
 
   // This custom hook below is in charge of connecting to the websocket related to the chat
   // it also automatically close the connection when the component is unmounted  
@@ -53,7 +59,7 @@ export default function ChatsDashboard(): JSX.Element {
   //////////////////////////////////////////////////////////
   // handlers to be used by EditingOptionsModal
 
-  const unfuckTheState = (fuckedState:any):any => {
+  const unfuckTheState = (fuckedState: any): any => {
     // unbindscompletely the state or object and returns a JSON
     // very useful when there is object internal binding that is causing problems
     // for example, pushing an item in an array and then seeing that same item appearing in another array
@@ -66,7 +72,7 @@ export default function ChatsDashboard(): JSX.Element {
     // EditingOptionsModal is rendered
     // it will take the data from the currently loaded chat and update the temporary queue
     // to be sent to the server possibly in the future
-    
+
     const temporaryState = unfuckTheState(chatDashboardState);
     temporaryState.queueOfChangesForServerUpdatingOfInformation = unfuckTheState(temporaryState.currentEditingOrCreatingOptionsModal);
     setChatDashboardState(temporaryState);
@@ -82,12 +88,22 @@ export default function ChatsDashboard(): JSX.Element {
 
     let temporaryState = { ...chatDashboardState }
     temporaryState.queueOfChangesForServerUpdatingOfInformation.participants.push(participant)
-    console.log(temporaryState)
     setChatDashboardState(temporaryState)
   }
 
   const removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer = (participant: ISingleConversationParticipant) => {
-    console.log('removing participant from chat in the temporary queue to be sent to the server')
+    console.log('Remove participant', participant)
+    let temporaryState = { ...chatDashboardState }
+    // Look for the username match that the owner wants to remove
+    for (let index = 0; index < temporaryState.queueOfChangesForServerUpdatingOfInformation.participants.length; index++) {
+      const element = temporaryState.queueOfChangesForServerUpdatingOfInformation.participants[index];
+      if (element.username === participant.username) {
+        console.log('Found the participant to remove', element)
+        temporaryState.queueOfChangesForServerUpdatingOfInformation.participants.splice(index, 1);
+      }
+    }
+    console.log(temporaryState.queueOfChangesForServerUpdatingOfInformation)
+    setChatDashboardState(temporaryState);
   }
 
 
@@ -100,24 +116,41 @@ export default function ChatsDashboard(): JSX.Element {
     // the temporary queue will be reset to its initial state
     // the editing component will be closed
 
-    console.log(
-      'sending the temporary queue to the server. The information being sent is:',
-      chatDashboardState.queueOfChangesForServerUpdatingOfInformation)
 
-    fetch('/api/chats/updateChat', {
+    const body = { //Body to be sent
+      userId: UserInfo.userId as string,
+      chatId: chatDashboardState.queueOfChangesForServerUpdatingOfInformation.chatId as string,
+      chatName: chatDashboardState.queueOfChangesForServerUpdatingOfInformation.chatName as string,
+      chatRoles: chatDashboardState.queueOfChangesForServerUpdatingOfInformation.chatRoles as { owner: string },
+      participants: chatDashboardState.queueOfChangesForServerUpdatingOfInformation.participants as { userId: string, username: string }[],
+    }
+
+    fetch('http://localhost:3030/api/chats/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(chatDashboardState.queueOfChangesForServerUpdatingOfInformation),
+      body: JSON.stringify(body),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('Success:', data);
-        handleCloseEditOrCreateConversationModal()
+      .then((response) => {
+        if (response.status === 200) {
+          notify({
+            id: JSON.stringify('chatUpdate' + Date.now() + Math.random()),
+            message: `Chat ${body.chatName} atualizado com sucesso! 👍`,
+            type: 'success',
+            duration: 'short',
+          })
+          handleCloseEditOrCreateConversationModal();
+        }
       })
       .catch((error) => {
         console.error('Error:', error);
+        notify({
+          id: JSON.stringify('chatUpdate' + Date.now() + Math.random()),
+          message: 'Erro ao atualizar chat! 😵‍💫',
+          type: 'error',
+          duration: 'long',
+        })
       }
       );
   }
@@ -156,8 +189,48 @@ export default function ChatsDashboard(): JSX.Element {
     }
   }, [chatDashboardState.isConversationOpen])
 
-  const handleDeleteConversation = (chatId: string) => {
-    console.log('deleteConversation')
+  const handleDeleteConversation = (chatId: string, chatName: string, chatRoles: { owner: string }) => {
+
+    const body = { //Body to be sent
+      userId: UserInfo.userId as string,
+      chatId: chatId as string,
+      chatName: chatName,
+      chatRoles: chatRoles as { owner: string },
+    }
+
+    fetch('http://localhost:3030/api/chats/', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          notify({
+            id: JSON.stringify('chatDelete' + Date.now() + Math.random()),
+            message: `Chat ${body.chatName} foi excluído para sempre 😭`,
+            type: 'info',
+            duration: 'long',
+          })
+        } else {
+          notify({
+            id: JSON.stringify('chatDelete' + Date.now() + Math.random()),
+            message: `Erro ao excluir o chat! 😵‍💫`,
+            type: 'error',
+            duration: 'long',
+          })
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        notify({
+          id: JSON.stringify('chatDelete' + Date.now() + Math.random()),
+          message: 'Erro ao excluir o chat! 😵‍💫',
+          type: 'error',
+          duration: 'long',
+        })
+      })
   }
 
   const handleOpenEditOrCreateConversationModal = (chatId: string, chatName: string, chatRoles: {
@@ -269,6 +342,7 @@ export default function ChatsDashboard(): JSX.Element {
             handleCloseEditOrCreateConversationModal={handleCloseEditOrCreateConversationModal}
             updateTheTemporaryQueueToBeSentToTheServer={updateTheTemporaryQueueToBeSentToTheServer}
             addNewPossibleParticipantToChatInTheTemporaryQueueToBeSentToTheServer={addNewPossibleParticipantToChatInTheTemporaryQueueToBeSentToTheServer}
+            removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer={removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer}
             sendTheTemporaryQueueToBeSentToTheServer={sendTheTemporaryQueueToBeSentToTheServer}
             setChatDashboardState={setChatDashboardState}
             chatDashboardState={chatDashboardState}

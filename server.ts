@@ -1,3 +1,5 @@
+import { IChatElement } from "./memegram-app/src/interfaces/http/chat";
+
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
@@ -338,7 +340,7 @@ ws.on('connection', (socket: any, req: any) => {
 });
 // =============== END of Websocket Channels ===============
 
-app.post('/api/login/:token?', (req, res, next) => {
+app.post('/api/login/:token?', (req: { params: { token: string; }; body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userInfo: { token: string; userId: string; user: string; }; }): any; new(): any; }; }; sendStatus: (arg0: number) => any; }, next: any) => {
   //TODO: do authentication properly
   if (req.params.token == '987654321') return res.status(200).json({ userInfo: userInfo })
 
@@ -350,7 +352,7 @@ app.post('/api/login/:token?', (req, res, next) => {
   return res.sendStatus(401);
 })
 
-app.post('/api/signup', (req, res, next) => {
+app.post('/api/signup', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userInfo: { token: string; userId: any; user: any; }; }): void; new(): any; }; }; }, next: any) => {
   // Mock of user registration
   const body = req.body;
   const newUser = {
@@ -395,9 +397,6 @@ app.post('/api/upload', upload.single('file'), (req: { body: { body: string; }; 
   }
 
   feedItems.push(newPost);
-  // console.log(`req`, req)
-  // console.log('file', req.file);
-  // console.log('data', data);
 
   globalFeedChannel.forEach((client: any) => {
     if (client.readyState === webSocket.OPEN) {
@@ -419,7 +418,6 @@ app.get('/api/feedItems', (req: any, res: { status: (arg0: number) => { (): any;
 });
 
 app.put('/api/like', (req: { body: { postId: string; userId: string; }; }, res: { sendStatus: (arg0: number) => void; }, next: any) => {
-  console.log('body', req.body)
 
   feedItems.forEach((element, elementIndex) => {
     if (element.postId === req.body.postId) {
@@ -445,7 +443,6 @@ app.put('/api/like', (req: { body: { postId: string; userId: string; }; }, res: 
 
 app.post('/api/comment', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: string): void; new(): any; }; }; }, next: any) => {
   const body = req.body;
-  console.log('body', body);
 
   let updatePost;
 
@@ -472,9 +469,9 @@ app.post('/api/comment', (req: { body: any; }, res: { status: (arg0: number) => 
   res.status(201).json(JSON.stringify(updatePost));
 })
 
-app.put('/api/chat', (req, res, next) => {
+// User sent a new chat message
+app.put('/api/chat', (req: { body: any; }, res: { sendStatus: (arg0: number) => any; }, next: any) => {
   const body = req.body;
-  console.log('body',body)
 
   const newMessage = {
     messageId: 'msg' + Math.random(),
@@ -515,16 +512,17 @@ app.put('/api/chat', (req, res, next) => {
     })
   } catch (error) {
     chatElementToAnswer = null;
-    error == 'not a participant' ? res.sendStatus(401) : res.sendStatus(500);
+    error == 'not a participant' ? res.sendStatus(403) : res.sendStatus(500);
   }
 
-  
 
+
+  //Send websocket message to all clients in the chat channel
   genericChatChannel.forEach((client: any) => {
     if (client.readyState === webSocket.OPEN) {
       if (chatElementToAnswer) {
         const answer = {
-          type: 'single chat message',
+          type: 'single chat',
           data: chatElementToAnswer,
         }
         client.send(JSON.stringify(answer));
@@ -534,6 +532,107 @@ app.put('/api/chat', (req, res, next) => {
 
   return res.sendStatus(200);
 })
+
+// Owner of chat updated or created a chat
+app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) => any; }, next: any) => {
+  const body = req.body;
+
+  let chatElementToAnswer: IChatElement | null = null;
+
+  try {
+    if (body.chatId === '0') {
+
+      let participantsList: { userId: string, username: string }[] = [];
+
+      body.participants.forEach((participant: { userId: string, username: string }) => {
+        const newParticipant = {  //Mocking a check for the username provided in the database
+          userId: participant.username,
+          username: participant.username,
+        }
+        participantsList.push(newParticipant);
+      });
+
+      chatElementToAnswer = {
+        chatId: '' + Math.random(),
+        chatName: body.chatName,
+        chatRoles: {
+          owner: body.userId,
+        },
+        participants: participantsList, //The server needs to check if the all the users exist before setting this value
+        messages: []
+      }
+
+      chats.push(chatElementToAnswer);
+
+      //Send websocket message to all clients in the chat channel
+      genericChatChannel.forEach((client: any) => {
+        if (client.readyState === webSocket.OPEN) {
+          if (chatElementToAnswer) {
+            const answer = {
+              type: 'single chat',
+              data: chatElementToAnswer,
+            }
+            client.send(JSON.stringify(answer));
+          };
+        }
+      })
+    } else {
+      chats.forEach((element, elementIndex) => {
+        if (element.chatId === body.chatId && body.userId === element.chatRoles.owner) { // Check if user is the owner
+          chats[elementIndex].participants = body.participants;
+          chats[elementIndex].chatName = body.chatName;
+
+          chatElementToAnswer = chats[elementIndex];
+        }
+
+        //Send websocket message to all clients in the chat channel
+        genericChatChannel.forEach((client: any) => {
+          if (client.readyState === webSocket.OPEN) {
+            if (chatElementToAnswer) {
+              const answer = {
+                type: 'single chat',
+                data: chatElementToAnswer,
+              }
+              client.send(JSON.stringify(answer));
+            };
+          }
+        })
+      })
+    }
+  } catch (error) {
+    chatElementToAnswer = null;
+    error == 'not a participant' ? res.sendStatus(403) : res.sendStatus(500);
+  }
+  chatElementToAnswer ? res.sendStatus(200) : null;
+})
+
+app.delete('/api/chats', (req: { body: any; }, res: { sendStatus: (arg0: number) => void; }, next: any) => {
+  const body = req.body;
+  console.log('delete',body);
+
+  if (body.userId === body.chatRoles.owner) {
+    chats.forEach((element, elementIndex) => {
+      if (element.chatId === body.chatId) {
+        chats[elementIndex].participants = [];
+        res.sendStatus(200);
+
+        genericChatChannel.forEach((client: any) => {
+          if (client.readyState === webSocket.OPEN) {
+            const answer = {
+              type: 'single chat',
+              data: chats[elementIndex],
+            }
+            client.send(JSON.stringify(answer));
+          };
+        })
+      }
+    })
+  } else {
+    res.sendStatus(403);
+  }
+})
+
+
 
 // This route MUST be the last one, as its generic and will redirect the URL to the react-router
 app.get("/*", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
