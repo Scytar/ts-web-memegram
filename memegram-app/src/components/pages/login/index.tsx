@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction, useState } from 'react';
-import styles from './styles.module.scss'
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import styles from './styles.module.scss';
+import { useNotificationContext } from '../../../contexts/Notifications/NotificationContext';
 
 
 const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStateAction<{ token: string | null; user: string | null; userId: string | null; }>> }): JSX.Element => {
@@ -15,6 +16,8 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
     const [password, setPassword] = useState('');
 
     const [passwordConfirm, setPasswordConfirm] = useState('');
+
+    const { notify } = useNotificationContext();
 
     const handlePageSwap = (e: React.MouseEvent<HTMLAnchorElement>): void => {
         e.preventDefault();
@@ -48,13 +51,23 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
         // Login input checks
         if (email.length < 4) {
             setFetchStatus('error')
-            alert('E-mail precisa ter pelo menos 4 letras!')
+            notify({
+                id: JSON.stringify('chatUpdate' + Date.now() + Math.random()),
+                message: `E-mail precisa ter pelo menos 4 letras!`,
+                type: 'warning',
+                duration: 'short',
+            })
             return
         }
 
         if (password.length < 4) {
             setFetchStatus('error')
-            alert('Senha precisa ter pelo menos 4 letras!')
+            notify({
+                id: JSON.stringify('chatUpdate' + Date.now() + Math.random()),
+                message: `Senha precisa ter pelo menos 4 letras!`,
+                type: 'warning',
+                duration: 'short',
+            })
             return
         }
 
@@ -86,9 +99,20 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
                 setFetchStatus('error')
                 console.log('Error:', error)
                 error.status != 401 ?
-                    alert('Erro ao enviar/receber informações de acesso') :
-                    (email === '' || password === '') ? 
-                    null : alert('Credenciais incorretas')
+                    notify({
+                        id: JSON.stringify('chatUpdate' + Date.now() + Math.random()),
+                        message: `Erro ao enviar/receber informações de acesso`,
+                        type: 'error',
+                        duration: 'long',
+                    }) :
+                    (email === '' || password === '') ?
+                        null :
+                        notify({
+                            id: JSON.stringify('chatUpdate' + Date.now() + Math.random()),
+                            message: `Credenciais incorretas`,
+                            type: 'warning',
+                            duration: 'short',
+                        })
             })
 
     };
@@ -114,7 +138,7 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
             alert('Senha precisa ter pelo menos 4 letras!')
             return
         }
-        
+
         if (password !== passwordConfirm) {
             setFetchStatus('error')
             alert('Repita a senha corretamente')
@@ -145,6 +169,9 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
                 setUserInfo(data.userInfo)
                 console.log('data', data.userInfo)
                 setFetchStatus('ok')
+                // TODO: uncomment for production
+                // window.history.pushState(null, '', '/');
+                // window.history.go();
             })
             .catch((error: any): void => {
                 setFetchStatus('error')
@@ -153,23 +180,23 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
             })
     };
 
-    const checkEmailValidity = (email: string): boolean => {      
+    const checkEmailValidity = (email: string): boolean => {
         // check if name has any special characters, allowing spaces but dont allow more than one space in a row
-        const regex = /^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ /         
-        if (!regex.test(email)) return false  
-        else{
-          return true
+        const regex = /^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ /
+        if (!regex.test(email)) return false
+        else {
+            return true
         }
     }
 
-    const checkPasswordValidity = (password: string): boolean => {      
+    const checkPasswordValidity = (password: string): boolean => {
         // check if password have at least 4 characters and if its equal to the previously written password
         if (password.length < 4) return false
         if (password !== passwordConfirm) {
             setNotificationError('Repita a senha corretamente')
-            return false      
+            return false
         }
-        else{
+        else {
             return true
         }
     }
@@ -225,7 +252,9 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
                                 className={fetchStatus == 'ok' ? styles.okButton :
                                     fetchStatus == 'loading' ? styles.loadingButton : styles.errorButton
                                 }
-                                onClick={handleSignUpClick}
+                                onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                                    handleSignUpClick(e)
+                                }}
                                 disabled={fetchStatus == 'ok' ? false : true}>
                                 {fetchStatus == 'ok' ? 'Cadastre-se' :
                                     fetchStatus == 'loading' ? 'Enviando...' : 'Erro!'
