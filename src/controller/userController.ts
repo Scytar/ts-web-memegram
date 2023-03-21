@@ -40,3 +40,12 @@ export async function newUser(req: Request, res: Response) {
         return;
     }
 }
+
+export async function logout(req: Request, res: Response) {
+    try {
+        res.clearCookie('token', { httpOnly: true}).status(200).send('Cookie cleared');
+    } catch (error) {
+        console.log('Error clearing cookies from', req.ip, ":", error);
+        res.sendStatus(500);
+    }
+}

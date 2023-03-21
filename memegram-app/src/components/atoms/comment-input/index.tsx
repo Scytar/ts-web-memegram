@@ -28,7 +28,7 @@ const CommentInput = ({postInfo}: {postInfo: IPostProps}): JSX.Element => {
   const request = (_options: any): void => {
     setFetchData('loading');
 
-    fetch('http://localhost:3030/api/comment', _options)
+    fetch('/api/comment', _options)
       .then(res => res.json())
       .then((data) => {
         setFetchData(data);

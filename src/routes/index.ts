@@ -1,6 +1,6 @@
 //rotas
 import * as express from 'express';
-import { login, newUser } from '../controller/userController';
+import { login, newUser , logout} from '../controller/userController';
 import { newItems } from '../controller/postController';
 import { newComment, listComment } from '../controller/commentController';
 import { newLike } from '../controller/likeController';
@@ -16,6 +16,8 @@ router.use(express.json());
 router.post("/login", login);
 //Sign up
 router.post("/newUser", newUser);
+//Logout
+router.get('/logout', logout);
 //Auth - post
 router.post("/upload", authUser, upload.single("media"), newItems);
 //Auth - insert comment
