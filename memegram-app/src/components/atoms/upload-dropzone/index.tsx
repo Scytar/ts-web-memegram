@@ -5,16 +5,18 @@ import style from './style.module.scss';
 import React, { useCallback, useContext, useRef } from 'react';
 import { Accept, useDropzone } from 'react-dropzone';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import BackupIcon from '@mui/icons-material/Backup';
 import CloseIcon from '@mui/icons-material/Close';
 import { UserContext } from '../../../contexts/userInfo';
+import { useNotificationContext } from '../../../contexts/Notifications/NotificationContext';
 
 const Dropzone = (): JSX.Element => {
 
     const userInfo = useContext(UserContext);
 
+    const { notify } = useNotificationContext();
+
     // Must create a handler for user selecting not supported file extension
-    const onDrop = useCallback((acceptedFiles: any[], event: any): void => {   
+    const onDrop = useCallback((acceptedFiles: any[], event: any): void => {
         const file = acceptedFiles[0];
         const formData = new FormData();
 
@@ -26,12 +28,28 @@ const Dropzone = (): JSX.Element => {
             method: 'POST',
             body: formData,
         })
-        .then((res) => res.json()) 
-        // eslint-disable-next-line
-        .then((data) => console.log(data))
-        // eslint-disable-next-line
-        .catch((e) => console.log(e))
-                       
+            // eslint-disable-next-line
+            .then((data) => {
+                notify({
+                    id: JSON.stringify('upload' + Date.now() + Math.random()),
+                    message: "Postagem realizada com sucesso! Confira o Feed!",
+                    type: 'success',
+                    duration: 'short',
+                })
+                window.history.back();
+            })
+            // eslint-disable-next-line
+            .catch((e) => {
+                // eslint-disable-next-line
+                console.error(e);
+                notify({
+                    id: JSON.stringify('message' + Date.now() + Math.random()),
+                    message: 'Falha ao criar uma nova postagem.',
+                    type: 'error',
+                    duration: 'short',
+                })
+            })
+
     }, []);
 
     const acceptedFileExtensions: Accept = {
@@ -58,9 +76,9 @@ const Dropzone = (): JSX.Element => {
     };
 
     return (
-       <div>
+        <div>
             <div {...getRootProps()} className={`dropzone ${style.dropzone} ${getDropzoneClassNames()}`}>
-                <input {...getInputProps()}/>
+                <input {...getInputProps()} />
                 {isDragActive ?
                     <>
                         {/* <BackupIcon className={style.icon}/> 
@@ -85,8 +103,8 @@ const Dropzone = (): JSX.Element => {
                         <span>até 10MB</span>
                     </>
                 }
-            </div> 
-       </div>
+            </div>
+        </div>
     )
 }
 

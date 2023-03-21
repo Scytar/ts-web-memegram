@@ -1,8 +1,11 @@
+
+// eslint-disable-next-line
 import React, { useContext, useEffect, useState } from 'react'
 import { IChatElement } from '../../interfaces/http/chat'
 import { UserContext } from '../../contexts/userInfo';
 import { useNotificationContext } from '../../contexts/Notifications/NotificationContext';
 
+// eslint-disable-next-line
 export default function useChatWebsocket() {
 
     // Scytar ====================================================
@@ -16,17 +19,16 @@ export default function useChatWebsocket() {
     // eslint-disable-next-line
     const [websocketReceivedState, setWebsocketReceivedState] = useState(null as any | null)
 
-    // eslint-disable-next-line
     const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
 
     useEffect(() => {
         if (websocketReceivedState) {
-            // eslint-disable-next-line
-            console.log('websocketReceivedState from useEffect', websocketReceivedState)
+            // console.log('websocketReceivedState from useEffect', websocketReceivedState)
         }
     }, [websocketReceivedState])
 
 
+    // eslint-disable-next-line
     const [wsEventListenerResponse, setWsEventListenerResponse] = useState(null as any | null)
 
     useEffect(() => {
@@ -37,14 +39,11 @@ export default function useChatWebsocket() {
 
         switch (dataFromSocket?.type) {
             case 'global chat':
-                let chatsToDisplay: IChatElement[] = [];
-                const myUser = {
-                    userId: UserInfo.userId as string,
-                    username: UserInfo.user as string,
-                }
+                // eslint-disable-next-line
+                const chatsToDisplay = [];
 
                 for (let index = 0; index < dataFromSocket?.data.length; index++) {
-                    const element: IChatElement = dataFromSocket?.data[index];
+                    const element = dataFromSocket?.data[index];
                     for (let i = 0; i < element.participants.length; i++) {
                         const participant = element.participants[i];
                         (participant.userId === UserInfo.userId) ? chatsToDisplay.push(element) : null
@@ -53,9 +52,11 @@ export default function useChatWebsocket() {
                 setWebsocketReceivedState(chatsToDisplay);
                 break;
             case 'single chat':
-                let temporaryChatData = [...websocketReceivedState];
+                // eslint-disable-next-line
+                const temporaryChatData = [...websocketReceivedState];
 
-                let shouldDisplayChat: boolean = false;
+    // eslint-disable-next-line
+                let shouldDisplayChat = false;
                 // Check if current user is a participant of received data, if so, add the data to the state
 
                 for (let index = 0; index < dataFromSocket.data.participants.length; index++) {
@@ -64,7 +65,7 @@ export default function useChatWebsocket() {
                 }
 
                 for (let index = 0; index < temporaryChatData?.length; index++) {
-                    const element: IChatElement = temporaryChatData[index];
+                    const element = temporaryChatData[index];
                     if (element.chatId === dataFromSocket.data.chatId) {
                         shouldDisplayChat = false;
                     }
@@ -89,6 +90,7 @@ export default function useChatWebsocket() {
                         temporaryChatData[index] = dataFromSocket.data;
                     }
 
+    // eslint-disable-next-line
                     let shouldKeepChat: boolean = false;
                     // Checks if user is still a participant of the chat
                     for (let i = 0; i < element.participants.length; i++) {

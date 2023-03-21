@@ -17,17 +17,16 @@ const MemegramFeed = (): JSX.Element => {
   // eslint-disable-next-line
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
 
-  useEffect(() => {
-    if (feedState) {
-      // eslint-disable-next-line
-      console.log('feedState', feedState)
-    }
-  }, [feedState])
+  // useEffect(() => {
+  //   if (feedState) {
+  //     console.log('feedState', feedState)
+  //   }
+  // }, [feedState])
 
   // eslint-disable-next-line
   function handleWebSocketConnection(ws: WebSocket): void {
     // eslint-disable-next-line
-    console.log('WebSocket connection established');
+    console.log('Feed WebSocket connection established');
 
     ws.addEventListener('message', function (event: MessageEvent) {
       //TODO: refactor ws.message response to only send a specific post data, not the entire feed.
@@ -38,7 +37,7 @@ const MemegramFeed = (): JSX.Element => {
 
     ws.addEventListener('close', function () {
       // eslint-disable-next-line
-      console.log('WebSocket connection closed');
+      console.log('Feed WebSocket connection closed');
     });
   }  
 

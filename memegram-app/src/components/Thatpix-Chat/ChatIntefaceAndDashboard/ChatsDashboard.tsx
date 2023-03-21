@@ -5,8 +5,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import ActiveConversationsDisplay from './ActiveConversationsDisplay';
 import SingleConversation from './SingleConversation';
-// import gsap from 'gsap'
-import NotificationModal from './NotificationModal';
 import EditingOrCreatingOptionsModal from './EditingOptionsModal';
 import styles from './styles.module.scss';
 import gsap from 'gsap';
@@ -67,7 +65,7 @@ export default function ChatsDashboard(): JSX.Element {
     return JSON.parse(JSON.stringify(fuckedState))
   }
 
-  const updateTheTemporaryQueueToBeSentToTheServer = () => {
+  const updateTheTemporaryQueueToBeSentToTheServer = (): void => {
     // this functions is designed to be executed inside a useEffect on the first time the 
     // EditingOptionsModal is rendered
     // it will take the data from the currently loaded chat and update the temporary queue
@@ -78,7 +76,7 @@ export default function ChatsDashboard(): JSX.Element {
     setChatDashboardState(temporaryState);
   }
 
-  const addNewPossibleParticipantToChatInTheTemporaryQueueToBeSentToTheServer = (participant: ISingleConversationParticipant) => {
+  const addNewPossibleParticipantToChatInTheTemporaryQueueToBeSentToTheServer = (participant: ISingleConversationParticipant): void => {
     // the dashboard state is the responsible for keeping track of the changes that the user is making
     // that will ultimately lead to the server to update the information in the database
     // this function takes in consideration that once the editing component is rendered the
@@ -86,28 +84,27 @@ export default function ChatsDashboard(): JSX.Element {
     // this function will change the dashboard queue of changes state to be sent to the server
     // this function will be activated everytime the user clicks to add a new participant
 
+    // eslint-disable-next-line
     let temporaryState = { ...chatDashboardState }
     temporaryState.queueOfChangesForServerUpdatingOfInformation.participants.push(participant)
     setChatDashboardState(temporaryState)
   }
 
-  const removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer = (participant: ISingleConversationParticipant) => {
-    console.log('Remove participant', participant)
+  const removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer = (participant: ISingleConversationParticipant): void => {
+    // eslint-disable-next-line
     let temporaryState = { ...chatDashboardState }
     // Look for the username match that the owner wants to remove
     for (let index = 0; index < temporaryState.queueOfChangesForServerUpdatingOfInformation.participants.length; index++) {
       const element = temporaryState.queueOfChangesForServerUpdatingOfInformation.participants[index];
       if (element.username === participant.username) {
-        console.log('Found the participant to remove', element)
         temporaryState.queueOfChangesForServerUpdatingOfInformation.participants.splice(index, 1);
       }
     }
-    console.log(temporaryState.queueOfChangesForServerUpdatingOfInformation)
     setChatDashboardState(temporaryState);
   }
 
 
-  const sendTheTemporaryQueueToBeSentToTheServer = () => {
+  const sendTheTemporaryQueueToBeSentToTheServer = (): void => {
     // this function will be executed when the user clicks on the save button
     // it will send the temporary queue to the server
     // the server will then update the database and send back the new information
@@ -144,6 +141,7 @@ export default function ChatsDashboard(): JSX.Element {
         }
       })
       .catch((error) => {
+        // eslint-disable-next-line
         console.error('Error:', error);
         notify({
           id: JSON.stringify('chatUpdate' + Date.now() + Math.random()),
@@ -159,7 +157,7 @@ export default function ChatsDashboard(): JSX.Element {
   //////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////
 
-  const handleSelectConversation = (conversationId: string) => {
+  const handleSelectConversation = (conversationId: string): void => {
     // handler that will be passed to the ActiveConversationsDisplay component
     // to be able to open a conversation when the user clicks on it
     // not supposed to be able to execute in the middle of animations
@@ -189,7 +187,7 @@ export default function ChatsDashboard(): JSX.Element {
     }
   }, [chatDashboardState.isConversationOpen])
 
-  const handleDeleteConversation = (chatId: string, chatName: string, chatRoles: { owner: string }) => {
+  const handleDeleteConversation = (chatId: string, chatName: string, chatRoles: { owner: string }): void => {
 
     const body = { //Body to be sent
       userId: UserInfo.userId as string,
@@ -223,6 +221,7 @@ export default function ChatsDashboard(): JSX.Element {
         }
       })
       .catch((error) => {
+        // eslint-disable-next-line
         console.error('Error:', error);
         notify({
           id: JSON.stringify('chatDelete' + Date.now() + Math.random()),
@@ -235,7 +234,7 @@ export default function ChatsDashboard(): JSX.Element {
 
   const handleOpenEditOrCreateConversationModal = (chatId: string, chatName: string, chatRoles: {
     owner: string,
-  }, participants: ISingleConversationParticipant[]) => {
+  }, participants: ISingleConversationParticipant[]): void => {
     // handler that will be passed to the ActiveConversationsDisplay component
     // to be able to open the EditingOrCreatingOptionsModal when the user clicks on the edit button
     // not supposed to be able to execute in the middle of animations
@@ -260,7 +259,7 @@ export default function ChatsDashboard(): JSX.Element {
     }
   }
 
-  const handleCloseEditOrCreateConversationModal = () => {
+  const handleCloseEditOrCreateConversationModal = (): void => {
     // handler that will be passed to the EditingOrCreatingOptionsModal component
     // to be able to close the EditingOrCreatingOptionsModal when the user clicks on the close button
     // not supposed to be able to execute in the middle of animations
@@ -289,7 +288,7 @@ export default function ChatsDashboard(): JSX.Element {
   }
 
 
-  const handleDeselectConversation = () => {
+  const handleDeselectConversation = (): void => {
     // handler that will be passed to the SingleConversation component
     // to be able to close a conversation when the user clicks on the close button
     // different from the handleSelectConversation this handler will not need a listener
@@ -314,9 +313,11 @@ export default function ChatsDashboard(): JSX.Element {
   }
 
 
-  const handleEditOrCreateConversation = (chatId: string) => {
-    console.log('editConversation')
-  }
+  // // eslint-disable-next-line
+  // const handleEditOrCreateConversation = (chatId: string): void => {
+  //   // eslint-disable-next-line
+  //   console.log('editConversation')
+  // }
 
 
 

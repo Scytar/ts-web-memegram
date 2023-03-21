@@ -1,7 +1,7 @@
 import { useContext, useRef, useState } from 'react';
 import { IPostProps } from '../../organisms';
 import { UserContext } from '../../../contexts/userInfo';
-
+import { useNotificationContext } from '../../../contexts/Notifications/NotificationContext';
 import styles from './styles.module.scss';
 
 const CommentInput = ({postInfo}: {postInfo: IPostProps}): JSX.Element => {
@@ -9,6 +9,8 @@ const CommentInput = ({postInfo}: {postInfo: IPostProps}): JSX.Element => {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const [commentContent, setCommentContent] = useState('');
+
+  const { notify } = useNotificationContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
     setCommentContent(e.target.value);
@@ -25,18 +27,20 @@ const CommentInput = ({postInfo}: {postInfo: IPostProps}): JSX.Element => {
   // eslint-disable-next-line
   const request = (_options: any): void => {
     setFetchData('loading');
-    // eslint-disable-next-line
-    console.log('Sent!', _options.body)
 
     fetch('http://localhost:3030/api/comment', _options)
       .then(res => res.json())
       .then((data) => {
         setFetchData(data);
       })
-      .catch((e) => {
+      .catch(() => {
         setFetchData('error');
-        // eslint-disable-next-line
-        console.log(e);
+        notify({
+          id: JSON.stringify('comment' + Date.now() + Math.random()),
+          message: "Erro ao enviar comentário ao servidor",
+          type: 'error',
+          duration: 'short',
+        })
       })
   }
 

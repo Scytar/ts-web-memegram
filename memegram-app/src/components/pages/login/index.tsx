@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import styles from './styles.module.scss';
 import { useNotificationContext } from '../../../contexts/Notifications/NotificationContext';
 
@@ -92,12 +92,14 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
             })
             .then((data): void => {
                 setUserInfo(data.userInfo)
-                console.log('data', data.userInfo)
+                // console.log('data', data.userInfo)
                 setFetchStatus('ok')
             })
+            // eslint-disable-next-line
             .catch((error: any): void => {
                 setFetchStatus('error')
-                console.log('Error:', error)
+                // eslint-disable-next-line
+                console.error('Error:', error)
                 error.status != 401 ?
                     notify({
                         id: JSON.stringify('chatUpdate' + Date.now() + Math.random()),
@@ -167,19 +169,22 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
             })
             .then((data): void => {
                 setUserInfo(data.userInfo)
-                console.log('data', data.userInfo)
+                // console.log('data', data.userInfo)
                 setFetchStatus('ok')
                 // TODO: uncomment for production
                 // window.history.pushState(null, '', '/');
                 // window.history.go();
             })
+            // eslint-disable-next-line
             .catch((error: any): void => {
                 setFetchStatus('error')
-                console.log('Error:', error)
+                // eslint-disable-next-line
+                console.error('Error:', error)
                 alert('Erro ao enviar/receber informações de acesso');
             })
     };
 
+    // eslint-disable-next-line
     const checkEmailValidity = (email: string): boolean => {
         // check if name has any special characters, allowing spaces but dont allow more than one space in a row
         const regex = /^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ /
@@ -189,11 +194,17 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
         }
     }
 
+    // eslint-disable-next-line
     const checkPasswordValidity = (password: string): boolean => {
         // check if password have at least 4 characters and if its equal to the previously written password
         if (password.length < 4) return false
         if (password !== passwordConfirm) {
-            setNotificationError('Repita a senha corretamente')
+            notify({
+                id: JSON.stringify('chatUpdate' + Date.now() + Math.random()),
+                message: `A confirmação não é igual a senha`,
+                type: 'warning',
+                duration: 'short',
+            })
             return false
         }
         else {
@@ -252,7 +263,7 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
                                 className={fetchStatus == 'ok' ? styles.okButton :
                                     fetchStatus == 'loading' ? styles.loadingButton : styles.errorButton
                                 }
-                                onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                                onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
                                     handleSignUpClick(e)
                                 }}
                                 disabled={fetchStatus == 'ok' ? false : true}>

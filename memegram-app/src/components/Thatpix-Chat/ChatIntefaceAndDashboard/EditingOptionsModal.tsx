@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 import React, { useEffect, useRef, useState, useLayoutEffect } from 'react'
 import styles from './styles.module.scss';
-import { IChatDashboardState, IEditingOrCreatingOptionsModalProps, ISingleConversationParticipant } from './chat-interfaces';
+import { IEditingOrCreatingOptionsModalProps, ISingleConversationParticipant } from './chat-interfaces';
 import CloseIcon from '@mui/icons-material/Close';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
@@ -9,13 +9,21 @@ import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
 // import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useNotificationContext } from '../../../contexts/Notifications/NotificationContext';
 
-export const ListedParticipantsThatCanBeExcluded = ({ item, removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer, currentEditingOrCreatingOptionsModalChatRoles }: any) => {
+export const ListedParticipantsThatCanBeExcluded = ({
+  item,
+  removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer,
+  currentEditingOrCreatingOptionsModalChatRoles }:
+  {
+    item: ISingleConversationParticipant,
+    removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer: (participant: ISingleConversationParticipant) => void,
+    currentEditingOrCreatingOptionsModalChatRoles: { owner: string | null; } | undefined,
+  }): JSX.Element => {
 
   const [shouldBeHighlighted, setShouldBeHighlighted] = useState(false)
 
   return (
-    <div 
-    className={!shouldBeHighlighted ? styles.participantDisplay : styles.participantToBeRemovedDisplay}>
+    <div
+      className={!shouldBeHighlighted ? styles.participantDisplay : styles.participantToBeRemovedDisplay}>
       <p>{item.username}</p>
       {item.userId === currentEditingOrCreatingOptionsModalChatRoles?.owner ?
         <LocalPoliceIcon className={styles.localPoliceIcon} />
@@ -49,12 +57,14 @@ export default function EditingOrCreatingOptionsModal({
 
   useLayoutEffect(() => {
     updateTheTemporaryQueueToBeSentToTheServer()
+    // eslint-disable-next-line
     console.log(`EditingOptionsModalRendered`)
   }, [])
 
 
 
   const formRef1 = useRef<HTMLFormElement>(null)
+  // eslint-disable-next-line
   const participantToBeAddedName = useRef<string>('')
   const nameToBechangedRef = useRef<string | null>(null)
   const [sendInformationToServer, setSendInformationToServer] = useState<boolean>(false)
@@ -72,7 +82,7 @@ export default function EditingOrCreatingOptionsModal({
       }
     })
     // check if there is already a participant with the same name in the temporary queue
-    queueOfChangesForServerUpdatingOfInformation?.participants?.forEach((participant: any) => {
+    queueOfChangesForServerUpdatingOfInformation?.participants?.forEach((participant: ISingleConversationParticipant) => {
       if (participant.username.toLowerCase() == name.toLowerCase()) {
         isAlreadyAParticipant = true
       }
@@ -141,8 +151,8 @@ export default function EditingOrCreatingOptionsModal({
     }
   }
 
-  const handleButtonClickToAddUser = (e: React.ChangeEvent<any>, formRef: React.RefObject<HTMLFormElement>): void => {
-    console.log(formRef)
+  const handleButtonClickToAddUser = (e: React.MouseEvent<SVGSVGElement>, formRef: React.RefObject<HTMLFormElement>): void => {
+    // console.log(formRef)
     e.preventDefault();
     if (checkNameValidity((formRef?.current?.children[0] as HTMLInputElement).value)) {
       addNewPossibleParticipantToChatInTheTemporaryQueueToBeSentToTheServer({ userId: 'toGivenByTheServer', username: (formRef?.current?.children[0] as HTMLInputElement).value });
@@ -205,7 +215,7 @@ export default function EditingOrCreatingOptionsModal({
         </svg>
         <CloseIcon
           className={styles.closeIconButton}
-          onClick={() => { handleCloseEditOrCreateConversationModal() }} />
+          onClick={(): void => { handleCloseEditOrCreateConversationModal() }} />
 
         <form
           onSubmit={(e: React.FormEvent<HTMLFormElement>): void => { e.preventDefault() }}>
@@ -232,7 +242,7 @@ export default function EditingOrCreatingOptionsModal({
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>): void => { handleInputAddUserWithEnterKey(e, formRef1) }}
           />
           <svg
-            onClick={(e: React.ChangeEvent<any>): void => { handleButtonClickToAddUser(e, formRef1) }}
+            onClick={(e: React.MouseEvent<SVGSVGElement>): void => { handleButtonClickToAddUser(e, formRef1) }}
             className={styles.addParticipantButton} focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="PersonAddIcon">
             <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
           </svg>

@@ -33,43 +33,33 @@ const App = (): JSX.Element => {
             </div>)
     }
 
-
-    // eslint-disable-next-line
     const [UserInfo, setUserInfo] = useState({
         token: '987654321' as string | null,
         user: null as string | null,
         userId: null as string | null,
     })
 
-    // {
-    //     token: '987654321',
-    //     user: 'TestUser',
-    //     userId: '123', 
-    // }
+    // useEffect(() => {
+    //     // console.log('UserInfo',UserInfo)
 
-    useEffect(() => {
-        // eslint-disable-next-line
-        console.log('UserInfo',UserInfo)
+    // }, [UserInfo])
 
-    }, [UserInfo])
 
-    
     const loginFetchOptions = {
         method: 'POST',
         headers: {
-            'Content-Type':'application/json',
+            'Content-Type': 'application/json',
         },
         body: JSON.stringify(UserInfo)
     }
 
     // Authenticate session
-    //TODO: create a singleton for this fetch
-    const { data, isLoading, isError } = useQuery('userInfo', () => 
+    const { data, isLoading, isError } = useQuery('userInfo', () =>
         fetch('http://localhost:3030/api/login/' + UserInfo.token, loginFetchOptions)
             .then((res) => {
                 return res.json();
             })
-            ,
+        ,
         {
             refetchOnWindowFocus: false,
             refetchOnMount: false,
@@ -102,29 +92,29 @@ const App = (): JSX.Element => {
     return (
         <div className={style.appDiv}>
             <NotificationContextProvider>
-            <UserContext.Provider value={UserInfo}>
-                <BrowserRouter>
-                    {isLoading ?
-                        <img className={style.placeholder} src={MemegramIcon} />
-                        :
-                        UserInfo?.userId ?
-                            <>
-                                <Navbar />
-                                <PageTransitionComponent />
-                                <Routes>
-                                    {/* TODO: Create all pages components */}
-                                    <Route path='/' element={<MemegramFeed />} />
-                                    <Route path='/chats' element={<ChatPage />} />
-                                    <Route path='/new-post' element={<NewPostModal />} />
-                                    <Route path='/logout' element={<LogoutPage handleLogout={handleLogout} />} />
-                                    <Route path='*' element={<><h2>404 Not Found</h2><img className={style.placeholder} src={MemegramIcon} /></>} />
-                                </Routes>
-                            </>
-                            : <>
-                                <LoginPage setUserInfo={setUserInfo}/>
-                            </>}
-                </BrowserRouter>
-            </UserContext.Provider>
+                <UserContext.Provider value={UserInfo}>
+                    <BrowserRouter>
+                        {isLoading ?
+                            <img className={style.placeholder} src={MemegramIcon} />
+                            :
+                            UserInfo?.userId ?
+                                <>
+                                    <Navbar />
+                                    <PageTransitionComponent />
+                                    <Routes>
+                                        {/* TODO: Create all pages components */}
+                                        <Route path='/' element={<MemegramFeed />} />
+                                        <Route path='/chats' element={<ChatPage />} />
+                                        <Route path='/new-post' element={<NewPostModal />} />
+                                        <Route path='/logout' element={<LogoutPage handleLogout={handleLogout} />} />
+                                        <Route path='*' element={<><h2>404 Not Found</h2><img className={style.placeholder} src={MemegramIcon} /></>} />
+                                    </Routes>
+                                </>
+                                : <>
+                                    <LoginPage setUserInfo={setUserInfo} />
+                                </>}
+                    </BrowserRouter>
+                </UserContext.Provider>
             </NotificationContextProvider>
         </div>
     )
