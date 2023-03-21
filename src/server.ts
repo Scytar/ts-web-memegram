@@ -19,6 +19,10 @@ app.use(express.static(path.join(__dirname, "memegram-app", "build")));
 app.use(express.static(path.join(__dirname, "memegram-app", "public")));
 
 app.use('/api', router);
+//Main Static HTML
+router.get("/", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
+    res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
+})
 app.listen(process.env.PORT, () => console.log('Server running on port' + process.env.PORT));
 
 // =============== Websocket Channels ===============
