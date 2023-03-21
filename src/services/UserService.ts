@@ -41,7 +41,8 @@ export const createUser = async (data: User) => {
                     email: response.data.user.email
                 }, secret,
                 { expiresIn: "1d" });
-            
+            response.data = {"userId": response.data.userId, "user": response.data.user.name}
+
             return { response, token };
         } else{
             throw new Error(`${response.error}`);
@@ -84,6 +85,7 @@ export const selectUser = async (data: User) => {
                     email: data.email
                 }, secret,
                 { expiresIn: "1d" });
+                response.data = {"userId": response.data[0].userId, "user": response.data[0].user.name}
 
             return { response, token };
         } else{
