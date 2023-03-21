@@ -24,7 +24,7 @@ const Dropzone = (): JSX.Element => {
         formData.append('body', JSON.stringify(userInfo))
 
         // This could be an separate file server, that only saves images and serves them staticly
-        fetch('http://localhost:3030/api/upload', {
+        fetch('/api/upload', {
             method: 'POST',
             body: formData,
         })

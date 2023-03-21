@@ -87,7 +87,7 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
   const request = (_options: { method: string; headers: { "Content-Type": string; }; body: string; }): void => {
     setFetchData('loading');
 
-    fetch('http://localhost:3030/api/chat', _options)
+    fetch('/api/chat', _options)
       .then((res) => {
         // console.log('data from chat api', res)
         res.status === 200 ? setFetchData('ok') : setFetchData('error');
