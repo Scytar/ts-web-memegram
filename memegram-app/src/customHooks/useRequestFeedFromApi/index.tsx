@@ -15,7 +15,7 @@ interface ILikeRequestBody {
 
 function useRequestFeedItemsFromApi(): IQueryResponse {
   const { data, isLoading, isError } = useQuery('feedItems', () =>
-    fetch('/api/feedItems').then((res) => res.json())
+    fetch('/api/feed').then((res) => res.json())
   );
   return { data, isLoading, isError };
 }

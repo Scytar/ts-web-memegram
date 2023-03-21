@@ -96,7 +96,6 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
         setFetchData('error');
         // eslint-disable-next-line
         console.error('error', e);
-        // TODO: Add a useNotificationContext
         notify({
           id: JSON.stringify('chatMessage' + Date.now() + Math.random()),
           message: "Falha ao enviar mensagem",

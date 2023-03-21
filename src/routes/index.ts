@@ -16,7 +16,7 @@ router.use(express.json());
 //Login
 router.post("/login", login);
 //Sign up
-router.post("/newUser", newUser);
+router.post("/signup", newUser);
 //Logout
 router.get('/logout', logout);
 //Auth - post
