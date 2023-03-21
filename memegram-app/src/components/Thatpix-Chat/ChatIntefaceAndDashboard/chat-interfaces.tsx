@@ -27,11 +27,11 @@ export interface ISingleConversationObject {
     currentEditingOrCreatingOptionsModalChatId?: string | null,
     currentEditingOrCreatingOptionsModalChatName?: string | null,
     updateTheTemporaryQueueToBeSentToTheServer: ()=>void,
-    resetTheTemporaryQueueToBeSentToTheServer: ()=>void,
+    resetTheTemporaryQueueToBeSentToTheServer?: ()=>void,
     addNewPossibleParticipantToChatInTheTemporaryQueueToBeSentToTheServer: (participant: ISingleConversationParticipant)=>void,
     removeParticipantFromChatInTheTemporaryQueueToBeSentToTheServer: (participant: ISingleConversationParticipant)=>void,
     sendTheTemporaryQueueToBeSentToTheServer: ()=>void,
-    
+    chatDashboardState: any,
     queueOfChangesForServerUpdatingOfInformation: {
       chatId: string | null,
       chatName: string | null,

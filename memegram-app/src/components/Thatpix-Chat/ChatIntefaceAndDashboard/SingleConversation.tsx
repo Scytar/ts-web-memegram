@@ -1,11 +1,10 @@
-// eslint-disable-next-line
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { ISingleConversationObject } from './chat-interfaces'
 import styles from './styles.module.scss'
-// eslint-disable-next-line
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { UserContext } from '../../../contexts/userInfo';
+import { useNotificationContext } from '../../../contexts/Notifications/NotificationContext';
 
 // eslint-disable-next-line
 export default function SingleConversation({ handleDeselectConversation, chatName, chatRoles, chatId, participants, messages }: ISingleConversationObject): JSX.Element {
@@ -13,16 +12,18 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
 
   useEffect(() => {
 
-    console.log('SingleConversationRendered');
+    // console.log('SingleConversationRendered');
     (chatDiv.current as HTMLDivElement).scrollTop = (chatDiv.current as HTMLDivElement).scrollHeight;
 
     return () => {
-      console.log('SingleConversationUnmounted')
+      // console.log('SingleConversationUnmounted')
     }
   }, [])
 
 
   const userInfoContext = useContext(UserContext);
+
+  const { notify } = useNotificationContext();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -51,7 +52,7 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
     }
   }
 
-  const handleSendMessage = (e: React.KeyboardEvent | React.ChangeEvent | React.MouseEvent) => {
+  const handleSendMessage = (e: React.KeyboardEvent | React.ChangeEvent | React.MouseEvent): void => {
     if (fetchData != 'ok') return
     e.preventDefault();
 
@@ -83,20 +84,25 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
     setChatMessageText('');
   };
 
-  const request = (_options: any): void => {
+  const request = (_options: { method: string; headers: { "Content-Type": string; }; body: string; }): void => {
     setFetchData('loading');
-    // eslint-disable-next-line
-    console.log('Sent!', _options.body)
 
     fetch('http://localhost:3030/api/chat', _options)
       .then((res) => {
-        console.log('data from chat api', res)
+        // console.log('data from chat api', res)
         res.status === 200 ? setFetchData('ok') : setFetchData('error');
       })
       .catch((e) => {
         setFetchData('error');
         // eslint-disable-next-line
-        console.log('error', e);
+        console.error('error', e);
+        // TODO: Add a useNotificationContext
+        notify({
+          id: JSON.stringify('chatMessage' + Date.now() + Math.random()),
+          message: "Falha ao enviar mensagem",
+          type: 'error',
+          duration: 'short',
+        })
       })
   }
 
@@ -105,7 +111,7 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
     <div className={styles.singleChatContainer}>
       <div className={styles.topLabelContainer}>
         <div className={styles.leftChatLabelDiv}>
-          <KeyboardBackspaceIcon className={styles.chatBackButton} onClick={() => { handleDeselectConversation() }} />
+          <KeyboardBackspaceIcon className={styles.chatBackButton} onClick={(): void => { handleDeselectConversation() }} />
           <p>{chatName}</p>
         </div>
         <div className={styles.rightChatLabelDiv}></div>

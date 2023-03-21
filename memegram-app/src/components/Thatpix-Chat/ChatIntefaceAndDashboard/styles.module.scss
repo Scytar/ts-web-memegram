@@ -106,7 +106,7 @@
     height: 200px;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     gap: 0.2rem;
     padding: 0.2rem;
@@ -317,7 +317,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
     overflow-y: scroll;
     gap: 0.2rem;
 
@@ -504,8 +504,8 @@
 .otherChatContainer {
     display: flex;
     flex-direction: column;
-    justify-content: start;
-    align-items: start;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: 0;
     word-wrap: break-word;
 
@@ -519,7 +519,7 @@
         max-width: 80%;
         height: fit-content;
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         align-items: center;
         padding: 0.25rem 1rem;
         background-color: #EEE8;
@@ -536,8 +536,8 @@
 .myChatContainer {
     display: flex;
     flex-direction: column;
-    justify-content: start;
-    align-items: end;
+    justify-content: flex-start;
+    align-items: flex-end;
     word-wrap: break-word;
 
     .myChatBubble {
@@ -545,8 +545,8 @@
         height: fit-content;
         display: flex;
         flex-direction: column;
-        justify-content: start;
-        align-items: end;
+        justify-content: flex-start;
+        align-items: flex-end;
         padding: 0.25rem 1rem;
         background-color: #0C8CE940;
         font-family: 'Courier New', Courier, monospace;

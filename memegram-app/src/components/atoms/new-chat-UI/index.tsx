@@ -11,7 +11,7 @@ const NewChat = ({ handler: handleOpenEditOrCreateConversationModal }: { handler
         <div
             className={styles.newChatOptionContainer}
             onClick={
-                () => handleOpenEditOrCreateConversationModal(
+                (): void => handleOpenEditOrCreateConversationModal(
                     '0',
                     '',
                     { owner: UserInfo.userId as string },
