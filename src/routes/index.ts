@@ -1,6 +1,6 @@
 //rotas
 import * as express from 'express';
-import { login, newUser , logout} from '../controller/userController';
+import { login, newUser, logout } from '../controller/userController';
 import { newItems } from '../controller/postController';
 import { newComment, listComment } from '../controller/commentController';
 import { newLike } from '../controller/likeController';
@@ -32,6 +32,6 @@ router.post("/like", authUser, newLike);
 
 router.get("/*", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
     res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
-  })
+})
 
 export default router;
