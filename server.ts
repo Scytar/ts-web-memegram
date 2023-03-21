@@ -1,3 +1,5 @@
+// This is an example of the server actions
+// it's for the development of the initial release only
 import { IChatElement } from "./memegram-app/src/interfaces/http/chat";
 
 const path = require("path");
@@ -30,8 +32,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "memegram-app", "build")));
 app.use(express.static(path.join(__dirname, "memegram-app", "public")));
 app.use(logIp);
-
-// TODO: a lot of the code below needs to be modularized
 
 // Example of user
 const userInfo = {

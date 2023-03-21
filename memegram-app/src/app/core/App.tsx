@@ -77,7 +77,8 @@ const App = (): JSX.Element => {
                     user: null,
                     userId: null,
                 });
-                window.history.back();
+                window.history.pushState(null,'','/')
+                window.history.go();
             }
             throw res;
         })
@@ -86,9 +87,6 @@ const App = (): JSX.Element => {
             // eslint-disable-next-line
             console.error(e);
         })
-        // TODO: uncomment this after authentication flow is completed
-        // window.history.pushState(null,'','/')
-        // window.history.go();
     }
 
     useEffect(() => {
@@ -112,7 +110,6 @@ const App = (): JSX.Element => {
                                     <Navbar />
                                     <PageTransitionComponent />
                                     <Routes>
-                                        {/* TODO: Create all pages components */}
                                         <Route path='/' element={<MemegramFeed />} />
                                         <Route path='/chats' element={<ChatPage />} />
                                         <Route path='/new-post' element={<NewPostModal />} />
