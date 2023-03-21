@@ -292,19 +292,19 @@ ws.on('connection', (socket: any, req: any) => {
   // socket.send(JSON.stringify(feedItems))
 
   //Identify the channel the websocket connection belongs
-  if (req.url === '/globalFeed') { //Develop switch cases
+  if (req.url === '/globalFeed') { //Develop switch cases 'ws://memegram.com/globalFeed'
     console.log('globalFeed')
-    globalFeedChannel.add(socket);
-    socket.send(JSON.stringify(feedItems));
+    globalFeedChannel.add(socket); // Adiciona a conexão ao canal de 'globalFeed'
+    socket.send(JSON.stringify(feedItems)); //Retorna todo o feed para o usuário
   }
   if (req.url === '/chats') {
     console.log('chats')
-    genericChatChannel.add(socket);
+    genericChatChannel.add(socket); // Adiciona ao canal de 'chats'
     const answer = {
-      type: 'global chat',
-      data: chats,
+      type: 'global chat', // Informa ao front qual tipo de informação está enviando
+      data: chats, // Envia todos os chats que existem para o from
     }
-    socket.send(JSON.stringify(answer));
+    socket.send(JSON.stringify(answer)); // Envia
   }
 
   // Identify the channel the message sent by the client belongs
@@ -330,11 +330,11 @@ ws.on('connection', (socket: any, req: any) => {
   socket.on('close', () => {
     if (req.url === '/globalFeed') {
       console.log('socket close')
-      globalFeedChannel.delete(socket);
+      globalFeedChannel.delete(socket); // Remove usuário do canal
     }
     if (req.url === '/chats') {
       console.log('socket close')
-      genericChatChannel.delete(socket);
+      genericChatChannel.delete(socket); // Remove usuário do canal
     }
   });
 });
@@ -342,14 +342,15 @@ ws.on('connection', (socket: any, req: any) => {
 
 app.post('/api/login/:token?', (req: { params: { token: string; }; body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userInfo: { token: string; userId: string; user: string; }; }): any; new(): any; }; }; sendStatus: (arg0: number) => any; }, next: any) => {
   //TODO: do authentication properly
+  const body = req.body;
+  console.log('body', body);
   if (req.params.token == '987654321') return res.status(200).json({ userInfo: userInfo })
 
-  const body = req.body;
 
   if (body.email == 'sonic@hedgehog.boom' && body.password == 'gottagofast') {
     return res.status(200).json({ userInfo: userInfo })
   }
-  return res.sendStatus(401);
+  return res.sendStatus(401); 
 })
 
 app.post('/api/signup', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userInfo: { token: string; userId: any; user: any; }; }): void; new(): any; }; }; }, next: any) => {
@@ -361,7 +362,7 @@ app.post('/api/signup', (req: { body: any; }, res: { status: (arg0: number) => {
     user: body.username,
   }
 
-  res.status(200).json({ userInfo: newUser });
+  res.status(200).json({ userInfo: newUser }); // { userId: UUID, user: 'nome do usuário' }
 })
 
 // TODO: modularize this
@@ -381,7 +382,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.post('/api/upload', upload.single('file'), (req: { body: { body: string; }; file: { filename: any; }; }, res: { send: (arg0: string) => void; }, next: any) => {
+app.post('/api/upload', upload.single('file'), (req: { body: { body: string; }; file: { filename: any; }; }, res: {
+  status: any; send: (arg0: string) => void; 
+}, next: any) => {
 
 
   const data = JSON.parse(req.body.body); // data = { token: string , userId: string }
@@ -400,11 +403,11 @@ app.post('/api/upload', upload.single('file'), (req: { body: { body: string; }; 
 
   globalFeedChannel.forEach((client: any) => {
     if (client.readyState === webSocket.OPEN) {
-      client.send(JSON.stringify(feedItems));
+      client.send(JSON.stringify(feedItems)); // Envia todo o feed de volta para todos os clientes que estão no canal 'globalFeed'
     }
   });
 
-  res.send(`File ${req.file.filename} uploaded successfully.`)
+  res.status(200).send(`File ${req.file.filename} uploaded successfully.`)
 })
 
 // ============ Code-block end ============
@@ -413,9 +416,9 @@ app.get("/", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
   res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
 })
 
-app.get('/api/feedItems', (req: any, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { feedItems: { postId: string; authorId: string; author: string; timestamp: Date; media: string; likes: string[]; comments: { commentId: string; author: string; comment: string; }[]; }[]; }): void; new(): any; }; }; }, next: any) => {
-  res.status(200).json({ feedItems: feedItems })
-});
+// app.get('/api/feedItems', (req: any, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { feedItems: { postId: string; authorId: string; author: string; timestamp: Date; media: string; likes: string[]; comments: { commentId: string; author: string; comment: string; }[]; }[]; }): void; new(): any; }; }; }, next: any) => {
+//   res.status(200).json({ feedItems: feedItems })
+// });
 
 app.put('/api/like', (req: { body: { postId: string; userId: string; }; }, res: { sendStatus: (arg0: number) => void; }, next: any) => {
 
@@ -438,7 +441,7 @@ app.put('/api/like', (req: { body: { postId: string; userId: string; }; }, res: 
     }
   });
 
-  res.sendStatus(200)
+  res.sendStatus(200);
 })
 
 app.post('/api/comment', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: string): void; new(): any; }; }; }, next: any) => {
@@ -536,6 +539,7 @@ app.put('/api/chat', (req: { body: any; }, res: { sendStatus: (arg0: number) => 
 // Owner of chat updated or created a chat
 app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) => any; }, next: any) => {
   const body = req.body;
+  console.log('body', body)
 
   let chatElementToAnswer: IChatElement | null = null;
 
@@ -546,7 +550,7 @@ app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) 
 
       body.participants.forEach((participant: { userId: string, username: string }) => {
         const newParticipant = {  //Mocking a check for the username provided in the database
-          userId: participant.username,
+          userId: participant.username, // Aqui é pra passar o userId
           username: participant.username,
         }
         participantsList.push(newParticipant);
