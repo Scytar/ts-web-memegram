@@ -16,14 +16,17 @@
     "react-query": "^3.39.3",
     "typescript-cookie": "^1.0.5",
     "uuid": "^9.0.0",
+    "websocket": "^1.0.34",
     "ws": "^8.13.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
+    "@types/cors": "^2.8.13",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/multer": "^1.4.7",
     "@types/uuid": "^9.0.1",
+    "@types/ws": "^8.5.4",
     "typescript": "^4.9.5"
   }
 }
