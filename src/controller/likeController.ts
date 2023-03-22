@@ -2,10 +2,6 @@
 import { Request, Response } from "express";
 import { Like } from "../interfaces";
 import { insertLike } from "../services/likeService";
-import jwt from 'jsonwebtoken';
-import { authUser } from "../middleware/authUser";
-
-const secret: string = 'xfeyi356##$qsWRE';
 
 export async function newLike(req: Request, res: Response) {
 
@@ -26,7 +22,7 @@ export async function newLike(req: Request, res: Response) {
             if (data?.err) {
                 throw new Error(data.err);
             }
-            res.status(202).send(data);
+            res.status(200).send(data);
             return;
         }
 
