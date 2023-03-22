@@ -11,23 +11,23 @@ export const createUser = async (data: User) => {
     try {
         //registration data validation
         new EmailValidator(data.email);
-        new NameValidator(data.name);
+        new NameValidator(data.username);
         new PasswordValidator(data.password);
 
         //password encryption
         const encryptedPasswd: string = await bcrypt.hash(data.password as string, 10);
 
         const dataUser: User = {
-            name: data.name,
+            username: data.username,
             email: data.email,
             password: encryptedPasswd,
         }
 
         //---------------------------------------------------------------------------
         const userRep = new UserRepository();
-        const response: iResp = await userRep.insert({name: dataUser.name, email: dataUser.email, password: dataUser.password});
+        const response: iResp = await userRep.insert({name: dataUser.username, email: dataUser.email, password: dataUser.password});
         //---------------------------------------------------------------------------
-
+        console.log(response)
         if (!response.error) {
             const token = jwt.sign(
                 {
