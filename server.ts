@@ -358,7 +358,7 @@ ws.on('connection', (socket: any, req: any) => {
 });
 // =============== END of Websocket Channels ===============
 
-app.post('/api/login', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userId: string; user: string; }): any; new(): any; }; }; sendStatus: (arg0: number) => any; }) => {
+app.post('/api/login', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userId: string; user: string; }): any; new(): any; }; }; sendStatus: (arg0: number) => any; }, next: any) => {
   //TODO: do authentication properly
   const body = req.body;
 
