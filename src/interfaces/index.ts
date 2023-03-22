@@ -5,7 +5,7 @@ class EmailValidator {
         const regexCode = /^(\w{1,}@\w{1,}\.(\w{3})(\.\w{2}){0,1})$/gim;
         const validator = regexCode.test(data);
         if (!validator) {
-            throw new Error("Formato de dado inválido!");
+            throw new Error("Invalid email format!");
         }
     }
     get regex() {
@@ -18,7 +18,7 @@ class PasswordValidator {
         const regexCode = /^\w{1,}$/;
         const validator = regexCode.test(data);
         if (!validator) {
-            throw new Error("Formato de dado inválido!");
+            throw new Error("Invalid password format!");
         }
     }
     get regex() {
@@ -31,7 +31,7 @@ class NameValidator {
         const regexCode = /^([a-z]{1,})([ ]{1}[a-z]{1,}){0,}$/gim;
         const validator = regexCode.test(data);
         if (!validator) {
-            throw new Error("Formato de dado inválido!");
+            throw new Error("Invalid name format!");
         }
     }
     get regex() {
@@ -46,7 +46,7 @@ interface User {
     password?: string
 }
 
-interface Post{
+interface Post {
     authorId?: string,
     author?: string,
     media?: string
@@ -60,4 +60,9 @@ interface Comment {
     }
 }
 
-export { User, Post, Comment, NameValidator, PasswordValidator, EmailValidator };
+interface Like {
+    postId?: string,
+    userId?: string
+}
+
+export { User, Post, Comment, Like, NameValidator, PasswordValidator, EmailValidator };

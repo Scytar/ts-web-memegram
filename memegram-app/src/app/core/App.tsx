@@ -34,10 +34,10 @@ const App = (): JSX.Element => {
     }
 
     const [UserInfo, setUserInfo] = useState({
-        token: '987654321' as string | null,
         user: null as string | null,
         userId: null as string | null,
     })
+
 
     // useEffect(() => {
     //     // console.log('UserInfo',UserInfo)
@@ -55,7 +55,7 @@ const App = (): JSX.Element => {
 
     // Authenticate session
     const { data, isLoading, isError } = useQuery('userInfo', () =>
-        fetch('http://localhost:3030/api/login/' + UserInfo.token, loginFetchOptions)
+        fetch('/api/login/', loginFetchOptions)
             .then((res) => {
                 return res.json();
             })
@@ -71,15 +71,23 @@ const App = (): JSX.Element => {
     )
 
     const handleLogout = (): void => {
-        setUserInfo({
-            token: null,
-            user: null,
-            userId: null,
-        });
-        window.history.back();
-        // TODO: uncomment this after authentication flow is completed
-        // window.history.pushState(null,'','/')
-        // window.history.go();
+        fetch('/api/logout')
+        .then((res)=>{
+            if (res.status === 200) {
+                setUserInfo({
+                    user: null,
+                    userId: null,
+                });
+                window.history.pushState(null,'','/')
+                window.history.go();
+            }
+            throw res;
+        })
+        // eslint-disable-next-line
+        .catch((e) => {
+            // eslint-disable-next-line
+            console.error(e);
+        })
     }
 
     useEffect(() => {
@@ -103,7 +111,6 @@ const App = (): JSX.Element => {
                                     <Navbar />
                                     <PageTransitionComponent />
                                     <Routes>
-                                        {/* TODO: Create all pages components */}
                                         <Route path='/' element={<MemegramFeed />} />
                                         <Route path='/chats' element={<ChatPage />} />
                                         <Route path='/new-post' element={<NewPostModal />} />

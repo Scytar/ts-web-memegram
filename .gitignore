@@ -2,8 +2,8 @@
 
 #compiled server.ts
 server.js
-*.js
-/*/*.js
+/src/*.js
+/src/*/*.js
 
 # dependencies
 /node_modules

@@ -87,7 +87,7 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
   const request = (_options: { method: string; headers: { "Content-Type": string; }; body: string; }): void => {
     setFetchData('loading');
 
-    fetch('http://localhost:3030/api/chat', _options)
+    fetch('/api/chat', _options)
       .then((res) => {
         // console.log('data from chat api', res)
         res.status === 200 ? setFetchData('ok') : setFetchData('error');
@@ -96,7 +96,6 @@ export default function SingleConversation({ handleDeselectConversation, chatNam
         setFetchData('error');
         // eslint-disable-next-line
         console.error('error', e);
-        // TODO: Add a useNotificationContext
         notify({
           id: JSON.stringify('chatMessage' + Date.now() + Math.random()),
           message: "Falha ao enviar mensagem",

@@ -15,7 +15,7 @@ interface ILikeRequestBody {
 
 function useRequestFeedItemsFromApi(): IQueryResponse {
   const { data, isLoading, isError } = useQuery('feedItems', () =>
-    fetch('http://localhost:3030/api/feedItems').then((res) => res.json())
+    fetch('/api/feed').then((res) => res.json())
   );
   return { data, isLoading, isError };
 }
@@ -30,7 +30,7 @@ const useRequestLikePost = (_body: ILikeRequestBody): IQueryResponse => {
   };
 
   const { data, isLoading, isError } = useQuery('feedItems', () => 
-    fetch('http://localhost:3030/api/like-post', options).then((res) => res.json())
+    fetch('/api/like-post', options).then((res) => res.json())
   );
   return { data, isLoading, isError};
 }

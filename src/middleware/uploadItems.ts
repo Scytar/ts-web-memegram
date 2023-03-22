@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 const storage = multer.diskStorage({
 
     destination: function (req: any, file: any, cb: any) {
-        cb(null, './uploads/')
+        cb(null, './memegram-app/public/')
     },
 
     filename: function (req: any, file: any, cb: any) {

@@ -19,7 +19,6 @@ const Post = (postInfo: IPostProps): JSX.Element => {
 
   const handleExpandClick = (): void => {
     setExpanded(!expanded)
-    //TODO: Add request for more comments
   }
 
   return (

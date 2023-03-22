@@ -1,31 +1,30 @@
 //business rules for posting and feed
 import * as dotenv from 'dotenv';
 dotenv.config();
-import { Post } from "../interfaces";
+import { Like } from "../interfaces";
 import PostRepository from "../repository/postRepository"
 import iResp from "../interfaces/iResp";
 
-export const newPost = async (dataPost: Post) => {
+export const insertLike = async (dataLike: Like) => {
     try {
 
-        // modelo dataPost
-        // dataPost = {
-        //     media: '5672b0ff-dcd9-4e29-82d7-bb991d485b3b.png',
-        //     autorId: 'd5dd6df9-5393-4b12-8cee-cdd1c59a5004',
-        //     autor: 'teste'
+        //dataLike model 
+        // dataLike = { postId: '753314e2-2b78-465e-9815-b773c89f238a',
+        //              userId: 'ddefa090-8cf8-4d68-88d5-5ec2ad9f1275',
         // }
 
         //---------------------------------------------------------------------------
         const postRep = new PostRepository();
-        const response: iResp = await postRep.insert({media: dataPost.media, authorId: dataPost.authorId, author: dataPost.author});
+        const response: iResp = await postRep.like(dataLike)
         //---------------------------------------------------------------------------
 
         if (!response.error) {
-           return response;
+            return { response };
+        } else {
+            throw new Error(`${response.error}`);
         }
     }
     catch (err: any) {
         return { err: err.message }
     }
-
 }

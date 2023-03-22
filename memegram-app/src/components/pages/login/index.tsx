@@ -3,7 +3,7 @@ import styles from './styles.module.scss';
 import { useNotificationContext } from '../../../contexts/Notifications/NotificationContext';
 
 
-const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStateAction<{ token: string | null; user: string | null; userId: string | null; }>> }): JSX.Element => {
+const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStateAction<{ user: string | null; userId: string | null; }>> }): JSX.Element => {
 
     const [fetchStatus, setFetchStatus] = useState('ok');
 
@@ -85,7 +85,7 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
         }
 
         setFetchStatus('loading')
-        fetch(`http://localhost:3030/api/login/0`, options)
+        fetch(`/api/login`, options)
             .then((res) => {
                 if (res.status === 200) return res.json();
                 throw res;
@@ -182,7 +182,7 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
         }
 
         setFetchStatus('loading')
-        fetch(`http://localhost:3030/api/signup`, options)
+        fetch(`/api/signup`, options)
             .then((res) => {
                 if (res.status === 200) return res.json();
                 throw res;

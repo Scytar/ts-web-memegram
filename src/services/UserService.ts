@@ -4,11 +4,8 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import jwt from 'jsonwebtoken';
 import bcrypt from "bcrypt";
-import { v4 as uuid } from "uuid"
 import iResp from "../interfaces/iResp";
 import UserRepository from "../repository/userRepository"
-
-const secret: string = 'xfeyi356##$qsWRE';
 
 export const createUser = async (data: User) => {
     try {
@@ -26,12 +23,10 @@ export const createUser = async (data: User) => {
             password: encryptedPasswd,
         }
 
-        //acesso ao database do repositories para persistencia dos dados de cadastro
-        //---------------------------------------------------------------------------verify
+        //---------------------------------------------------------------------------
         const userRep = new UserRepository();
-        //const response: iResp = await userRep.insert({name:'test', email:'test@teste.com', password:"0000"});
         const response: iResp = await userRep.insert({name: dataUser.name, email: dataUser.email, password: dataUser.password});
-        //---------------------------------------------------------------------------verify
+        //---------------------------------------------------------------------------
 
         if (!response.error) {
             const token = jwt.sign(
@@ -39,8 +34,10 @@ export const createUser = async (data: User) => {
                     id: response.data.userId,
                     name: response.data.user.name,
                     email: response.data.user.email
-                }, secret,
+                }, 
+                process.env.SECRET_JWT as string,
                 { expiresIn: "1d" });
+            response.data = {"userId": response.data.userId, "user": response.data.user.name}
 
             return { response, token };
         } else{
@@ -61,29 +58,26 @@ export const selectUser = async (data: User) => {
         let emailUser = data.email;
         let password = data.password;
         
-        //acessar o database
-        //---------------------------------------------------------------------------verify
+        //---------------------------------------------------------------------------
         const userRep = new UserRepository();
-        //const response: iResp = await userRep.listBy({key:"5672b0ff-dcd9-4e29-82d7-bb991d485b3b"}) 
         const response: iResp = await userRep.listBy({"user.email": emailUser});
-        //---------------------------------------------------------------------------verify
+        //---------------------------------------------------------------------------
 
-        //verificar se o response da consulta é válido
         if (!response.error) {
 
-           // comparar password para validação
            const compare = await bcrypt.compare(password as string, response.data[0].user.password as string)
 
-            if (!compare) throw new Error("Error: Incorrect data");
+            if (!compare) throw new Error("Error: Incorrect Password");
 
-            //password válidado, gerar token
             const token = jwt.sign(
                 {
                     id: response.data[0].userId,
                     name: response.data[0].user.name,
                     email: data.email
-                }, secret,
+                }, 
+                process.env.SECRET_JWT as string,
                 { expiresIn: "1d" });
+                response.data = {"userId": response.data[0].userId, "user": response.data[0].user.name}
 
             return { response, token };
         } else{
@@ -93,5 +87,4 @@ export const selectUser = async (data: User) => {
     catch (err: any) {
         return { err: err.message }
     }
-
 }
