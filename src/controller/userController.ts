@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../interfaces";
 import { selectUser, createUser } from "../services/UserService";
+import jwt from 'jsonwebtoken';
 
 export async function login(req: Request, res: Response) {
 
@@ -8,12 +9,24 @@ export async function login(req: Request, res: Response) {
     if (!userData) throw new Error("Invalid request");
 
     try {
+
+        const { token } = req.cookies;
+
+        if (token) {
+            const check: any = jwt.verify(token as string, process.env.SECRET_JWT as string);
+            if (check) {
+                res.cookie('token', token, { httpOnly: true, maxAge: 86400000, secure: false })
+                res.status(200).send({ userInfo: { user: check.name, userId: check.id } });
+                return
+            }
+        }
+
         const data = await selectUser(userData);
         if (data?.err) {
             throw new Error(data.err);
         }
         res.cookie('token', data.token, { httpOnly: true, maxAge: 86400000, secure: false })
-        res.status(202).send(data.response);
+        res.status(200).send(data.response);
         return;
     } catch (error: any) {
         res.status(500).send(error.message);
@@ -33,7 +46,7 @@ export async function newUser(req: Request, res: Response) {
             throw new Error(data.err);
         }
         res.cookie('token', data.token, { httpOnly: true, maxAge: 86400000, secure: false })
-        res.status(202).send(data.response);
+        res.status(200).send(data.response);
         return;
     } catch (error: any) {
         res.status(500).send(error.message);
@@ -43,7 +56,7 @@ export async function newUser(req: Request, res: Response) {
 
 export async function logout(req: Request, res: Response) {
     try {
-        res.clearCookie('token', { httpOnly: true}).status(200).send('Cookie cleared');
+        res.clearCookie('token', { httpOnly: true }).status(200).send('Cookie cleared');
     } catch (error) {
         console.log('Error clearing cookies from', req.ip, ":", error);
         res.sendStatus(500);

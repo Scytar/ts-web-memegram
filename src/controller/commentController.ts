@@ -2,9 +2,6 @@
 import { Request, Response } from "express";
 import { Comment } from "../interfaces";
 import { insertComment, getComment } from "../services/commentService";
-import jwt from 'jsonwebtoken';
-
-const secret: string = 'xfeyi356##$qsWRE';
 
 export async function newComment(req: Request, res: Response) {
 
@@ -27,7 +24,7 @@ export async function newComment(req: Request, res: Response) {
             if (data?.err) {
                 throw new Error(data.err);
             }
-            res.status(202).send(data);
+            res.status(200).send(data);
             return;
         }
 
@@ -48,7 +45,7 @@ export async function listComment(req: Request, res: Response) {
         if (data?.err) {
             throw new Error(data.err);
         }
-        res.status(202).send(data);
+        res.status(200).send(data);
         return;
     } catch (error: any) {
         res.status(500).send(error.message);
