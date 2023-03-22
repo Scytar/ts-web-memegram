@@ -85,7 +85,7 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
         }
 
         setFetchStatus('loading')
-        fetch(`http://localhost:3030/api/login/0`, options)
+        fetch(`http://localhost:3030/api/login`, options)
             .then((res) => {
                 if (res.status === 200) return res.json();
                 throw res;
