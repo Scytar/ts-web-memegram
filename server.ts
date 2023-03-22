@@ -31,14 +31,32 @@ app.use(express.static(path.join(__dirname, "memegram-app", "build")));
 app.use(express.static(path.join(__dirname, "memegram-app", "public")));
 app.use(logIp);
 
-// TODO: a lot of the code below needs to be modularized
-
 // Example of user
 const userInfo = {
-  token: '987654321',
   userId: 'gottagofast',
   user: 'Sonic The Hedgehog',
 }
+
+const users = [
+  {
+    userId: 'gottagofast',
+    username: 'Sonic The Hedgehog',
+    password: '1234',
+    email: 'hedgehog@sonic.boom',
+  },
+  {
+    userId: '13',
+    username: 'Scytar',
+    password: '1234',
+    email: 'scytar@sonic.boom',
+  },
+  {
+    userId: '12',
+    username: 'Cecília',
+    password: '1234',
+    email: 'cecilia@sonic.boom',
+  },
+]
 
 // Example of data response of chat
 const chats = [
@@ -340,28 +358,51 @@ ws.on('connection', (socket: any, req: any) => {
 });
 // =============== END of Websocket Channels ===============
 
-app.post('/api/login/:token?', (req: { params: { token: string; }; body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userInfo: { token: string; userId: string; user: string; }; }): any; new(): any; }; }; sendStatus: (arg0: number) => any; }, next: any) => {
+app.post('/api/login', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userId: string; user: string; }): any; new(): any; }; }; sendStatus: (arg0: number) => any; }) => {
   //TODO: do authentication properly
-  if (req.params.token == '987654321') return res.status(200).json({ userInfo: userInfo })
-
   const body = req.body;
 
-  if (body.email == 'sonic@hedgehog.boom' && body.password == 'gottagofast') {
-    return res.status(200).json({ userInfo: userInfo })
+  let userToReturn = {
+    userId: '',
+    user: '',
+  };
+
+  for (let index = 0; index < users.length; index++) {
+    const element = users[index];
+    if (element.email === body.email && element.password === body.password) {
+      userToReturn = {
+        userId: element.userId as string,
+        user: element.username as string,
+      }
+    }
   }
-  return res.sendStatus(401);
+  console.log('userToReturn', userToReturn)
+  if (userToReturn.userId != '') {
+    return res.status(200).json(userToReturn);
+  } else {
+    return res.sendStatus(401);
+  }
 })
 
-app.post('/api/signup', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userInfo: { token: string; userId: any; user: any; }; }): void; new(): any; }; }; }, next: any) => {
+app.post('/api/signup', (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { userId: string; user: string; }): void; new(): any; }; }; }, next: any) => {
   // Mock of user registration
   const body = req.body;
+
   const newUser = {
-    token: 'xablau',
-    userId: body.username,
-    user: body.username,
+    userId: '' + Math.random() + new Date(),
+    username: body.username,
+    password: body.password,
+    email: body.email,
+  };
+
+  users.push(newUser);
+
+  const userToAnswer = {
+    userId: newUser.userId,
+    user: newUser.username,
   }
 
-  res.status(200).json({ userInfo: newUser });
+  res.status(200).json(userToAnswer);
 })
 
 // TODO: modularize this
@@ -545,11 +586,17 @@ app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) 
       let participantsList: { userId: string, username: string }[] = [];
 
       body.participants.forEach((participant: { userId: string, username: string }) => {
-        const newParticipant = {  //Mocking a check for the username provided in the database
-          userId: participant.username,
-          username: participant.username,
+
+        for (let index = 0; index < users.length; index++) {
+          const element = users[index];
+          if (element.username === participant.username) {
+            const newParticipant = {
+              userId: participant.username,
+              username: participant.username,
+            }
+            participantsList.push(newParticipant);
+          }
         }
-        participantsList.push(newParticipant);
       });
 
       chatElementToAnswer = {
@@ -579,7 +626,23 @@ app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) 
     } else {
       chats.forEach((element, elementIndex) => {
         if (element.chatId === body.chatId && body.userId === element.chatRoles.owner) { // Check if user is the owner
-          chats[elementIndex].participants = body.participants;
+
+          for (let index = 0; index < body.participants.length; index++) {
+            const participant = body.participants[index];
+            
+            for (let i = 0; i < users.length; i++) {
+              const element = users[i];
+              if (element.username === participant.username) {
+                const newParticipant = {
+                  userId: participant.username,
+                  username: participant.username,
+                }
+                chats[elementIndex].participants.push(newParticipant);
+              }
+            }
+
+          }
+
           chats[elementIndex].chatName = body.chatName;
 
           chatElementToAnswer = chats[elementIndex];
@@ -608,7 +671,7 @@ app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) 
 
 app.delete('/api/chats', (req: { body: any; }, res: { sendStatus: (arg0: number) => void; }, next: any) => {
   const body = req.body;
-  console.log('delete',body);
+  console.log('delete', body);
 
   if (body.userId === body.chatRoles.owner) {
     chats.forEach((element, elementIndex) => {

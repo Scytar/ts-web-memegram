@@ -55,12 +55,17 @@ const App = (): JSX.Element => {
 
     // Authenticate session
     const { data, isLoading, isError } = useQuery('userInfo', () =>
-        fetch('http://localhost:3030/api/login/' + UserInfo.token, loginFetchOptions)
+        {
+            // eslint-disable-next-line
+            console.log('login',UserInfo)
+            fetch('/api/login/', loginFetchOptions)
             .then((res) => {
                 return res.json();
             })
+        }
         ,
         {
+            retry: false,
             refetchOnWindowFocus: false,
             refetchOnMount: false,
             refetchOnReconnect: false,
@@ -83,7 +88,7 @@ const App = (): JSX.Element => {
 
     useEffect(() => {
         if (data && !isLoading && !isError) {
-            setUserInfo(data.userInfo)
+            setUserInfo(data)
         }
 
     }, [data]);

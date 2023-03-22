@@ -91,7 +91,7 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
                 throw res;
             })
             .then((data): void => {
-                setUserInfo(data.userInfo)
+                setUserInfo(data)
                 // console.log('data', data.userInfo)
                 setFetchStatus('ok')
             })
@@ -125,25 +125,45 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
         // SignUp input checks
         if (username.length < 4) {
             setFetchStatus('error')
-            alert('Nome precisa ter pelo menos 4 letras!')
+            notify({
+                id: JSON.stringify('login-signup' + Date.now() + Math.random()),
+                message: `Nome precisa ter pelo menos 4 letras!`,
+                type: 'warning',
+                duration: 'short',
+            })
             return
         }
 
         if (email.length < 4) {
             setFetchStatus('error')
-            alert('E-mail precisa ter pelo menos 4 letras!')
+            notify({
+                id: JSON.stringify('login-signup' + Date.now() + Math.random()),
+                message: `E-mail precisa ter pelo menos 4 letras!`,
+                type: 'warning',
+                duration: 'short',
+            })
             return
         }
 
         if (password.length < 4) {
             setFetchStatus('error')
-            alert('Senha precisa ter pelo menos 4 letras!')
+            notify({
+                id: JSON.stringify('login-signup' + Date.now() + Math.random()),
+                message: `Senha precisa ter pelo menos 4 letras!`,
+                type: 'warning',
+                duration: 'short',
+            })
             return
         }
 
         if (password !== passwordConfirm) {
             setFetchStatus('error')
-            alert('Repita a senha corretamente')
+            notify({
+                id: JSON.stringify('login-signup' + Date.now() + Math.random()),
+                message: `Repita a senha corretamente`,
+                type: 'warning',
+                duration: 'short',
+            })
             return
         }
 
@@ -168,7 +188,9 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
                 throw res;
             })
             .then((data): void => {
-                setUserInfo(data.userInfo)
+                // eslint-disable-next-line
+                console.log('loginData', data)
+                setUserInfo(data)
                 // console.log('data', data.userInfo)
                 setFetchStatus('ok')
                 // TODO: uncomment for production
@@ -180,7 +202,12 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
                 setFetchStatus('error')
                 // eslint-disable-next-line
                 console.error('Error:', error)
-                alert('Erro ao enviar/receber informações de acesso');
+                notify({
+                    id: JSON.stringify('chatUpdate' + Date.now() + Math.random()),
+                    message: `Erro ao enviar/receber informações de acesso`,
+                    type: 'warning',
+                    duration: 'short',
+                })
             })
     };
 
