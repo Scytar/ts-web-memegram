@@ -2,12 +2,15 @@
 
 #compiled server.ts
 server.js
+*.js
+/*/*.js
 
 # dependencies
 /node_modules
 /memegram-app/node_modules
 /.pnp
 .pnp.js
+
 
 # testing
 /coverage
