@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken';
 export async function login(req: Request, res: Response) {
 
     const userData: User = req.body;
-    if (!userData) throw new Error("Invalid request");
 
     try {
 
@@ -21,8 +20,7 @@ export async function login(req: Request, res: Response) {
             }
         }
 
-        if (userData.userId == null) return res.sendStatus(400);
-
+        if (!userData) return res.sendStatus(400);
         const data = await selectUser(userData);
         if (data?.err) {
             throw new Error(data.err);
