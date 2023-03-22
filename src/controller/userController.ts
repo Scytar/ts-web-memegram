@@ -21,6 +21,8 @@ export async function login(req: Request, res: Response) {
             }
         }
 
+        if (userData.userId == null) return res.sendStatus(400);
+
         const data = await selectUser(userData);
         if (data?.err) {
             throw new Error(data.err);
