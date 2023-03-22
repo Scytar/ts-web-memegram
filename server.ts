@@ -590,9 +590,6 @@ app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) 
         for (let index = 0; index < users.length; index++) {
           const element = users[index];
           if (element.username === participant.username) {
-
-            
-
             const newParticipant = {
               userId: participant.username,
               username: participant.username,
