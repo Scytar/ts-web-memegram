@@ -42,7 +42,7 @@ class NameValidator {
 interface User {
     userId?: string | null
     id?: string,
-    name?: string,
+    username?: string,
     email?: string,
     password?: string
 }
