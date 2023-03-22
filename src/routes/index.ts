@@ -20,7 +20,7 @@ router.post("/signup", newUser);
 //Logout
 router.get('/logout', logout);
 //Auth - post
-router.post("/upload", authUser, upload.single("media"), newItems);
+router.post("/upload", authUser, upload.single("file"), newItems);
 //Auth - insert comment
 router.post("/comment", authUser, newComment);
 //Auth - list comment
