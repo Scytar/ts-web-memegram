@@ -61,6 +61,7 @@ const App = (): JSX.Element => {
             })
         ,
         {
+            retry: false,
             refetchOnWindowFocus: false,
             refetchOnMount: false,
             refetchOnReconnect: false,

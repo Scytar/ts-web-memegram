@@ -14,7 +14,7 @@ export const useNotificationContext = (): { notify: (arg:any) => void} => {
 export interface INotification {
   id: string,
   message: string,
-  type: 'success' | 'error' | 'warning' | 'info',
+  type: 'success' | 'error' | 'warning' | 'info', // Verde, Vermelho, Laranja, Azul
   duration: 'short' | 'long', // 3s | 6s
 }
 
