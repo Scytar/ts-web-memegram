@@ -23,13 +23,13 @@ router.get('/logout', logout);
 //Auth - post
 router.post("/upload", authUser, upload.single("file"), newItems);
 //Auth - insert comment
-router.post("/comment", authUser, newComment);
+router.put("/comment", authUser, newComment);
 //Auth - list comment
 // router.get("/comment/:postId", authUser, listComment);
 //Auth - feed
 router.get("/feed", authUser, feed);
 //Auth - like
-router.post("/like", authUser, newLike);
+router.put("/like", authUser, newLike);
 //Auth - chat
 router.post("/chats/", authUser, createUpdateChat);
 //Auth - chat - message
