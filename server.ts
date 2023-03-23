@@ -7,7 +7,7 @@ import path from "path";
 import cors from "cors";
 import bodyParser from "body-parser";
 import fs from "fs";
-import https from "https";
+import http from "http";
 import { getFeed } from './src/services/feedService';
 import { getChat } from './src/services/chatService';
 
@@ -23,9 +23,9 @@ async function server() {
     app.use(express.static(path.join(__dirname, "memegram-app", "build")));
     app.use(express.static(path.join(__dirname, "memegram-app", "public")));
 
-    const privateKey = fs.readFileSync("../cert/api.key");
-    const certificate = fs.readFileSync("../cert/api.pem");
-    const credentials = { key: privateKey, cert: certificate };
+    // const privateKey = fs.readFileSync("../cert/api.key");
+    // const certificate = fs.readFileSync("../cert/api.pem");
+    // const credentials = { key: privateKey, cert: certificate };
     const feedItems = await getFeed();3
     const chats = await getChat();
 
@@ -35,7 +35,7 @@ async function server() {
     router.get("/", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
         res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
     })
-    https.createServer(credentials, app).listen(process.env.PORT, () => console.log('Server running on port' + process.env.PORT));
+    http.createServer(app).listen(process.env.PORT, () => console.log('Server running on port' + process.env.PORT));
 
     // =============== Websocket Channels ===============
     const globalFeedChannel = new Set();
