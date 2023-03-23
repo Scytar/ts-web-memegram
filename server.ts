@@ -9,6 +9,7 @@ import bodyParser from "body-parser";
 import fs from "fs";
 import https from "https";
 import { getFeed } from './src/services/feedService';
+import { getChat } from './src/services/chatService';
 
 async function server() {
     const app = express();
@@ -25,7 +26,8 @@ async function server() {
     const privateKey = fs.readFileSync("../cert/api.key");
     const certificate = fs.readFileSync("../cert/api.pem");
     const credentials = { key: privateKey, cert: certificate };
-    const feedItems = await getFeed();
+    const feedItems = await getFeed();3
+    const chats = await getChat();
 
     app.use('/api', router);
     //Main Static HTML
@@ -50,7 +52,7 @@ async function server() {
     }
     if (req.url === '/chats') {
         console.log('chats')
-        // genericChatChannel.add(socket);
+        genericChatChannel.add(socket);
         // const answer = {
         //   type: 'global chat',
         //   data: chats,

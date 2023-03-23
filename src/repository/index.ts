@@ -1,7 +1,28 @@
 import UserRepository from "./userRepository.js"
 import PostRepository from "./postRepository.js";
 import CommentRepository from "./commentRepository.js";
+import ChatRepository from "./chatRepository.js";
+import { getChat } from "../services/chatService.js"
 import iResp from "../interfaces/iResp.js";
+import MessageRepository from "./messageRepository.js";
+
+// async function testChat() {
+//     const chatRep = new ChatRepository();
+//     //const t = await chatRep.insert({chatName:'Hyrule', owner:'Zelda'});
+//     //const t = await chatRep.msgSend({chatId: '7feeb479-e04d-4686-85e0-35729ef43f1b', message: {username:'Zelda', text:'Link, deu ruim! De novo hihi!'}})
+//     //const t = await chatRep.addPart({chatId: "454b63d2-67de-4db5-94ba-d061358b7f83", username: 'Luigi'})
+//     //const t = await getChat();
+//     console.log(t);
+// }
+// testChat()
+
+// async function testMessage() {
+//     const messageRep = new MessageRepository();
+//     //const t = await messageRep.insert({username:'Mario', text:'Luigi, e esse ouriço?'});
+//     //const t = await messageRep.listBy({messageId: 'f5951f35-81f1-4df3-afa3-6902c15de62a'})
+//     console.log(t);
+// }
+// testMessage()
 
 // async function testUser(){
 //     const userRep = new UserRepository();
