@@ -26,7 +26,7 @@ async function server() {
     // const privateKey = fs.readFileSync("../cert/api.key");
     // const certificate = fs.readFileSync("../cert/api.pem");
     // const credentials = { key: privateKey, cert: certificate };
-    const feedItems = await getFeed();3
+    
     const chats = await getChat();
 
     app.use('/api', router);
@@ -35,7 +35,7 @@ async function server() {
     router.get("/", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
         res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
     })
-    http.createServer(app).listen(process.env.PORT, () => console.log('Server running on port' + process.env.PORT));
+    server.listen(process.env.PORT, () => console.log('Server running on port' + process.env.PORT));
 
     // =============== Websocket Channels ===============
     const globalFeedChannel = new Set();
@@ -48,7 +48,11 @@ async function server() {
     if (req.url === '/globalFeed') { //Develop switch cases
         console.log('globalFeed')
         globalFeedChannel.add(socket);
-        socket.send(JSON.stringify(feedItems));
+        getFeed().then((res)=>{
+            socket.send(JSON.stringify(res));
+        }).catch(function(erro) {
+            console.error(erro);
+        });
     }
     if (req.url === '/chats') {
         console.log('chats')
