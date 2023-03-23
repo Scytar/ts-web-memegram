@@ -62,7 +62,7 @@ const users = [
 const chats = [
   {
     chatId: '5465466540',
-    chatName: 'Super Mario Broders',
+    chatName: 'Super Marcio Broders',
     chatRoles: {
       owner: 'gottagofast',
     },
