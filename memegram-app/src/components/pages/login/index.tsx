@@ -188,7 +188,7 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
                 throw res;
             })
             .then((data): void => {
-                setUserInfo(data.userInfo)
+                setUserInfo(data.data)
                 // console.log('data', data.userInfo)
                 setFetchStatus('ok')
                 // TODO: uncomment for production
