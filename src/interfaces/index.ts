@@ -66,4 +66,20 @@ interface Like {
     userId?: string
 }
 
-export { User, Post, Comment, Like, NameValidator, PasswordValidator, EmailValidator };
+interface IChatElement {
+    chatId: string;
+    chatName: string;
+    chatRoles: { owner: string; };
+    participants: {
+      userId: string;
+      username: string;
+    }[];
+    messages: {
+      messageId: string;
+      username: string;
+      dateWithTime: string;
+      message: string;
+    }[];
+}
+
+export { User, Post, Comment, Like, IChatElement, NameValidator, PasswordValidator, EmailValidator };
