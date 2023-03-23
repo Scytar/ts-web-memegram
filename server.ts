@@ -56,6 +56,12 @@ const users = [
     password: '1234',
     email: 'cecilia@sonic.boom',
   },
+  {
+    userId: '77',
+    username: 'Cebolinha',
+    password: '1234',
+    email: 'cebo@linha.com',
+  },
 ]
 
 // Example of data response of chat
@@ -577,6 +583,7 @@ app.put('/api/chat', (req: { body: any; }, res: { sendStatus: (arg0: number) => 
 // Owner of chat updated or created a chat
 app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) => any; }, next: any) => {
   const body = req.body;
+  console.log('body', body)
 
   let chatElementToAnswer: IChatElement | null = null;
 
@@ -591,13 +598,13 @@ app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) 
           const element = users[index];
           if (element.username === participant.username) {
             const newParticipant = {
-              userId: participant.username,
+              userId: element.userId,
               username: participant.username,
             }
             participantsList.push(newParticipant);
           }
         }
-      });
+      })
 
       chatElementToAnswer = {
         chatId: '' + Math.random(),
@@ -609,6 +616,7 @@ app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) 
         messages: []
       }
 
+      console.log('chatElementToAnswer', chatElementToAnswer)
       chats.push(chatElementToAnswer);
 
       //Send websocket message to all clients in the chat channel
@@ -624,28 +632,33 @@ app.post('/api/chats/', (req: { body: any; }, res: { sendStatus: (arg0: number) 
         }
       })
     } else {
+
+      let participantsList: { userId: string, username: string }[] = [];
+
       chats.forEach((element, elementIndex) => {
         if (element.chatId === body.chatId && body.userId === element.chatRoles.owner) { // Check if user is the owner
 
-          for (let index = 0; index < body.participants.length; index++) {
-            const participant = body.participants[index];
-            
-            for (let i = 0; i < users.length; i++) {
-              const element = users[i];
-              if (element.username === participant.username) {
-                const newParticipant = {
-                  userId: participant.username,
-                  username: participant.username,
-                }
-                chats[elementIndex].participants.push(newParticipant);
+          participantsList = body.participants;
+
+          for (let index = 0; index < participantsList.length; index++) {
+            const participant = participantsList[index];
+
+            if (participant.userId === 'toGivenByTheServer') { // O front mandou alguém novo?
+              for (let i = 0; i < users.length; i++) { // Procura na lista de todos os usuários...
+                const user = users[i];
+                if (user.username === participant.username) { // ...se tem um com esse nome que o front pediu
+                  participantsList[index].userId = user.userId; // Se tiver, atualiza o id dele
+                }                                               // (Não fiz aqui) Se não tiver, remove esse cara da lista de participantes
               }
             }
-
           }
 
+
+          chats[elementIndex].participants = participantsList;
           chats[elementIndex].chatName = body.chatName;
 
           chatElementToAnswer = chats[elementIndex];
+          console.log('chatElementToAnswer-update', chatElementToAnswer);
         }
 
         //Send websocket message to all clients in the chat channel
@@ -695,7 +708,7 @@ app.delete('/api/chats', (req: { body: any; }, res: { sendStatus: (arg0: number)
   }
 })
 
-
+app.get
 
 // This route MUST be the last one, as its generic and will redirect the URL to the react-router
 app.get("/*", (req: any, res: { sendFile: (arg0: any) => void; }, next: any) => {
