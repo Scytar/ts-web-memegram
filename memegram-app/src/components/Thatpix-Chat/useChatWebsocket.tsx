@@ -10,7 +10,7 @@ export default function useChatWebsocket() {
 
     // Scytar ====================================================
 
-    const globalChatSocketUrl = '/chats';
+    const globalChatSocketUrl = 'ws://' + window.location.hostname + '/chats';
 
     const UserInfo = useContext(UserContext)
 
