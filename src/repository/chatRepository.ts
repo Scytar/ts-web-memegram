@@ -90,16 +90,14 @@ export default class ChatRepository{
             resp.data = await chatModel.findOne(
                 {chatId: chatData.chatId}
             );
-            console.log(resp, 'resp')
             if (resp.data) {
                 const userRep = new UserRepository();
                 const result = await userRep.listBy({'user.name': chatData.username});
-                console.log(result, 'result')
                 if (!result.data) {
                     resp.error = result.error;
                     return resp;
                 }else{
-                    resp.data.participants.push(result.data[0].user.name);
+                    resp.data.participants.push({ userId: result.data[0].userId, username: result.data[0].user.name});
                     await mongoose.connect(MONGODB_DSN);
                     resp.data = await resp.data.save();     
                 }
