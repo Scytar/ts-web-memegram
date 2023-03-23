@@ -9,7 +9,7 @@ import styles from './styles.module.scss'
 
 const MemegramFeed = (): JSX.Element => {
 
-  const globalFeedSocketUrl = 'wss://' + window.location.hostname + '/globalFeed';
+  const globalFeedSocketUrl = 'ws://' + window.location.hostname + '/globalFeed';
 
   // eslint-disable-next-line
   const [feedState, setfeedState] = useState(null as IPostProps[] | any | null)
