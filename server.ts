@@ -66,7 +66,7 @@ ws.on('connection', (socket : any, req : any) => {
         getChat().then((res) => {
             const answer = {
                 type: 'global chat',
-                data: res.data
+                data: res
             }
             socket.send(JSON.stringify(answer));
         }).catch(function (erro) {
