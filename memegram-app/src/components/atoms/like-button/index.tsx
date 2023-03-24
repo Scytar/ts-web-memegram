@@ -88,7 +88,7 @@ const LikeButton = ({ postId, postLikes }: IPostLikeProps): JSX.Element => {
       body: JSON.stringify(body),
     }
 
-    fetch('http://localhost:3030/api/like', options);
+    fetch('/api/like', options);
   }
 
   const handleLikeClick = (): void => {

@@ -85,7 +85,7 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
         }
 
         setFetchStatus('loading')
-        fetch(`http://localhost:3030/api/login`, options)
+        fetch(`/api/login`, options)
             .then((res) => {
                 if (res.status === 200) return res.json();
                 throw res;
@@ -182,7 +182,7 @@ const LoginPage = ({ setUserInfo: setUserInfo }: { setUserInfo: Dispatch<SetStat
         }
 
         setFetchStatus('loading')
-        fetch(`http://localhost:3030/api/signup`, options)
+        fetch(`/api/signup`, options)
             .then((res) => {
                 if (res.status === 200) return res.json();
                 throw res;

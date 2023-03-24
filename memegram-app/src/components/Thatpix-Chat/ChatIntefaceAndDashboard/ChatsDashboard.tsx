@@ -122,7 +122,7 @@ export default function ChatsDashboard(): JSX.Element {
       participants: chatDashboardState.queueOfChangesForServerUpdatingOfInformation.participants as { userId: string, username: string }[],
     }
 
-    fetch('http://localhost:3030/api/chats/', {
+    fetch('/api/chats/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -196,7 +196,7 @@ export default function ChatsDashboard(): JSX.Element {
       chatRoles: chatRoles as { owner: string },
     }
 
-    fetch('http://localhost:3030/api/chats/', {
+    fetch('/api/chats/', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
