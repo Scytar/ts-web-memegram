@@ -3,8 +3,10 @@ import { User } from "../interfaces";
 import { selectUser, createUser } from "../services/UserService";
 import jwt from 'jsonwebtoken';
 
-export async function login(req: Request, res: Response) {
+const TAG = 'userController';
 
+export async function login(req: Request, res: Response) {
+    console.log(TAG,'login')
     const userData: User = req.body;
 
     try {
@@ -29,12 +31,14 @@ export async function login(req: Request, res: Response) {
         res.status(200).send(data.response);
         return;
     } catch (error: any) {
+        console.log(TAG,'login');
         res.status(500).send(error.message);
         return;
     }
 }
 
 export async function newUser(req: Request, res: Response) {
+    console.log(TAG,'newUser');
 
     const userData: User = req.body;
 
@@ -49,15 +53,18 @@ export async function newUser(req: Request, res: Response) {
         res.status(200).send(data.response);
         return;
     } catch (error: any) {
+        console.log(TAG,'newUser');
         res.status(500).send(error.message);
         return;
     }
 }
 
 export async function logout(req: Request, res: Response) {
+    console.log(TAG,'logout');
     try {
         res.clearCookie('token', { httpOnly: true }).status(200).send('Cookie cleared');
     } catch (error) {
+        console.log(TAG,'logout');
         console.log('Error clearing cookies from', req.ip, ":", error);
         res.sendStatus(500);
     }

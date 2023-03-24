@@ -6,8 +6,10 @@ import {getChat, createChat, updateChat, messageChat} from "../services/chatServ
 import {genericChatChannel} from "../../server";
 import webSocket from 'ws';
 
-export async function createUpdateChat(req : Request, res : Response) {
+const TAG = 'ChatController'
 
+export async function createUpdateChat(req : Request, res : Response) {
+    console.log(TAG,'createUpdateChat');
     try {
 
         const chatData: IChatElement = req.body;
@@ -50,6 +52,7 @@ export async function createUpdateChat(req : Request, res : Response) {
             }
         }
     } catch (error : any) {
+        console.log(TAG,'createUpdateChat');
         res.status(500).send(error);
         return;
     }
@@ -57,7 +60,7 @@ export async function createUpdateChat(req : Request, res : Response) {
 }
 
 export async function newMessage(req : Request, res : Response) {
-
+    console.log(TAG,'newMessage');
     try {
 
         const messageData: IMessageElement = req.body;
@@ -83,6 +86,7 @@ export async function newMessage(req : Request, res : Response) {
      
         }
     } catch (error: any) {
+        console.log(TAG,'newMessage');
         res.status(500).send(error);
         return;
     }

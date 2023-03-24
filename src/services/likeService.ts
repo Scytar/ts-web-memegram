@@ -5,8 +5,11 @@ import { Like } from "../interfaces";
 import PostRepository from "../repository/postRepository"
 import iResp from "../interfaces/iResp";
 import { getFeed } from './feedService'
-// eu não tenho acesso aos snipets que autocompletam o import
+
+const TAG = 'likeService'
+
 export const insertLike = async (dataLike: Like) => {
+    console.log(TAG,'insertLike');
     try {
 
         //dataLike model 
@@ -27,6 +30,7 @@ export const insertLike = async (dataLike: Like) => {
         }
     }
     catch (err: any) {
+        console.log(TAG,'insertLike');
         return { err: err.message }
     }
 }

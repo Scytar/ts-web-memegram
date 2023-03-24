@@ -7,7 +7,10 @@ import bcrypt from "bcrypt";
 import iResp from "../interfaces/iResp";
 import UserRepository from "../repository/userRepository"
 
+const TAG = 'userService';
+
 export const createUser = async (data: User) => {
+    console.log(TAG,'createUser');
     try {
         //registration data validation
         new EmailValidator(data.email);
@@ -45,12 +48,14 @@ export const createUser = async (data: User) => {
         }
     }
     catch (err: any) {
+        console.log(TAG,'createUser');
         return { err: err.message }
     }
 
 }
 
 export const selectUser = async (data: User) => {
+    console.log(TAG,'selectUser');
     try {
         new EmailValidator(data.email);
         new PasswordValidator(data.password);
@@ -85,6 +90,7 @@ export const selectUser = async (data: User) => {
         }
     }
     catch (err: any) {
+        console.log(TAG,'selectUser');
         return { err: err.message }
     }
 }

@@ -7,7 +7,10 @@ import CommentRepository from "../repository/commentRepository"
 import iResp from "../interfaces/iResp";
 import { getFeed } from './feedService'
 
+const TAG = 'commentService';
+
 export const insertComment = async (dataComment: Comment) => {
+    console.log(TAG,'insertComment');
     try {
 
         //dataComment model 
@@ -32,7 +35,7 @@ export const insertComment = async (dataComment: Comment) => {
         }
     }
     catch (err: any) {
-        console.log('comment-err:',err)
+        console.log(TAG,'insertComment');
         return { err: err.message }
     }
 
@@ -40,6 +43,7 @@ export const insertComment = async (dataComment: Comment) => {
 
 
 export const getComment = async (postId: string) => {
+    console.log(TAG,'getComment');
     try {
 
         //---------------------------------------------------------------------------
@@ -66,6 +70,7 @@ export const getComment = async (postId: string) => {
         //---------------------------------------------------------------------------
     }
     catch (err: any) {
+        console.log(TAG,'getComment');
         return { err: err.message }
     }
 
