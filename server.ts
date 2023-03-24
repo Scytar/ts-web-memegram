@@ -98,7 +98,7 @@ const feedItems = [
     authorId: "13",
     author: 'Scytar',
     timestamp: new Date(),
-    media: 'bonk.jpg',
+    media: 'bonk.png',
     likes: ["1", "13", "15", "87"],
     comments: [],
   }
