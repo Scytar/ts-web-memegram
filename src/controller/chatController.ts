@@ -70,12 +70,12 @@ export async function newMessage(req : Request, res : Response) {
         } else {
 
             const data = await messageChat(messageData);
-            
+
             genericChatChannel.forEach((client : any) => {
                 if (data) {
                     const answer = {
                         type: 'single chat',
-                        data: data.data
+                        data: data
                     }
                     client.send(JSON.stringify(answer));
                 };
@@ -86,7 +86,7 @@ export async function newMessage(req : Request, res : Response) {
      
         }
     } catch (error: any) {
-        console.log(TAG,'newMessage');
+        console.log(TAG,'newMessage', error);
         res.status(500).send(error);
         return;
     }

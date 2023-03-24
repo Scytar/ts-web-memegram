@@ -24,6 +24,7 @@ export async function getChat() {
     console.log(TAG,'getChat');
     try {
         let messages = [];
+        const chat = [];
         const msgRep = new MessageRepository();
         const allChats: any = await listAll();
 
@@ -35,16 +36,23 @@ export async function getChat() {
                     const msgObj = {
                         messageId: chatMessage.data[0].messageId,
                         username: chatMessage.data[0].username,
-                        ddateWithTime: chatMessage.data[0].created_at,
+                        dateWithTime: chatMessage.data[0].created_at,
                         message: chatMessage.data[0].text
                     }
                     messages.push(msgObj);
                 }
             }
             allChats.data[index].messages = messages;
+            chat.push({
+                chatRoles: allChats.data[index].chatRoles,
+                chatId: allChats.data[index].chatId,
+                chatName: allChats.data[index].chatName,
+                participants: allChats.data[index].participants,
+                messages: allChats.data[index].messages
+            });
             messages = [];
         }
-        return allChats;
+        return chat;
     } catch (err : any) {
         console.log(TAG,'getChat');
         return {err: err.message}
@@ -67,7 +75,7 @@ export async function messageChat(dataMessage: IMessageElement) {
         }
     }
     catch (err: any) {
-        console.log(TAG,'messageChat');
+        console.log(TAG,'messageChat', err);
         return { err: err.message }
     }
 }
