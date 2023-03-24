@@ -5,6 +5,7 @@ import { Comment } from "../interfaces";
 import PostRepository from "../repository/postRepository"
 import CommentRepository from "../repository/commentRepository"
 import iResp from "../interfaces/iResp";
+import { getFeed } from './feedService'
 
 export const insertComment = async (dataComment: Comment) => {
     try {
@@ -20,16 +21,19 @@ export const insertComment = async (dataComment: Comment) => {
 
         //---------------------------------------------------------------------------
         const postRep = new PostRepository();
-        const response: iResp = await postRep.comment({ postId: dataComment.postId, comment: { author: dataComment.comment?.author, text: dataComment.comment?.text } });
+        console.log('datacomment', dataComment)
+        const response: iResp = await postRep.comment({ postId: dataComment.postId, comment: { author: dataComment.user, text: dataComment.comment } });
         //---------------------------------------------------------------------------
 
         if (!response.error) {
-            return { response };
+            const feed = await getFeed();
+            return { feed };
         } else {
             throw new Error(`${response.error}`);
         }
     }
     catch (err: any) {
+        console.log('comment-err:',err)
         return { err: err.message }
     }
 
@@ -55,7 +59,7 @@ export const getComment = async (postId: string) => {
                 //Receive all comments ids of post and return each comment
                 const comments = await comment.listBy({ commentId: result.comments[index] });
                 //console.log(comments.data[0].comment);
-                response.data.push(comments.data[0].comment);
+                response.data.push(comments.data[0]);
             }
             return { response };
         } else {

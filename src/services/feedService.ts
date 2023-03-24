@@ -23,10 +23,24 @@ export async function getFeed() {
             const postComments = await getComment(allPost.data[index].postId);
             if (!postComments.err) {
                 allPost.data[index].post.comments = [];
-                postComments.response?.data.forEach((comment: any) =>{
-                    allPost.data[index].post.comments.push(comment);
+                postComments.response?.data.forEach((item: any) =>{
+                    const singleComment = {
+                        commentId: item.commentId,
+                        author: item.comment.author,
+                        comment: item.comment.text
+                    } 
+                    allPost.data[index].post.comments.push(singleComment);
                 });
-                feed.push(allPost.data[index].post);
+                const singlePost = {
+                    postId: allPost.data[index].postId,
+                    authorId: allPost.data[index].post.authorId,
+                    author: allPost.data[index].post.author,
+                    timestamp: allPost.data[index].created_at,
+                    media: allPost.data[index].post.media,
+                    likes: allPost.data[index].post.likes,
+                    comments: allPost.data[index].post.comments
+                }
+                feed.push(singlePost);
         }}
         return feed;
     } catch (err: any) {

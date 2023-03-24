@@ -4,7 +4,8 @@ dotenv.config();
 import { Like } from "../interfaces";
 import PostRepository from "../repository/postRepository"
 import iResp from "../interfaces/iResp";
-
+import { getFeed } from './feedService'
+// eu não tenho acesso aos snipets que autocompletam o import
 export const insertLike = async (dataLike: Like) => {
     try {
 
@@ -14,13 +15,14 @@ export const insertLike = async (dataLike: Like) => {
         // }
 
         //---------------------------------------------------------------------------
-        const postRep = new PostRepository();
+        const postRep = new PostRepository(); 
         const response: iResp = await postRep.like(dataLike)
         //---------------------------------------------------------------------------
 
         if (!response.error) {
-            return { response };
-        } else {
+            const feed = await getFeed();
+            return { feed };
+        } else {                
             throw new Error(`${response.error}`);
         }
     }
