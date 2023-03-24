@@ -38,12 +38,6 @@ app.use(express.static(path.join(__dirname, "memegram-app", "build")));
 app.use(express.static(path.join(__dirname, "memegram-app", "public")));
 app.use(logIp);
 
-// Example of user
-const userInfo = {
-  userId: 'gottagofast',
-  user: 'Sonic The Hedgehog',
-}
-
 const users = [
   {
     userId: 'gottagofast',
@@ -58,188 +52,15 @@ const users = [
     email: 'scytar@sonic.boom',
   },
   {
-    userId: '12',
-    username: 'Cecília',
+    userId: '1',
+    username: 'Macha Down Jr',
     password: '1234',
-    email: 'cecilia@sonic.boom',
-  },
-  {
-    userId: '77',
-    username: 'Cebolinha',
-    password: '1234',
-    email: 'cebo@linha.com',
+    email: 'macha@down.com',
   },
 ]
 
 // Example of data response of chat
-const chats = [
-  {
-    chatId: '5465466540',
-    chatName: 'Super Marcio Broders',
-    chatRoles: {
-      owner: 'gottagofast',
-    },
-    participants: [
-      {
-        userId: 'gottagofast',
-        username: 'Sonic The Hedgehog',
-      },
-      {
-        userId: '13',
-        username: 'Scytar',
-      },
-    ],
-    messages: [
-      {
-        messageId: '9999999990',
-        username: 'Scytar',
-        dateWithTime: '2023-03-15T16:45:16.109Z',
-        message: 'Primeira mensagem',
-      },
-      {
-        messageId: '9999999991',
-        username: 'Sonic The Hedgehog',
-        dateWithTime: '2023-03-15T16:46:16.109Z',
-        message: 'Segunda mensagem',
-      },
-      {
-        messageId: '9999999992',
-        username: 'Cebolinha',
-        dateWithTime: '2023-03-15T16:47:16.109Z',
-        message: 'Telceila mensagem',
-      },
-    ]
-  },
-  {
-    chatId: '5465466541',
-    chatName: 'Tooney Loones',
-    chatRoles: {
-      owner: '13',
-    },
-    participants: [
-      {
-        userId: 'gottagofast',
-        username: 'Sonic The Hedgehog',
-      },
-      {
-        userId: '13',
-        username: 'Scytar',
-      },
-      {
-        userId: '77',
-        username: 'Cebolinha',
-      },
-    ],
-    messages: [
-      {
-        messageId: '9999999980',
-        username: 'Scytar',
-        dateWithTime: '2023-03-15T16:45:16.109Z',
-        message: 'Caramba',
-      },
-      {
-        messageId: '9999999982',
-        username: 'Cebolinha',
-        dateWithTime: '2023-03-15T16:47:16.109Z',
-        message: 'Calamba!',
-      },
-      {
-        messageId: '9999999981',
-        username: 'Sonic The Hedgehog',
-        dateWithTime: '2023-03-15T16:46:16.109Z',
-        message: 'Sonic Boom',
-      },
-    ]
-  },
-  {
-    chatId: '5465466542',
-    chatName: 'Machadão',
-    chatRoles: {
-      owner: '1337',
-    },
-    participants: [
-      {
-        userId: '13',
-        username: 'Scytar',
-      },
-      {
-        userId: '1337',
-        username: 'Machadão',
-      },
-    ],
-    messages: [
-      {
-        messageId: '9999999970',
-        username: 'Machadão',
-        dateWithTime: '2023-03-15T16:45:16.109Z',
-        message: 'Primeira mensagem',
-      },
-      {
-        messageId: '9999999971',
-        username: 'Sonic The Hedgehog',
-        dateWithTime: '2023-03-15T16:46:16.109Z',
-        message: 'Segunda mensagem',
-      },
-      {
-        messageId: '9999999972',
-        username: 'Cebolinha',
-        dateWithTime: '2023-03-15T16:47:16.109Z',
-        message: 'Telceila mensagem',
-      }, {
-        messageId: '9999999973',
-        username: 'Machadão',
-        dateWithTime: '2023-03-15T16:45:16.109Z',
-        message: 'Primeira mensagem',
-      },
-      {
-        messageId: '9999999974',
-        username: 'Sonic The Hedgehog',
-        dateWithTime: '2023-03-15T16:46:16.109Z',
-        message: 'Segunda mensagem',
-      },
-      {
-        messageId: '9999999975',
-        username: 'Cebolinha',
-        dateWithTime: '2023-03-15T16:47:16.109Z',
-        message: 'Telceila mensagem',
-      }, {
-        messageId: '9999999976',
-        username: 'Machadão',
-        dateWithTime: '2023-03-15T16:45:16.109Z',
-        message: 'Primeira mensagem',
-      },
-      {
-        messageId: '9999999977',
-        username: 'Sonic The Hedgehog',
-        dateWithTime: '2023-03-15T16:46:16.109Z',
-        message: 'Segunda mensagem',
-      },
-      {
-        messageId: '9999999978',
-        username: 'Cebolinha',
-        dateWithTime: '2023-03-15T16:47:16.109Z',
-        message: 'Telceila mensagem',
-      }, {
-        messageId: '9999999979',
-        username: 'Machadão',
-        dateWithTime: '2023-03-15T16:45:16.109Z',
-        message: 'Primeira mensagem',
-      },
-      {
-        messageId: '9999999969',
-        username: 'Sonic The Hedgehog',
-        dateWithTime: '2023-03-15T16:46:16.109Z',
-        message: 'Segunda mensagem',
-      },
-      {
-        messageId: '9999999968',
-        username: 'Cebolinha',
-        dateWithTime: '2023-03-15T16:47:16.109Z',
-        message: 'Telceila mensagem',
-      },
-    ]
-  },
-];
+const chats: IChatElement[] = [];
 
 // Example of database response of the global feed
 const feedItems = [
@@ -253,7 +74,7 @@ const feedItems = [
     comments: [
       {
         commentId: "1001",
-        author: 'Machadão',
+        author: 'Macha Down Jr',
         comment: 'Cocoricó!'
       },
       {
@@ -261,57 +82,25 @@ const feedItems = [
         author: 'Machadette',
         comment: 'Pó pô pó?'
       },
-      {
-        commentId: "1012",
-        author: 'Machadette',
-        comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae?'
-      },
-      {
-        commentId: "1032",
-        author: 'Machadette',
-        comment: 'Pó pô pó?'
-      },
     ],
+  },
+  {
+    postId: "2",
+    authorId: "1",
+    author: 'Macha Down Jr',
+    timestamp: new Date(),
+    media: '330355392_947815519559210_1018065495553949514_n.jpg',
+    likes: ["1", "13", "15", "87"],
+    comments: [],
   },
   {
     postId: "3",
-    authorId: "12",
-    author: 'Cecília',
+    authorId: "13",
+    author: 'Scytar',
     timestamp: new Date(),
-    media: 'memegram-logo-circle.webp',
-    likes: ["13", "15"],
-    comments: [
-      {
-        commentId: "1003",
-        author: 'Machadão',
-        comment: 'Cocó coricocó!'
-      },
-      {
-        commentId: "1004",
-        author: 'Machadette',
-        comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae'
-      },
-    ],
-  },
-  {
-    postId: "4",
-    authorId: "1",
-    author: 'Machadão',
-    timestamp: new Date(),
-    media: 'jin-sherlock.png',
+    media: 'bonk.jpg',
     likes: ["1", "13", "15", "87"],
-    comments: [
-      {
-        commentId: "1006",
-        author: 'Machadão',
-        comment: 'Cocó coricocó!'
-      },
-      {
-        commentId: "1005",
-        author: 'Machadette',
-        comment: 'Lorem ipsum dolor sit amet bigles et bagles furer hop daenerius sut probatus fuerit accipiet coronam vitae'
-      },
-    ],
+    comments: [],
   }
 ]
 
