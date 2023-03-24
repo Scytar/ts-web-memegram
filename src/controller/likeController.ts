@@ -1,9 +1,11 @@
-//newItems
-import { Request, Response } from "express";
-import { Like } from "../interfaces";
-import { insertLike } from "../services/likeService";
+// newItems
+import {Request, Response} from "express";
+import {Like} from "../interfaces";
+import {insertLike} from "../services/likeService";
+import { globalFeedChannel } from "../../server";
+import webSocket from 'ws';
 
-export async function newLike(req: Request, res: Response) {
+export async function newLike(req : Request, res : Response) {
 
     try {
         // body = {
@@ -15,21 +17,26 @@ export async function newLike(req: Request, res: Response) {
         if (Object.keys(likeData).length === 0) {
             res.status(400).send("Invalid request");
             return;
-        }
-        else {
+        } else {
 
-            const data = await insertLike(likeData);
-            if (data?.err) {
+            const data = await insertLike(likeData); // Todo o feed
+            if (data ?. err) {
                 throw new Error(data.err);
             }
+
+            globalFeedChannel.forEach((client : any) => {
+                if (client.readyState === webSocket.OPEN) {
+                    client.send(JSON.stringify(data.feed));
+                }
+            });
+
             res.status(200).send(data);
             return;
         }
 
-    } catch (error: any) {
+    } catch (error : any) {
         res.status(500).send(error.message);
         return;
     }
 
 }
-

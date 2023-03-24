@@ -23,7 +23,7 @@ router.get('/logout', logout);
 //Auth - post
 router.post("/upload", authUser, upload.single("file"), newItems);
 //Auth - insert comment
-router.put("/comment", authUser, newComment);
+router.post("/comment", authUser, newComment);
 //Auth - list comment
 // router.get("/comment/:postId", authUser, listComment);
 //Auth - feed

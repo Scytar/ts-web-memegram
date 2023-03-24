@@ -54,11 +54,9 @@ interface Post {
 }
 
 interface Comment {
+    user?: string,
     postId?: string,
-    comment?: {
-        author?: string,
-        text?: string
-    }
+    comment?: string
 }
 
 interface Like {

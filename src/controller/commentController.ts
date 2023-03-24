@@ -2,6 +2,8 @@
 import { Request, Response } from "express";
 import { Comment } from "../interfaces";
 import { insertComment, getComment } from "../services/commentService";
+import { globalFeedChannel } from "../../server";
+import webSocket from 'ws';
 
 export async function newComment(req: Request, res: Response) {
 
@@ -14,6 +16,7 @@ export async function newComment(req: Request, res: Response) {
         //     }
 
         const commentData: Comment = req.body;
+        console.log('commentData',commentData)
         if (Object.keys(commentData).length === 0) {
             res.status(400).send("Invalid request");
             return;
@@ -24,6 +27,13 @@ export async function newComment(req: Request, res: Response) {
             if (data?.err) {
                 throw new Error(data.err);
             }
+            
+            globalFeedChannel.forEach((client : any) => {
+                if (client.readyState === webSocket.OPEN) {
+                    client.send(JSON.stringify(data.feed));
+                }
+            });
+
             res.status(200).send(data);
             return;
         }
