@@ -27,7 +27,7 @@ export const createUser = async (data: User) => {
         const userRep = new UserRepository();
         const response: iResp = await userRep.insert({name: dataUser.username, email: dataUser.email, password: dataUser.password});
         //---------------------------------------------------------------------------
-        console.log(response)
+        // console.log(response)
         if (!response.error) {
             const token = jwt.sign(
                 {

@@ -1,10 +1,12 @@
-//Chats
-import { Request, Response } from "express";
-import { IChatElement } from "../interfaces";
+// Chats
+import {Request, Response} from "express";
+import {IChatElement , IMessageElement} from "../interfaces";
 import iResp from "../interfaces/iResp";
-import { getChat, createChat, updateChat, messageChat } from "../services/chatService";
+import {getChat, createChat, updateChat, messageChat} from "../services/chatService";
+import {genericChatChannel} from "../../server";
+import webSocket from 'ws';
 
-export async function createUpdateChat(req: Request, res: Response) {
+export async function createUpdateChat(req : Request, res : Response) {
 
     try {
 
@@ -16,35 +18,67 @@ export async function createUpdateChat(req: Request, res: Response) {
             if (chatData.chatId === '0') {
 
                 const data = await createChat(chatData);
-                res.status(200).send(data);
+                genericChatChannel.forEach((client : any) => {
+                    if (data) {
+                        const answer = {
+                            type: 'single chat',
+                            data: data
+                        }
+                        client.send(JSON.stringify(answer));
+                    };
+                });
+
+                res.sendStatus(200);
                 return;
 
             } else {
 
                 const data = await updateChat(chatData);
+
+                genericChatChannel.forEach((client : any) => {
+                    if (data) {
+                        const answer = {
+                            type: 'single chat',
+                            data: data
+                        }
+                        client.send(JSON.stringify(answer));
+                    };
+                });
+
                 res.status(200).send(data);
                 return;
             }
         }
-    } catch (error: any) {
+    } catch (error : any) {
         res.status(500).send(error);
         return;
     }
 
 }
 
-export async function newMessage(req: Request, res: Response) {
+export async function newMessage(req : Request, res : Response) {
 
     try {
 
-        const chatData: IChatElement = req.body;
-        if (Object.keys(chatData).length === 0) {
+        const messageData: IMessageElement = req.body;
+        if (Object.keys(messageData).length === 0) {
             res.status(400).send("Invalid request");
             return;
         } else {
 
-            const data = await messageChat(chatData);
-            res.status(200).send(data);
+            const data = await messageChat(messageData);
+            
+            genericChatChannel.forEach((client : any) => {
+                if (data) {
+                    const answer = {
+                        type: 'single chat',
+                        data: data.data
+                    }
+                    client.send(JSON.stringify(answer));
+                };
+            });
+
+            res.sendStatus(200);
             return;
      
         }
@@ -54,6 +88,3 @@ export async function newMessage(req: Request, res: Response) {
     }
 
 }
-
-
-

@@ -16,7 +16,6 @@ export async function newComment(req: Request, res: Response) {
         //     }
 
         const commentData: Comment = req.body;
-        console.log('commentData',commentData)
         if (Object.keys(commentData).length === 0) {
             res.status(400).send("Invalid request");
             return;

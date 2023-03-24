@@ -80,4 +80,11 @@ interface IChatElement {
     }[];
 }
 
-export { User, Post, Comment, Like, IChatElement, NameValidator, PasswordValidator, EmailValidator };
+interface IMessageElement {
+    userId: string;
+    username: string;
+    chatId: string;
+    messageText: string;
+}
+
+export { User, Post, Comment, Like, IChatElement, IMessageElement, NameValidator, PasswordValidator, EmailValidator };
