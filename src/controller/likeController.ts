@@ -26,8 +26,14 @@ export async function newLike(req : Request, res : Response) {
 
             globalFeedChannel.forEach((client : any) => {
                 if (client.readyState === webSocket.OPEN) {
-                    client.send(JSON.stringify(data.feed));
-                }
+                    if (data) {
+                      const answer = {
+                        type: 'single chat',
+                        data: data,
+                      }
+                      client.send(JSON.stringify(answer));
+                    };
+                  }
             });
 
             res.status(200).send(data);

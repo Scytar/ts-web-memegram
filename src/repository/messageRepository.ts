@@ -11,6 +11,10 @@ const messageSchem = new mongoose.Schema({
         type: String,
         unique: true
     },
+    chatId:{
+        type: String,
+        required: true
+    },
     username: {
         type: String,
         required: true
@@ -36,6 +40,7 @@ export default class MessageRepository{
                 chatId: messageData.chatId,
                 username: messageData.username,
                 text: messageData.text,
+                created_at: Date.now()
             });
             resp.data = await newMessage.save();
             await mongoose.connection.close();

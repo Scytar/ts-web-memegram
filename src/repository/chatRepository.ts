@@ -15,6 +15,7 @@ const chatSchem = new mongoose.Schema({
     },
     chatName: {
         type: String,
+        unique: true,
         required: true
     },
     chatRoles:{
@@ -40,7 +41,6 @@ export default class ChatRepository{
         //Receive an Object with the data to insert
         let resp: iResp = {data: null, error: null};
         try {
-            await mongoose.connect(MONGODB_DSN);
             const newChat = new chatModel({
                 chatId: uuid(),
                 chatName: chatData.chatName,
@@ -51,6 +51,7 @@ export default class ChatRepository{
                 messages: [],
                 created_at: Date.now()
             });
+            await mongoose.connect(MONGODB_DSN);
             resp.data = await newChat.save();
             await mongoose.connection.close();
         } catch (err: any) {
@@ -117,8 +118,13 @@ export default class ChatRepository{
                 {chatId: msgData.chatId}
             );
             if (resp.data) {
+                const msgObj = {
+                    chatId: msgData.chatId,
+                    username: msgData.username,
+                    text: msgData.messageText
+                }
                 const msgRep = new MessageRepository();
-                const result = await msgRep.insert(msgData.message);
+                const result = await msgRep.insert(msgObj);
                 if (!result.data) {
                     resp.error = result.error;
                     return resp;
@@ -134,4 +140,6 @@ export default class ChatRepository{
         }
         return resp;
     }
+
+
 }

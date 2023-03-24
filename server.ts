@@ -27,12 +27,15 @@ app.use(express.static(path.join(__dirname, "memegram-app", "public")));
 // const certificate = fs.readFileSync("../cert/api.pem");
 // const credentials = { key: privateKey, cert: certificate };
 
-// const chats = await getChat();
-
 app.use('/api', router);
 // Main Static HTML
 console.log(path.join(__dirname, "memegram-app", "build", "index.html"))
 router.get("/", (req : any, res : {
+    sendFile: (arg0 : any) => void;
+}, next : any) => {
+    res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
+})
+app.get("/*", (req : any, res : {
     sendFile: (arg0 : any) => void;
 }, next : any) => {
     res.sendFile(path.join(__dirname, "memegram-app", "build", "index.html"));
@@ -51,7 +54,6 @@ ws.on('connection', (socket : any, req : any) => {
         console.log('globalFeed')
         globalFeedChannel.add(socket);
         getFeed().then((res) => {
-            console.log('getFeed',res)
             socket.send(JSON.stringify(res));
         }).catch(function (erro) {
             console.error(erro);
@@ -60,11 +62,16 @@ ws.on('connection', (socket : any, req : any) => {
     if (req.url === '/chats') {
         console.log('chats')
         genericChatChannel.add(socket);
-        const answer = {
-            type: 'global chat',
-            data: getChat()
-        }
-        socket.send(JSON.stringify(answer));
+
+        getChat().then((res) => {
+            const answer = {
+                type: 'global chat',
+                data: res.data
+            }
+            socket.send(JSON.stringify(answer));
+        }).catch(function (erro) {
+            console.error(erro);
+        });
     }
 
     // Identify the channel the message sent by the client belongs

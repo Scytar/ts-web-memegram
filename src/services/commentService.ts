@@ -21,7 +21,6 @@ export const insertComment = async (dataComment: Comment) => {
 
         //---------------------------------------------------------------------------
         const postRep = new PostRepository();
-        console.log('datacomment', dataComment)
         const response: iResp = await postRep.comment({ postId: dataComment.postId, comment: { author: dataComment.user, text: dataComment.comment } });
         //---------------------------------------------------------------------------
 
@@ -58,7 +57,6 @@ export const getComment = async (postId: string) => {
             for (let index = 0; index < result.comments.length; index++) {
                 //Receive all comments ids of post and return each comment
                 const comments = await comment.listBy({ commentId: result.comments[index] });
-                //console.log(comments.data[0].comment);
                 response.data.push(comments.data[0]);
             }
             return { response };
