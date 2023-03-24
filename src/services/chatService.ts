@@ -4,7 +4,10 @@ import ChatRepository from "../repository/chatRepository";
 import {UserRepository} from "../repository";
 import {IChatElement, IMessageElement} from "../interfaces";
 
+const TAG = 'ChatService'
+
 async function listAll() {
+    console.log(TAG,'listAll');
     try {
         const chatRep = new ChatRepository();
         const response: iResp = await chatRep.listAll();
@@ -12,11 +15,13 @@ async function listAll() {
             return response;
         }
     } catch (err : any) {
-        return {err: err.message}
+        console.log(TAG,'listAll');
+        throw err.message;
     }
 }
 
 export async function getChat() {
+    console.log(TAG,'getChat');
     try {
         let messages = [];
         const msgRep = new MessageRepository();
@@ -41,12 +46,14 @@ export async function getChat() {
         }
         return allChats;
     } catch (err : any) {
+        console.log(TAG,'getChat');
         return {err: err.message}
     }
 }
 
 
 export async function messageChat(dataMessage: IMessageElement) {
+    console.log(TAG,'createmessageChatChat');
     try{
         //---------------------------------------------------------------------------
         const chatRep = new ChatRepository();
@@ -60,12 +67,13 @@ export async function messageChat(dataMessage: IMessageElement) {
         }
     }
     catch (err: any) {
-        console.log('message-err:',err)
+        console.log(TAG,'messageChat');
         return { err: err.message }
     }
 }
 
 export async function createChat(dataChat : IChatElement) {
+    console.log(TAG,'createChat');
 
     try {
         let participants = [];
@@ -99,11 +107,13 @@ export async function createChat(dataChat : IChatElement) {
         }
 
     } catch (err : any) {
+        console.log(TAG,'createChat');
         return {err: err.message}
     }
 }
 
 export async function updateChat(dataChat : IChatElement) {
+    console.log(TAG,'updateChat');
 
     try {
         let participants = [];
@@ -140,6 +150,7 @@ export async function updateChat(dataChat : IChatElement) {
         }
 
     } catch (err : any) {
+        console.log(TAG,'updateChat');
         return {err: err.message}
     }
 }

@@ -4,8 +4,10 @@ import { Post } from "../interfaces";
 import { newPost } from "../services/postService";
 import jwt from 'jsonwebtoken';
 
-export async function newItems(req: Request, res: Response) {
+const TAG = 'postController';
 
+export async function newItems(req: Request, res: Response) {
+    console.log(TAG,'newItems')
     try {
 
         if (!req.file || req.file.size === 0) {
@@ -26,6 +28,7 @@ export async function newItems(req: Request, res: Response) {
             return;
         }
     } catch (error: any) {
+        console.log(TAG,'newItems', error)
         res.status(500).send(error);
         return;
     }

@@ -5,8 +5,10 @@ import { insertComment, getComment } from "../services/commentService";
 import { globalFeedChannel } from "../../server";
 import webSocket from 'ws';
 
-export async function newComment(req: Request, res: Response) {
+const TAG = 'commentController';
 
+export async function newComment(req: Request, res: Response) {
+    console.log(TAG,'newComment');
     try {
         // body = { postId: '753314e2-2b78-465e-9815-b773c89f238a',
         //         comment: {
@@ -38,6 +40,7 @@ export async function newComment(req: Request, res: Response) {
         }
 
     } catch (error: any) {
+        console.log(TAG,'newComment',error);
         res.status(500).send(error.message);
         return;
     }
@@ -45,7 +48,7 @@ export async function newComment(req: Request, res: Response) {
 }
 
 export async function listComment(req: Request, res: Response) {
-
+    console.log(TAG,'listComment');
     try {
         const postId: string = req.params.postId;
         if (!postId) throw new Error('Invalid request');
@@ -57,6 +60,7 @@ export async function listComment(req: Request, res: Response) {
         res.status(200).send(data);
         return;
     } catch (error: any) {
+        console.log(TAG,'listComment',error);
         res.status(500).send(error.message);
         return;
     }

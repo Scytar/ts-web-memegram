@@ -5,8 +5,10 @@ import {insertLike} from "../services/likeService";
 import { globalFeedChannel } from "../../server";
 import webSocket from 'ws';
 
-export async function newLike(req : Request, res : Response) {
+const TAG = 'likeController';
 
+export async function newLike(req : Request, res : Response) {
+    console.log(TAG,'newLike')
     try {
         // body = {
         //     postId: '753314e2-2b78-465e-9815-b773c89f238a',
@@ -27,20 +29,17 @@ export async function newLike(req : Request, res : Response) {
             globalFeedChannel.forEach((client : any) => {
                 if (client.readyState === webSocket.OPEN) {
                     if (data) {
-                      const answer = {
-                        type: 'single chat',
-                        data: data,
-                      }
-                      client.send(JSON.stringify(answer));
+                      client.send(JSON.stringify(data.feed));
                     };
                   }
             });
 
-            res.status(200).send(data);
+            res.sendStatus(200);
             return;
         }
 
     } catch (error : any) {
+        console.log(TAG,'newLike')
         res.status(500).send(error.message);
         return;
     }

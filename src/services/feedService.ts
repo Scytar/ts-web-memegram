@@ -3,20 +3,25 @@ import { getComment } from "../services/commentService";
 import PostRepository from "../repository/postRepository"
 import iResp from "../interfaces/iResp";
 
+const TAG = 'feedService'
+
 async function listAll() {
     try{
+        console.log(TAG,'listAll')
         const postRep = new PostRepository();
         const response: iResp = await postRep.listAll();
         if (!response.error) {
             return response;
         }
     } catch (err: any) {
+        console.log(TAG,'listAll', err)
         return { err: err.message }
     }
 }
 
 export async function getFeed() {
     try {
+        console.log(TAG,'getFeed')
         const feed: Post[] = [];
         const allPost: any = await listAll();
         for (let index = 0; index < allPost.data.length; index++) {
@@ -44,6 +49,7 @@ export async function getFeed() {
         }}
         return feed;
     } catch (err: any) {
+        console.log(TAG,'getFeed', err)
         return { err: err.message }
     }
 }
