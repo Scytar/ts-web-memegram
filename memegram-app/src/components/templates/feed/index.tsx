@@ -9,7 +9,7 @@ import styles from './styles.module.scss'
 
 const MemegramFeed = (): JSX.Element => {
 
-  const globalFeedSocketUrl = 'wss://127.0.0.1:3030/globalFeed';
+  const globalFeedSocketUrl = 'wss://' + window.location.hostname + '/globalFeed';
 
   // eslint-disable-next-line
   const [feedState, setfeedState] = useState(null as IPostProps[] | any | null)
@@ -39,7 +39,7 @@ const MemegramFeed = (): JSX.Element => {
       // eslint-disable-next-line
       console.log('Feed WebSocket connection closed');
     });
-  }  
+  }
 
   useEffect(() => {
     if (!webSocket) {
