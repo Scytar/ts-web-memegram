@@ -6,16 +6,23 @@ const cors = require("cors");
 const webSocket = require("ws");
 const multer = require("multer");
 const bodyParser = require("body-parser");
+const fs = require('fs')
+const https = require('https')
+
 
 // To anyone testing: the node server runs on port 3030,
 // but to avoid rebuilding the react project multiples times
 // we run npm run start on port 3000, so all API calls must
 // use the proper URL - e.g. http://localhost:3030
 // From now on, we are droping the MirageJS fake server depency
-const PORT = 3030;
+const PORT = 443;
+
+const privateKey = fs.readFileSync("../cert/api.key");
+const certificate = fs.readFileSync("../cert/api.pem");
+const credentials = { key: privateKey, cert: certificate };
 
 const app = express();
-const server = require('http').createServer(app);
+const server = https.createServer(credentials,app);
 const ws = new webSocket.Server({ server });
 
 //Logs client IP upon its request
