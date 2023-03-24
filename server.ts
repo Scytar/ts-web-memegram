@@ -12,8 +12,11 @@ import {getFeed} from './src/services/feedService';
 import {getChat} from './src/services/chatService';
 
 // async function server() {
+const privateKey = fs.readFileSync("../cert/api.key");
+const certificate = fs.readFileSync("../cert/api.pem");
+const credentials = { key: privateKey, cert: certificate };
 const app = express();
-const server = require('http').createServer(app);
+const server = require('https').createServer(credentials, app);
 const ws = new WebSocket.Server({server});
 
 app.use(cookieParser());
@@ -22,10 +25,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, "memegram-app", "build")));
 app.use(express.static(path.join(__dirname, "memegram-app", "public")));
-
-// const privateKey = fs.readFileSync("../cert/api.key");
-// const certificate = fs.readFileSync("../cert/api.pem");
-// const credentials = { key: privateKey, cert: certificate };
 
 app.use('/api', router);
 // Main Static HTML
